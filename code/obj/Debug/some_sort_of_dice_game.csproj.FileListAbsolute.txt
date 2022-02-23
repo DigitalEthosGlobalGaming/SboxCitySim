@@ -1,0 +1,14 @@
+C:\Program Files (x86)\Steam\steamapps\common\sbox\addons\some-sort-of-dice-game\.vs\output\some_sort_of_dice_game.xml
+C:\Program Files (x86)\Steam\steamapps\common\sbox\addons\some-sort-of-dice-game\.vs\output\some_sort_of_dice_game.deps.json
+C:\Program Files (x86)\Steam\steamapps\common\sbox\addons\some-sort-of-dice-game\.vs\output\some_sort_of_dice_game.dll
+C:\Program Files (x86)\Steam\steamapps\common\sbox\addons\some-sort-of-dice-game\.vs\output\ref\some_sort_of_dice_game.dll
+C:\Program Files (x86)\Steam\steamapps\common\sbox\addons\some-sort-of-dice-game\.vs\output\some_sort_of_dice_game.pdb
+C:\Program Files (x86)\Steam\steamapps\common\sbox\addons\some-sort-of-dice-game\code\obj\Debug\some_sort_of_dice_game.csproj.AssemblyReference.cache
+C:\Program Files (x86)\Steam\steamapps\common\sbox\addons\some-sort-of-dice-game\code\obj\Debug\some_sort_of_dice_game.GeneratedMSBuildEditorConfig.editorconfig
+C:\Program Files (x86)\Steam\steamapps\common\sbox\addons\some-sort-of-dice-game\code\obj\Debug\some_sort_of_dice_game.AssemblyInfoInputs.cache
+C:\Program Files (x86)\Steam\steamapps\common\sbox\addons\some-sort-of-dice-game\code\obj\Debug\some_sort_of_dice_game.AssemblyInfo.cs
+C:\Program Files (x86)\Steam\steamapps\common\sbox\addons\some-sort-of-dice-game\code\obj\Debug\some_sort_of_dice_game.csproj.CoreCompileInputs.cache
+C:\Program Files (x86)\Steam\steamapps\common\sbox\addons\some-sort-of-dice-game\code\obj\Debug\some_sort_of_dice_game.csproj.CopyComplete
+C:\Program Files (x86)\Steam\steamapps\common\sbox\addons\some-sort-of-dice-game\code\obj\Debug\some_sort_of_dice_game.dll
+C:\Program Files (x86)\Steam\steamapps\common\sbox\addons\some-sort-of-dice-game\code\obj\Debug\ref\some_sort_of_dice_game.dll
+C:\Program Files (x86)\Steam\steamapps\common\sbox\addons\some-sort-of-dice-game\code\obj\Debug\some_sort_of_dice_game.pdb

@@ -469,6 +469,11 @@
             Remove a component to this entity
             </summary>
         </member>
+        <member name="M:Sandbox.Internal.EntityComponentAccessor.RemoveAny``1">
+            <summary>
+            Remove all components of this type
+            </summary>
+        </member>
         <member name="M:Sandbox.Internal.EntityComponentAccessor.RemoveAll">
             <summary>
             Remove all components to this entity
@@ -660,6 +665,38 @@
             <summary>
             Visulalize a trace
             </summary>
+        </member>
+        <member name="P:Sandbox.Internal.MapAccessor.Physics">
+            <summary>
+            The current game's scene world
+            </summary>
+        </member>
+        <member name="P:Sandbox.Internal.MapAccessor.Scene">
+            <summary>
+            The current game's scene world
+            </summary>
+        </member>
+        <member name="P:Sandbox.Internal.MapAccessor.DebugScene">
+            <summary>
+            Get the scene world used to draw debug overlays etc
+            </summary>
+        </member>
+        <member name="P:Sandbox.Internal.MapAccessor.Entity">
+            <summary>
+            The main world entity
+            </summary>
+        </member>
+        <member name="T:Sandbox.Internal.MapAccessor.CleanupEntityFilter">
+            <summary>
+            Called when deleting and then creating entities to decide which ones to keep and which ones to delete.<br/>
+            Return false to preserve entity (don't delete and do not respawn). Entity argument will be null when spawning entities.<br/>
+            </summary>
+        </member>
+        <member name="M:Sandbox.Internal.MapAccessor.Reset(Sandbox.Internal.MapAccessor.CleanupEntityFilter)">
+            <summary>
+            Cleans up the map to its initial state respecting the filter.
+            </summary>
+            <param name="filter">A filter function which decides which entities to not delete/respawn.</param>
         </member>
         <member name="T:Sandbox.Internal.VarGeneric`1">
             <summary>
@@ -979,19 +1016,6 @@
             The engine wants to create this entity by name.
             </summary>
         </member>
-        <member name="T:Sandbox.EntityManager.CleanupEntityFilter">
-            <summary>
-            Called when deleting and then creating entities to decide which ones to keep and which ones to delete.<br/>
-            Return false to preserve entity (don't delete and do not respawn). Entity argument will be null when spawning entities.<br/>
-            See <see cref="M:Sandbox.EntityManager.CleanUpMap(Sandbox.EntityManager.CleanupEntityFilter)"></see>
-            </summary>
-        </member>
-        <member name="M:Sandbox.EntityManager.CleanUpMap(Sandbox.EntityManager.CleanupEntityFilter)">
-            <summary>
-            Cleans up the map to its initial state respecting the filter.
-            </summary>
-            <param name="filter">A filter function which decides which entities to not delete/respawn.</param>
-        </member>
         <member name="P:Sandbox.AnimationSequence.Duration">
             <summary>
             The duration of the currently playing sequence (seconds)
@@ -1110,6 +1134,32 @@
         <member name="M:Sandbox.AnimEntity.SetAnimGraphPreview">
             <summary>
             Allow animgraph tool to use this entity as the preview, Server only
+            </summary>
+        </member>
+        <member name="M:Sandbox.EntityComponent.OnActivate">
+            <summary>
+            Called when this component is enabled (or added to the entity)
+            </summary>
+        </member>
+        <member name="M:Sandbox.EntityComponent.OnDeactivate">
+            <summary>
+            Called when this component is disabled (or removed from the entity)
+            </summary>
+        </member>
+        <member name="M:Sandbox.EntityComponent.CanAddToEntity(Sandbox.Entity)">
+            <summary>
+            Return false if can't be added to this entity for some reason
+            </summary>
+        </member>
+        <member name="M:Sandbox.EntityComponent.Remove">
+            <summary>
+            Remove this component from the parent entity. Entity will become null immediately,
+            so don't try to access it after calling this!
+            </summary>
+        </member>
+        <member name="M:Sandbox.EntityComponent`1.CanAddToEntity(Sandbox.Entity)">
+            <summary>
+            Return false if target entity is not of type T
             </summary>
         </member>
         <member name="T:Sandbox.Component.Glow">
@@ -1399,22 +1449,6 @@
             Allow a pawn to set up the camera
             </summary>
         </member>
-        <member name="M:Sandbox.Entity.CanCarry(Sandbox.Entity)">
-            <summary>
-            Return false if this entity objects to being picked up by this entity
-            </summary>
-        </member>
-        <member name="M:Sandbox.Entity.OnCarryStart(Sandbox.Entity)">
-            <summary>
-            Allow the entity to do what it wants when it's added to the inventory.
-            Default behaviour is to add the target entity as a parent and stop moving.
-            </summary>
-        </member>
-        <member name="M:Sandbox.Entity.OnCarryDrop(Sandbox.Entity)">
-            <summary>
-            Allow the entity to do what it wants when it's removed from the inventory
-            </summary>
-        </member>
         <member name="P:Sandbox.Entity.WorldSpaceBounds">
             <summary>
             Axis-aligned bounding box in world space.
@@ -1423,6 +1457,11 @@
         <member name="M:Sandbox.Entity.OnClientActive">
             <summary>
             Called when a player becomes active
+            </summary>
+        </member>
+        <member name="P:Sandbox.Entity.DebugFlags">
+            <summary>
+            Debug flags, to turn on various overlays for entities
             </summary>
         </member>
         <member name="P:Sandbox.Entity.EnableDrawing">
@@ -1519,11 +1558,6 @@
             Gets the top most parent entity. If we don't have a parent, it might be us.
             </summary>
         </member>
-        <member name="P:Sandbox.Entity.ActiveChild">
-            <summary>
-            Lets remove this
-            </summary>
-        </member>
         <member name="P:Sandbox.Entity.Owner">
             <summary>
             The entity that owns this entity
@@ -1545,11 +1579,6 @@
             </summary>
             <param name="entity"></param>
             <param name="boneMerge"></param>
-        </member>
-        <member name="M:Sandbox.Entity.IsActiveChild">
-            <summary>
-            Returns true if this is its parent's active child
-            </summary>
         </member>
         <member name="M:Sandbox.Entity.LagCompensation">
             <summary>
@@ -1606,11 +1635,6 @@
         <member name="M:Sandbox.Entity.EndTouch(Sandbox.Entity)">
             <summary>
             An entity has stopped touching this entity
-            </summary>
-        </member>
-        <member name="M:Sandbox.Entity.PhysicsClear">
-            <summary>
-            Destroy any physics objects
             </summary>
         </member>
         <member name="P:Sandbox.Entity.Predictable">
@@ -1733,32 +1757,6 @@
         <member name="M:Sandbox.TagList.Toggle(System.String)">
             <summary>
             Removes a tag if it exists, adds it overwise.
-            </summary>
-        </member>
-        <member name="M:Sandbox.EntityComponent.OnActivate">
-            <summary>
-            Called when this component is enabled (or added to the entity)
-            </summary>
-        </member>
-        <member name="M:Sandbox.EntityComponent.OnDeactivate">
-            <summary>
-            Called when this component is disabled (or removed from the entity)
-            </summary>
-        </member>
-        <member name="M:Sandbox.EntityComponent.CanAddToEntity(Sandbox.Entity)">
-            <summary>
-            Return false if can't be added to this entity for some reason
-            </summary>
-        </member>
-        <member name="M:Sandbox.EntityComponent.Remove">
-            <summary>
-            Remove this component from the parent entity. Entity will become null immediately,
-            so don't try to access it after calling this!
-            </summary>
-        </member>
-        <member name="M:Sandbox.EntityComponent`1.CanAddToEntity(Sandbox.Entity)">
-            <summary>
-            Return false if target entity is not of type T
             </summary>
         </member>
         <member name="T:Sandbox.EntityEffects">
@@ -1939,62 +1937,9 @@
             Move all of the decals from this entity onto ourself
             </summary>
         </member>
-        <member name="M:Sandbox.ModelEntity.OnCarryStart(Sandbox.Entity)">
-            <summary>
-            Allow the entity to do what it wants when it's added to the inventory.
-            Default behaviour is to add the target entity as a parent and stop moving.
-            </summary>
-        </member>
-        <member name="M:Sandbox.ModelEntity.OnCarryDrop(Sandbox.Entity)">
-            <summary>
-            Allow the entity to do what it wants when it's removed from the inventory
-            </summary>
-        </member>
-        <member name="P:Sandbox.ModelEntity.GlowColor">
-            <summary>
-            Get and set the color of the glow override on this object.
-            </summary>
-        </member>
-        <member name="P:Sandbox.ModelEntity.GlowState">
-            <summary>
-            Get and set the behaviour of the glow.
-            Note that you still need to use GlowActive to enable it.
-            </summary>
-        </member>
-        <member name="P:Sandbox.ModelEntity.GlowActive">
-            <summary>
-            Gets or set if the glow is active on the object.
-            </summary>
-        </member>
-        <member name="P:Sandbox.ModelEntity.GlowDistanceStart">
-            <summary>
-            The minimum distance that this object will start glowing.
-            </summary>
-        </member>
-        <member name="P:Sandbox.ModelEntity.GlowDistanceEnd">
-            <summary>
-            The maximum distance that this object will glow.
-            </summary>
-        </member>
-        <member name="P:Sandbox.ModelEntity.GlowMaterial">
-            <summary>
-            Override the material that this object will use to glow
-            </summary>
-        </member>
         <member name="P:Sandbox.ModelEntity.EnableShadowCasting">
             <summary>
             Don't cast no shadow.
-            </summary>
-        </member>
-        <member name="M:Sandbox.ModelEntity.LiquidManager.Init(Sandbox.ModelEntity)">
-            <summary>
-            Creates a liquid manager if the model uses a liquid material
-            </summary>
-        </member>
-        <member name="M:Sandbox.ModelEntity.LiquidManager.Update(System.Nullable{Vector3})">
-            <summary>
-            Updates the parameters of the liquid per frame
-            Can take extra aggitation besides standard physical forces as an optional parameter
             </summary>
         </member>
         <member name="P:Sandbox.ModelEntity.MaterialGroupCount">
@@ -2082,28 +2027,6 @@
         <member name="P:Sandbox.ModelEntity.HitboxSet">
             <summary>
             The currently active hitbox set.
-            </summary>
-        </member>
-        <member name="F:Sandbox.GlowStates.Off">
-            <summary>Doesn't show any glow.</summary>
-        </member>
-        <member name="F:Sandbox.GlowStates.Use">
-            <summary>Glow appears when object is useable.</summary>
-        </member>
-        <member name="F:Sandbox.GlowStates.LookAt">
-            <summary>Glow appears when you look at object.</summary>
-        </member>
-        <member name="F:Sandbox.GlowStates.On">
-            <summary>Glow is always enabled when active.</summary>
-        </member>
-        <member name="F:Sandbox.MoveType.Physics">
-            <summary>
-            Use physics simulation
-            </summary>
-        </member>
-        <member name="F:Sandbox.MoveType.Push">
-            <summary>
-            no clip to world, push and crush
             </summary>
         </member>
         <member name="T:Sandbox.BaseNetworkable">
@@ -2656,6 +2579,12 @@
             Leave the game lobby, called on game end, disconnect
             </summary>
         </member>
+        <member name="M:Sandbox.GameLoop.OnWorldSession">
+            <summary>
+            Called after CLoopModeGame has created an ISource2WorldSession
+            After this point g_pLoopModeGameSharedState->GetWorldSession() will be valid to access
+            </summary>
+        </member>
         <member name="M:Sandbox.GameLoop.PreOnActivate">
             <summary>
             Server: Right before map entity spawn
@@ -3014,29 +2943,10 @@
             Returns an appropriate model for the right controller
             </summary>
         </member>
-        <member name="P:Sandbox.Light.LightColor">
+        <member name="T:Sandbox.LightQuery">
             <summary>
-            Color and brightness of the light
-            </summary>
-        </member>
-        <member name="P:Sandbox.Light.Falloff">
-            <summary>
-            Attenuation of how much brightness the light loses the more it travels
-            </summary>
-        </member>
-        <member name="P:Sandbox.Light.Radius">
-            <summary>
-            Radius of the light in units
-            </summary>
-        </member>
-        <member name="P:Sandbox.SpotLight.SpotCone">
-            <summary>
-            Sets how much the spot light would spread, with inner and outer cone angles in degrees
-            </summary>
-        </member>
-        <member name="M:Sandbox.SunLight.ConnectOrCreateThisNative">
-            <summary>
-            Fetch the current sunlight from the world if such exists, if not, create a new sunlight
+            Garry: We don't use this, but when we do we should think about where we can put it where
+            it's not just a single function in a class. 
             </summary>
         </member>
         <member name="P:Sandbox.Friend.IsMe">
@@ -3409,6 +3319,21 @@
             The same as To.Multiple( Client.All )
             </summary>
         </member>
+        <member name="P:Sandbox.BaseStringTable.Name">
+            <summary>
+            The name of this string table
+            </summary>
+        </member>
+        <member name="M:Sandbox.BaseStringTable.Count">
+            <summary>
+            Returns the number of strings in this table
+            </summary>
+        </member>
+        <member name="F:Sandbox.BaseStringTable.OnStringAddedOrChanged">
+            <summary>
+            Called clientside when a string is added or changed
+            </summary>
+        </member>
         <member name="M:Sandbox.Precache.Add(System.String)">
             <summary>
             Add a resource that the client should load. This is called 
@@ -3419,6 +3344,17 @@
         <member name="M:Sandbox.Precache.OnStringAddedOrChanged(System.Int32)">
             <summary>
             Player info has changed
+            </summary>
+        </member>
+        <member name="T:Sandbox.ServerPackages">
+            <summary>
+            Manages the network string table "Package", which contains a list of packages that the client should
+            have installed. During join the client will install these packages before loading in. 
+            </summary>
+        </member>
+        <member name="M:Sandbox.ServerPackages.OnStringAddedOrChanged(System.Int32)">
+            <summary>
+            String table changed
             </summary>
         </member>
         <member name="M:Sandbox.StringPool.OnStringAddedOrChanged(System.Int32)">
@@ -3432,407 +3368,43 @@
             On client this can get called multiple times
             </summary>
         </member>
-        <member name="P:Sandbox.StringTable.Name">
+        <member name="P:Sandbox.BasePostProcess.Passes">
             <summary>
-            The name of this string table
+            Determine which passes should the post processing effect be rendered in
             </summary>
         </member>
-        <member name="M:Sandbox.StringTable.Count">
+        <member name="M:Sandbox.BasePostProcess.NextPass">
             <summary>
-            Returns the number of strings in this table
+            Flip the framebuffer or mark the current pass as complete. This is equivalent to
+            adding a new layer to the post processing effects
             </summary>
         </member>
-        <member name="F:Sandbox.StringTable.OnStringAddedOrChanged">
+        <member name="M:Sandbox.BasePostProcess.Passthrough">
             <summary>
-            Called clientside when a string is added or changed
+            Just copies the current source buffer to the output using the passthrough shader automatically
             </summary>
         </member>
-        <member name="F:Sandbox.CollisionGroup.Always">
+        <member name="M:Sandbox.BasePostProcess.ScopedRenderTarget">
             <summary>
-            This will *ALWAYS* collide
-            This group does not generate contacts or interact with any other groups by default
+            Resets the framebuffer after the object is disposed. This is mainly useful when you want to render to a temp render target
             </summary>
-        </member>
-        <member name="F:Sandbox.CollisionGroup.Never">
-            <summary>
-            Never collide with anything
-            </summary>
-        </member>
-        <member name="F:Sandbox.CollisionGroup.Trigger">
-            <summary>
-            Trigger layer, never collides with anything, only triggers/interacts
-            </summary>
-        </member>
-        <member name="F:Sandbox.CollisionGroup.ConditionallySolid">
-            <summary>
-            Conditionally solid means that the collision response will be zero or as defined in the table when there are matching interactions
-            </summary>
-        </member>
-        <member name="F:Sandbox.CollisionGroup.Default">
-            <summary>
-            standard dynamic rigid object, finite mass
-            </summary>
-        </member>
-        <member name="F:Sandbox.CollisionGroup.Debris">
-            <summary>
-            Collides with nothing but world and static stuff
-            </summary>
-        </member>
-        <member name="F:Sandbox.CollisionGroup.DebrisInteractive">
-            <summary>
-            Collides with everything except other interactive debris or debris
-            </summary>
-        </member>
-        <member name="F:Sandbox.CollisionGroup.Interactive">
-            <summary>
-            Collides with everything except interactive debris or debris
-            </summary>
-        </member>
-        <member name="F:Sandbox.CollisionLayer.Player">
-            <summary>
-            Player hull (movement and trace attacks)
-            </summary>
-        </member>
-        <member name="F:Sandbox.CollisionLayer.Debris">
-            <summary>
-            Ragdolls etc
-            </summary>
-        </member>
-        <member name="M:Sandbox.Joints.ConicalJointBuilder.Create">
-            <summary>
-            Finish creation of joint
-            </summary>
-        </member>
-        <member name="M:Sandbox.Joints.GenericJointBuilder.Create">
-            <summary>
-            Finish creation of joint
-            </summary>
-        </member>
-        <member name="M:Sandbox.Joints.PrismaticJointBuilder.Create">
-            <summary>
-            Finish creation of joint
-            </summary>
-        </member>
-        <member name="M:Sandbox.Joints.RevoluteJointBuilder.WithLimitEnabled(System.Single,System.Single)">
-            <summary>
-            Enables hinge limit
-            </summary>
-            <param name="minAngle">Minimum hinge angle in degrees</param>
-            <param name="maxAngle">Maximum hinge angle in degrees</param>
-            <returns></returns>
-        </member>
-        <member name="M:Sandbox.Joints.RevoluteJointBuilder.WithAngleMotor(System.Single,System.Single,System.Single)">
-            <summary>
-            Enables motor with angle target (Use angular spring to 'pull' towards target angle)
-            </summary>
-            <param name="targetAngle">Angular motor target angle</param>
-            <param name="frequency">Angular motor frequency</param>
-            <param name="dampingRatio">Angular motor damping ratio</param>
-            <returns></returns>
-        </member>
-        <member name="M:Sandbox.Joints.RevoluteJointBuilder.WithVelocityMotor(System.Single,System.Single)">
-            <summary>
-            Enables motor with velocity target (Use torque to reach desired relative velocity)
-            </summary>
-            <param name="targetVelocity">Angular motor target velocity</param>
-            <param name="maxTorque">Angular motor maximum torque to reach target velocity</param>
-            <returns></returns>
-        </member>
-        <member name="M:Sandbox.Joints.RevoluteJointBuilder.Create">
-            <summary>
-            Finish creation of joint
-            </summary>
-        </member>
-        <member name="M:Sandbox.Joints.SphericalJointBuilder.WithAngleMotor(Rotation,System.Single,System.Single)">
-            <summary>
-            Enables motor with angle target (Use angular spring to 'pull' towards target angle)
-            </summary>
-            <param name="targetRot">Angular motor target orientation</param>
-            <param name="frequency">Angular motor frequency</param>
-            <param name="dampingRatio">Angular motor damping ratio</param>
-            <returns></returns>
-        </member>
-        <member name="M:Sandbox.Joints.SphericalJointBuilder.WithVelocityMotor(System.Single,System.Single)">
-            <summary>
-            Enables motor with velocity target (Use torque to reach desired relative velocity)
-            </summary>
-            <param name="targetVelocity">Angular motor target velocity</param>
-            <param name="maxTorque">Angular motor maximum torque to reach target velocity</param>
-            <returns></returns>
-        </member>
-        <member name="M:Sandbox.Joints.SphericalJointBuilder.Create">
-            <summary>
-            Finish creation of joint
-            </summary>
-        </member>
-        <member name="M:Sandbox.Joints.SpringJointBuilder.Create">
-            <summary>
-            Finish creation of joint
-            </summary>
-        </member>
-        <member name="M:Sandbox.Joints.WeldJointBuilder.Create">
-            <summary>
-            Finish creation of joint
-            </summary>
-        </member>
-        <member name="P:Sandbox.PhysicsJoint.IsConicalJoint">
-            <summary>
-            Is this a ConicalJoint
-            </summary>
-        </member>
-        <member name="P:Sandbox.PhysicsJoint.Conical">
-            <summary>
-            Start creation of Conical joint
-            </summary>
-        </member>
-        <member name="M:Sandbox.PhysicsJoint.op_Implicit(Sandbox.PhysicsJoint)~Sandbox.Joints.ConicalJoint">
-            <summary>
-            Implicit conversion to GenericJoint
-            </summary>
-        </member>
-        <member name="P:Sandbox.PhysicsJoint.IsGenericJoint">
-            <summary>
-            Is this a GenericJoint
-            </summary>
-        </member>
-        <member name="P:Sandbox.PhysicsJoint.Generic">
-            <summary>
-            Start creation of Generic joint
-            </summary>
-        </member>
-        <member name="M:Sandbox.PhysicsJoint.op_Implicit(Sandbox.PhysicsJoint)~Sandbox.Joints.GenericJoint">
-            <summary>
-            Implicit conversion to GenericJoint
-            </summary>
-        </member>
-        <member name="P:Sandbox.PhysicsJoint.IsPrismaticJoint">
-            <summary>
-            Is this a PrismaticJoint
-            </summary>
-        </member>
-        <member name="P:Sandbox.PhysicsJoint.Prismatic">
-            <summary>
-            Start creation of Prismatic joint
-            </summary>
-        </member>
-        <member name="M:Sandbox.PhysicsJoint.op_Implicit(Sandbox.PhysicsJoint)~Sandbox.Joints.PrismaticJoint">
-            <summary>
-            Implicit conversion to PrismaticJoint
-            </summary>
-        </member>
-        <member name="P:Sandbox.PhysicsJoint.IsRevoluteJoint">
-            <summary>
-            Is this a RevoluteJoint
-            </summary>
-        </member>
-        <member name="P:Sandbox.PhysicsJoint.Revolute">
-            <summary>
-            Start creation of Revolute joint
-            </summary>
-        </member>
-        <member name="M:Sandbox.PhysicsJoint.op_Implicit(Sandbox.PhysicsJoint)~Sandbox.Joints.RevoluteJoint">
-            <summary>
-            Implicit conversion to RevoluteJoint
-            </summary>
-        </member>
-        <member name="P:Sandbox.PhysicsJoint.IsSphericalJoint">
-            <summary>
-            Is this a SphericalJoint
-            </summary>
-        </member>
-        <member name="P:Sandbox.PhysicsJoint.Spherical">
-            <summary>
-            Start creation of Spherical joint
-            </summary>
-        </member>
-        <member name="M:Sandbox.PhysicsJoint.op_Implicit(Sandbox.PhysicsJoint)~Sandbox.Joints.SphericalJoint">
-            <summary>
-            Implicit conversion to SphericalJoint
-            </summary>
-        </member>
-        <member name="P:Sandbox.PhysicsJoint.IsSpringJoint">
-            <summary>
-            Is this a SpringJoint
-            </summary>
-        </member>
-        <member name="P:Sandbox.PhysicsJoint.Spring">
-            <summary>
-            Start creation of Spring joint
-            </summary>
-        </member>
-        <member name="M:Sandbox.PhysicsJoint.op_Implicit(Sandbox.PhysicsJoint)~Sandbox.Joints.SpringJoint">
-            <summary>
-            Implicit conversion to SpringJoint
-            </summary>
-        </member>
-        <member name="P:Sandbox.PhysicsJoint.IsWeldJoint">
-            <summary>
-            Is this a WeldJoint
-            </summary>
-        </member>
-        <member name="P:Sandbox.PhysicsJoint.Weld">
-            <summary>
-            Start creation of Weld joint
-            </summary>
-        </member>
-        <member name="M:Sandbox.PhysicsJoint.op_Implicit(Sandbox.PhysicsJoint)~Sandbox.Joints.WeldJoint">
-            <summary>
-            Implicit conversion to WeldJoint
-            </summary>
-        </member>
-        <member name="M:Sandbox.Physics.GetPointContents(Vector3,System.Boolean)">
-            <summary>
-            Get what's at this point
-            </summary>
-        </member>
-        <member name="M:Sandbox.Physics.TestPointContents(Vector3,Sandbox.CollisionLayer,System.Boolean)">
-            <summary>
-            Is this at this point
-            </summary>
-        </member>
-        <member name="T:Sandbox.PhysicsBody">
-            <summary>
-            Represents a physics object. An entity can have multiple physics objects. See <see cref="P:Sandbox.PhysicsBody.PhysicsGroup">PhysicsGroup</see>.
-            A physics objects conists of one or more <see cref="T:Sandbox.PhysicsShape">PhysicsShape</see>s.
-            </summary>
-        </member>
-        <member name="P:Sandbox.PhysicsBody.EnableTouch">
-            <summary>
-            Allow Touch callbacks to be called
-            </summary>
-        </member>
-        <member name="M:Sandbox.PhysicsBody.Wake">
-            <summary>
-            Wake up this physics body. Physics bodies automatically go to sleep after a certain amount of time of inactivity to save on performance.
-            </summary>
-        </member>
-        <member name="M:Sandbox.PhysicsBody.Sleep">
-            <summary>
-            Put this physics body to sleep. Physics bodies automatically go to sleep after a certain amount of time of inactivity to save on performance.
-            </summary>
-        </member>
-        <member name="M:Sandbox.PhysicsBody.IsSleeping">
-            <summary>
-            Returns the current sleep state of this physics body. Physics bodies automatically go to sleep after a certain amount of time of inactivity to save on performance.
-            </summary>
-        </member>
-        <member name="P:Sandbox.PhysicsBody.Parent">
-            <summary>
-            The physics body we are attached to, if any
-            </summary>
-        </member>
-        <member name="P:Sandbox.PhysicsBody.PhysicsGroup">
-            <summary>
-            The physics group we belong to.
-            </summary>
-        </member>
-        <member name="P:Sandbox.PhysicsBody.Entity">
-            <summary>
-            The entity we belong to.
-            </summary>
-        </member>
-        <member name="M:Sandbox.PhysicsBody.SetSurface(System.String)">
-            <summary>
-            Sets a physical properties on all child <see cref="T:Sandbox.PhysicsShape">PhysicsShape</see>s.
-            </summary>
-        </member>
-        <member name="M:Sandbox.PhysicsBody.GetDominantSurface">
-            <summary>
-            Returns the most commonly occuring surface name between all <see cref="T:Sandbox.PhysicsShape">PhysicsShape</see>s of this <see cref="T:Sandbox.PhysicsShape">PhysicsBody</see>.
-            </summary>
-        </member>
-        <member name="T:Sandbox.PhysicsGroup">
-            <summary>
-            Represets a set of <see cref="T:Sandbox.PhysicsBody">PhysicsBody</see> objects.
-            </summary>
-        </member>
-        <member name="M:Sandbox.PhysicsGroup.Wake">
-            <summary>
-            Wake all physics bodies of this physics group. Physics bodies automatically go to sleep after a certain amount of time of inactivity to save on performance.
-            </summary>
-        </member>
-        <member name="M:Sandbox.PhysicsGroup.Sleep">
-            <summary>
-            Put all physics bodies of this physics group to sleep. Physics bodies automatically go to sleep after a certain amount of time of inactivity to save on performance.
-            </summary>
-        </member>
-        <member name="M:Sandbox.PhysicsGroup.SetSurface(System.String)">
-            <summary>
-            Sets the physical properties of each <see cref="T:Sandbox.PhysicsShape">PhysicsShape</see> of this group.
-            </summary>
-        </member>
-        <member name="T:Sandbox.PhysicsShape">
-            <summary>
-            Represents a basic, convex shape. A <see cref="T:Sandbox.PhysicsBody">PhysicsBody</see> consists of one or more of these.
-            </summary>
-        </member>
-        <member name="P:Sandbox.PhysicsShape.Body">
-            <summary>
-            The physics body we belong to.
-            </summary>
-        </member>
-        <member name="M:Sandbox.PhysicsShape.EnableAllCollision">
-            <summary>
-            Enable contact, trace and touch
-            </summary>
-        </member>
-        <member name="M:Sandbox.PhysicsShape.DisableAllCollision">
-            <summary>
-            Disable contact, trace and touch
-            </summary>
-        </member>
-        <member name="P:Sandbox.PhysicsShape.IsMeshShape">
-            <summary>
-            Is this a MeshShape
-            </summary>
-        </member>
-        <member name="P:Sandbox.PhysicsShape.IsHullShape">
-            <summary>
-            Is this a HullShape
-            </summary>
-        </member>
-        <member name="P:Sandbox.PhysicsShape.IsSphereShape">
-            <summary>
-            Is this a SphereShape
-            </summary>
-        </member>
-        <member name="P:Sandbox.PhysicsShape.IsCapsuleShape">
-            <summary>
-            Is this a CapsuleShape
-            </summary>
-        </member>
-        <member name="M:Sandbox.PhysicsShape.UpdateMesh(System.Collections.Generic.List{Vector3},System.Collections.Generic.List{System.Int32})">
-            <summary>
-            Recreate the collision mesh (Only if this physics shape is type Mesh)
-            </summary>
-        </member>
-        <member name="M:Sandbox.PhysicsShape.UpdateMesh(System.Span{Vector3},System.Span{System.Int32})">
-            <summary>
-            Recreate the collision mesh (Only if this physics shape is type Mesh)
-            </summary>
-        </member>
-        <member name="P:Sandbox.PhysicsShape.SurfaceMaterial">
-            <summary>
-            Sets a physical properties of this physics shape.
-            </summary>
-        </member>
-        <member name="M:Sandbox.ConstantBuffer.Create``1(``0,System.Boolean)">
-            <summary>
-            Create a new constant buffer for shaders from a predefined struct
-            </summary>
-            <typeparam name="T">Underlying constant buffer struct</typeparam>
-            <param name="inputStruct">Input starting constbuffer data</param>
-            <param name="isDynamic">use dynamic constant buffer flag</param>
-        </member>
-        <member name="M:Sandbox.ConstantBuffer.Update``1(``0)">
-            <summary>
-            Updates the constant buffer contents. Note, the structure size needs to be identical to when the const buffer was first constructed
-            </summary>
-            <typeparam name="T"></typeparam>
-            <param name="inputStruct"></param>
-            <returns></returns>
         </member>
         <member name="M:Sandbox.PostProcessSystem.Add``1(``0)">
+            <summary>
+            Add a new post-processing effect to the post-processing
+            stack. This can only be called on the client and not on
+            the server. Only call this once to add the effect, not to modify
+            it or make changes
+            </summary>
+            <typeparam name="T">BasePostProcess</typeparam>
+            <param name="value">The post-processing object</param>
+        </member>
+        <member name="M:Sandbox.PostProcessSystem.UpdatePasses">
+            <summary>
+            This is the dumbest fucking shit
+            </summary>
+        </member>
+        <member name="M:Sandbox.PostProcessSystem.Remove``1(``0)">
             <summary>
             Add a new post-processing effect to the post-processing
             stack. This can only be called on the client and not on
@@ -3857,532 +3429,11 @@
             post processing stack
             </summary>
         </member>
-        <member name="P:Sandbox.BasePostProcess.Passes">
-            <summary>
-            Determine which passes should the post processing effect be rendered in
-            </summary>
-        </member>
-        <member name="M:Sandbox.BasePostProcess.NextPass">
-            <summary>
-            Flip the framebuffer or mark the current pass as complete. This is equivalent to
-            adding a new layer to the post processing effects
-            </summary>
-        </member>
-        <member name="M:Sandbox.BasePostProcess.Passthrough">
-            <summary>
-            Just copies the current source buffer to the output using the passthrough shader automatically
-            </summary>
-        </member>
-        <member name="M:Sandbox.BasePostProcess.ScopedRenderTarget">
-            <summary>
-            Resets the framebuffer after the object is disposed. This is mainly useful when you want to render to a temp render target
-            </summary>
-        </member>
         <member name="T:Sandbox.PostProcessRTScope">
             <summary>
             Returns the post processing ColorBuffer, Viewport and Render Target back
             to the original settings for this pass. This is mainly used for rendering
             something to a texture on a pass
-            </summary>
-        </member>
-        <member name="M:Sandbox.StandardPostProcess.OnScreenSizeChanged">
-            <summary>
-            We use this to monitor recreation of render targets on resolution changes. We can't do this in
-            post processing because we cannot create textures in the render block
-            </summary>
-        </member>
-        <member name="P:Sandbox.StandardPostProcess.FalloffSettings.Enabled">
-            <summary>
-            Enables distance based fall off on all of the post processing effects
-            </summary>
-        </member>
-        <member name="P:Sandbox.StandardPostProcess.FalloffSettings.StartDistance">
-            <summary>
-            The distance(in units) on where the post processing effect should begin
-            </summary>
-        </member>
-        <member name="P:Sandbox.StandardPostProcess.FalloffSettings.EndDistance">
-            <summary>
-            The distance(in units) on how far the post processing effect should be before it reaches full intensity
-            </summary>
-        </member>
-        <member name="P:Sandbox.StandardPostProcess.FalloffSettings.Exponent">
-            <summary>
-            The fall off exponent to adjust how quickly the falloff should happen
-            A range from 0.001 -> 8 seems to work best
-            </summary>
-        </member>
-        <member name="P:Sandbox.StandardPostProcess.PixelateSettings.Enabled">
-            <summary>
-            Enable pixelation post processing
-            </summary>
-        </member>
-        <member name="P:Sandbox.StandardPostProcess.PixelateSettings.UseFalloff">
-            <summary>
-            Enable the usage of the post processing distance fall off for this
-            post processing effect
-            </summary>
-        </member>
-        <member name="P:Sandbox.StandardPostProcess.PixelateSettings.PixelCount">
-            <summary>
-            Amount of pixels on the x/y axis of the screen.
-            </summary>
-        </member>
-        <member name="P:Sandbox.StandardPostProcess.LensDistortionSettings.K1">
-            <summary>
-            Lens distortion multiplier 1
-            The range should be from -1.0 -> 1.0
-            Positive values = More Convex
-            Negative values = More Concave
-            </summary>
-        </member>
-        <member name="P:Sandbox.StandardPostProcess.LensDistortionSettings.K2">
-            <summary>
-            Lens distortion multiplier 2.
-            The range should be from -1.0 -> 1.0
-            Positive values = More Convex
-            Negative values = More Concave
-            </summary>
-        </member>
-        <member name="P:Sandbox.StandardPostProcess.PaniniProjectionSettings.Enabled">
-            <summary>
-            Enable Panini Projection
-            </summary>
-        </member>
-        <member name="P:Sandbox.StandardPostProcess.PaniniProjectionSettings.Amount">
-            <summary>
-            How intense the panini projection should be?
-            A range from 0->1 seems to work best here
-            </summary>
-        </member>
-        <member name="P:Sandbox.StandardPostProcess.PaniniProjectionSettings.Crop">
-            <summary>
-            How much of the excess view should be cropped
-            Range 0->1
-            </summary>
-        </member>
-        <member name="P:Sandbox.StandardPostProcess.ChromaticAberrationSettings.Enabled">
-            <summary>
-            Enable chromatic abberation
-            </summary>
-        </member>
-        <member name="P:Sandbox.StandardPostProcess.ChromaticAberrationSettings.UseFalloff">
-            <summary>
-            Enable the usage of the post processing distance fall off for this
-            post processing effect
-            </summary>
-        </member>
-        <member name="P:Sandbox.StandardPostProcess.ChromaticAberrationSettings.Offset">
-            <summary>
-            The pixel offset for each color channel. These values should
-            be very small as it's in UV space. (0.004 for example)
-            X = Red
-            Y = Green
-            Z = Blue
-            </summary>
-        </member>
-        <member name="P:Sandbox.StandardPostProcess.MotionBlurSettings.Enabled">
-            <summary>
-            Enable motion blur
-            </summary>
-        </member>
-        <member name="P:Sandbox.StandardPostProcess.MotionBlurSettings.UseFalloff">
-            <summary>
-            Enable the usage of the post processing distance fall off for this
-            post processing effect
-            </summary>
-        </member>
-        <member name="P:Sandbox.StandardPostProcess.MotionBlurSettings.Scale">
-            <summary>
-            How strong the motion blur should be.
-            Smaller values seem to work better here, default value is ~0.05f
-            </summary>
-        </member>
-        <member name="P:Sandbox.StandardPostProcess.MotionBlurSettings.Samples">
-            <summary>
-            How many blur samples we should take. The higher this value is the
-            more expensive it is. This value determines how smooth the blur will be
-            </summary>
-        </member>
-        <member name="P:Sandbox.StandardPostProcess.SharpenSettings.Enabled">
-            <summary>
-            Enable sharpen post processing
-            </summary>
-        </member>
-        <member name="P:Sandbox.StandardPostProcess.SharpenSettings.UseFalloff">
-            <summary>
-            Enable the usage of the post processing distance fall off for this
-            post processing effect
-            </summary>
-        </member>
-        <member name="P:Sandbox.StandardPostProcess.SharpenSettings.Strength">
-            <summary>
-            How strong the sharpening effect should be.
-            This is a range from 0->1 however the range can be
-            higher to yield and even stronger effect
-            </summary>
-        </member>
-        <member name="P:Sandbox.StandardPostProcess.BlurSettings.Enabled">
-            <summary>
-            Enable blur post processing
-            </summary>
-        </member>
-        <member name="P:Sandbox.StandardPostProcess.BlurSettings.UseFalloff">
-            <summary>
-            Enable the usage of the post processing distance fall off for this
-            post processing effect
-            </summary>
-        </member>
-        <member name="P:Sandbox.StandardPostProcess.BlurSettings.Strength">
-            <summary>
-            Set how strong/the size of the blur is.
-            Range 0->1
-            </summary>
-        </member>
-        <member name="T:Sandbox.StandardPostProcess.DepthOfFieldSettings.BlurColorMode">
-            <summary>
-            Out of focus coloring modes
-            </summary>
-        </member>
-        <member name="P:Sandbox.StandardPostProcess.DepthOfFieldSettings.FilmWidth">
-            <summary>
-            Defines the current camera sensors width in mm. By default we have this as 35mm
-            </summary>
-        </member>
-        <member name="P:Sandbox.StandardPostProcess.DepthOfFieldSettings.BlurCircleOfConfusion">
-            <summary>
-            Provide an aditional blur on our circle of confusion to remove harsh transitions from in focus objects to out of focus objects
-            </summary>
-        </member>
-        <member name="P:Sandbox.StandardPostProcess.DepthOfFieldSettings.BleedFocusEdge">
-            <summary>
-            Allow in focus objects to bleed their colors into out of focus objects
-            </summary>
-        </member>
-        <member name="P:Sandbox.StandardPostProcess.DepthOfFieldSettings.BlurColoringMode">
-            <summary>
-            Ability to color the scene for what's out of focus. This is meant to give a more stylized look to your scenes.
-            </summary>
-        </member>
-        <member name="P:Sandbox.StandardPostProcess.DepthOfFieldSettings.BlurColor">
-            <summary>
-            Sets the out of focus color, this only works if the BlurColoringMode is set to BlurColorMode.Colorize
-            </summary>
-        </member>
-        <member name="P:Sandbox.StandardPostProcess.DepthOfFieldSettings.Radius">
-            <summary>
-            Define how much we should blur what's out of focus
-            </summary>
-        </member>
-        <member name="P:Sandbox.StandardPostProcess.DepthOfFieldSettings.FocalPoint">
-            <summary>
-            Define where our point of focus is. This is in engine units or inches
-            </summary>
-        </member>
-        <member name="P:Sandbox.StandardPostProcess.DepthOfFieldSettings.FStop">
-            <summary>
-            Define what our current F-Stop/Appeture size is
-            </summary>
-        </member>
-        <member name="P:Sandbox.StandardPostProcess.DepthOfFieldSettings.FocalLength">
-            <summary>
-            Define our current focal length, this is in engine units or inches
-            </summary>
-        </member>
-        <member name="T:Sandbox.StandardPostProcess.ColorOverlaySettings.OverlayMode">
-            <summary>
-            Color overlay mode to use
-            </summary>
-        </member>
-        <member name="P:Sandbox.StandardPostProcess.ColorOverlaySettings.Enabled">
-            <summary>
-            Enable the color overlay
-            </summary>
-        </member>
-        <member name="P:Sandbox.StandardPostProcess.ColorOverlaySettings.UseFalloff">
-            <summary>
-            Enable the usage of the post processing distance fall off for this
-            post processing effect
-            </summary>
-        </member>
-        <member name="P:Sandbox.StandardPostProcess.ColorOverlaySettings.Mode">
-            <summary>
-            Determine which color overlay we should use
-            </summary>
-        </member>
-        <member name="P:Sandbox.StandardPostProcess.ColorOverlaySettings.Color">
-            <summary>
-            The color which should be used with the color overlay
-            </summary>
-        </member>
-        <member name="P:Sandbox.StandardPostProcess.ColorOverlaySettings.Amount">
-            <summary>
-            How much the color overlays influence is. This is a value between
-            0.0f -> 1.0f
-            </summary>
-        </member>
-        <member name="P:Sandbox.StandardPostProcess.SaturateSettings.Enabled">
-            <summary>
-            Enable the saturation post processing effect
-            </summary>
-        </member>
-        <member name="P:Sandbox.StandardPostProcess.SaturateSettings.UseFalloff">
-            <summary>
-            Enable the usage of the post processing distance fall off for this
-            post processing effect
-            </summary>
-        </member>
-        <member name="P:Sandbox.StandardPostProcess.SaturateSettings.Amount">
-            <summary>
-            How saturated our view should be. A value of 
-            0 is a grayscale result whereas 1 is no change. Any
-            value greater than 1 will lead to an over-saturated or
-            "deepfried" look
-            </summary>
-        </member>
-        <member name="P:Sandbox.StandardPostProcess.FilmGrainSettings.Enabled">
-            <summary>
-            Enable the grain post processing
-            </summary>
-        </member>
-        <member name="P:Sandbox.StandardPostProcess.FilmGrainSettings.UseFalloff">
-            <summary>
-            Enable the usage of the post processing distance fall off for this
-            post processing effect
-            </summary>
-        </member>
-        <member name="P:Sandbox.StandardPostProcess.FilmGrainSettings.Intensity">
-            <summary>
-            How intense the grain output should be. This is a value
-            from 0->1
-            </summary>
-        </member>
-        <member name="P:Sandbox.StandardPostProcess.FilmGrainSettings.Response">
-            <summary>
-            How responsive the grain should be to light values. A result
-            of 0 will lead to the grain being very responsive everywhere
-            whereas a value of 1 will lead to the grain only being responsive in darker
-            areas.
-            The range is from 0->1
-            </summary>
-        </member>
-        <member name="P:Sandbox.StandardPostProcess.VignetteSettings.Enabled">
-            <summary>
-            Enables vignette post processing
-            </summary>
-        </member>
-        <member name="P:Sandbox.StandardPostProcess.VignetteSettings.Color">
-            <summary>
-            The color of the vignette or the "border"
-            </summary>
-        </member>
-        <member name="P:Sandbox.StandardPostProcess.VignetteSettings.Intensity">
-            <summary>
-            How strong the vignette is. This is a value between 0 -> 1
-            </summary>
-        </member>
-        <member name="P:Sandbox.StandardPostProcess.VignetteSettings.Smoothness">
-            <summary>
-            How much fall off or how blurry the vignette is
-            </summary>
-        </member>
-        <member name="P:Sandbox.StandardPostProcess.VignetteSettings.Roundness">
-            <summary>
-            How circular or round the vignette is
-            </summary>
-        </member>
-        <member name="P:Sandbox.StandardPostProcess.VignetteSettings.Center">
-            <summary>
-            The center of the vignette in relation to UV space. This means
-            a value of {0.5, 0.5} is the center of the screen
-            </summary>
-        </member>
-        <member name="P:Sandbox.StandardPostProcess.HueRotateSettings.Enabled">
-            <summary>
-            Enables hue rotation post processing
-            </summary>
-        </member>
-        <member name="P:Sandbox.StandardPostProcess.HueRotateSettings.UseFalloff">
-            <summary>
-            Enable the usage of the post processing distance fall off for this
-            post processing effect
-            </summary>
-        </member>
-        <member name="P:Sandbox.StandardPostProcess.HueRotateSettings.Angle">
-            <summary>
-            How much to rotate the hue by, this is a value from 0->360.
-            The default value for this is 0.0f which means no change
-            </summary>
-        </member>
-        <member name="P:Sandbox.StandardPostProcess.BrightnessSettings.Enabled">
-            <summary>
-            Enables brightness post processing effect
-            </summary>
-        </member>
-        <member name="P:Sandbox.StandardPostProcess.BrightnessSettings.UseFalloff">
-            <summary>
-            Enable the usage of the post processing distance fall off for this
-            post processing effect
-            </summary>
-        </member>
-        <member name="P:Sandbox.StandardPostProcess.BrightnessSettings.Multiplier">
-            <summary>
-            How much to rotate the hue by, this is a value from 0->n. The default value for this is 1.0f which means no change
-            </summary>
-        </member>
-        <member name="P:Sandbox.StandardPostProcess.ContrastSettings.Enabled">
-            <summary>
-            Enables the constrast post processing effect
-            </summary>
-        </member>
-        <member name="P:Sandbox.StandardPostProcess.ContrastSettings.UseFalloff">
-            <summary>
-            Enable the usage of the post processing distance fall off for this
-            post processing effect
-            </summary>
-        </member>
-        <member name="P:Sandbox.StandardPostProcess.ContrastSettings.Contrast">
-            <summary>
-            How much contrast the screen should have? The default value for this is 1.0f which means no change
-            </summary>
-        </member>
-        <member name="F:Sandbox.StandardPostProcess.Falloff">
-            <summary>
-            Fall-Off allows you to adjust the distance of influence for most of the
-            post processing effects. This is used as a modifier to adjust how much
-            influence the post processing effect has based on a start and end distance.
-            This allows you to fade a post-processing effect based on how far away
-            a point is in the world. It's like depth of field but for
-            all post processing effects.
-            </summary>
-        </member>
-        <member name="F:Sandbox.StandardPostProcess.Pixelate">
-            <summary>
-            Pixelate lets you define how many pixels should be drawn on the screen
-            at once. This is identical to scaling your screen down to a specific size
-            and resizing it back to it's original use using a nearest neighbour filter.
-            </summary>
-        </member>
-        <member name="F:Sandbox.StandardPostProcess.LensDistortion">
-            <summary>
-            Lens Distortion is used to mainly create a "barrel" distortion or a "fish-eye"
-            effect. Both parameters control how the distorted the image becomes. This is done
-            by making the lens a more concave or a more convex shape
-            </summary>
-        </member>
-        <member name="F:Sandbox.StandardPostProcess.PaniniProjection">
-            <summary>
-            Panini Projection distorts the view similar to what lens distortion does, however
-            it's distorted in a way to give the feel of having a wider field of view. The
-            sides of the view is distorted to allow for this
-            </summary>
-        </member>
-        <member name="F:Sandbox.StandardPostProcess.ChromaticAberration">
-            <summary>
-            Chromatic Aberration is how much the seperate color channels should
-            seperate. As this is in UV space, the color channel seperation should be extremely minimal
-            (close to zero) values.
-            </summary>
-        </member>
-        <member name="F:Sandbox.StandardPostProcess.MotionBlur">
-            <summary>
-            Motion blur defines how much an object should blur(based on the current view)
-            depending on how fast it's moving. The faster the user looks around, the more the
-            objects will blur.
-            </summary>
-        </member>
-        <member name="F:Sandbox.StandardPostProcess.Sharpen">
-            <summary>
-            Sharpen brings emphasis on edges and smaller details. As this is
-            increased, the edges and details become more defined in the scene
-            </summary>
-        </member>
-        <member name="F:Sandbox.StandardPostProcess.Blur">
-            <summary>
-            Blur does a simple gaussian blur on the current view.
-            </summary>
-        </member>
-        <member name="F:Sandbox.StandardPostProcess.DepthOfField">
-            <summary>
-            Depth of field is used to emulate an actual camera with focus. It allows
-            the user to keep objects in focus and adjust various other settings to emulate
-            how a film camera works.
-            </summary>
-        </member>
-        <member name="F:Sandbox.StandardPostProcess.ColorOverlay">
-            <summary>
-            Color Overlays allow tinting, mixing or completely changing the color of the
-            current view. This allows for tinting how the world looks or implementation of
-            such effects such as flashing
-            </summary>
-        </member>
-        <member name="F:Sandbox.StandardPostProcess.Saturate">
-            <summary>
-            Saturation defines how saturated a view is. A saturation of 0 leads to 
-            a black and white view, whereas a saturation of 1 leads to the regular view.
-            </summary>
-        </member>
-        <member name="F:Sandbox.StandardPostProcess.FilmGrain">
-            <summary>
-            Film grain introduces noise to the screen. The noise can be customised to
-            introduce more noise in darker areas. This allows the emulation of a camera
-            sensor.
-            </summary>
-        </member>
-        <member name="F:Sandbox.StandardPostProcess.Vignette">
-            <summary>
-            This creates a vignette or a sort of black border around the the edges of the screen.
-            This is faily used to bring attention to the center of the frame
-            </summary>
-        </member>
-        <member name="F:Sandbox.StandardPostProcess.HueRotate">
-            <summary>
-            Shift the hue of all the current colors on the screen. This is also known as hue shifting
-            </summary>
-        </member>
-        <member name="F:Sandbox.StandardPostProcess.Brightness">
-            <summary>
-            Boosting of the brightness or dimming of the brightness of the screen
-            </summary>
-        </member>
-        <member name="F:Sandbox.StandardPostProcess.Contrast">
-            <summary>
-            Ability to increase or decrease the contrast of the screen
-            </summary>
-        </member>
-        <member name="M:Sandbox.Render.GetDynamicVB(System.Boolean)">
-            <summary>
-            Get the vertex buffer
-            </summary>
-        </member>
-        <member name="M:Sandbox.Render.CopyFrameBuffer(System.Boolean)">
-            <summary>
-            Grabs the current frame buffer and stores it in 'FrameBufferCopyTexture'
-            </summary>
-        </member>
-        <member name="M:Sandbox.Render.CopyDepthBuffer">
-            <summary>
-            Grabs the current depth buffer and stores it in 'DepthBufferCopyTexture'
-            </summary>
-        </member>
-        <member name="M:Sandbox.Render.CopyViewportBuffer(System.Boolean)">
-            <summary>
-            Grabs the current viewport buffer and stores it in 'FrameBufferCopyTexture'
-            </summary>
-        </member>
-        <member name="M:Sandbox.Render.UI.TextStretched(Rect,Color,System.String,System.String,System.Single,Sandbox.BlendMode,System.Nullable{System.Single},System.Int32)">
-            <summary>
-            Draw text, stretched to fit inside the rect
-            </summary>
-        </member>
-        <member name="M:Sandbox.Render.UI.Text(Vector3,Color,System.String,System.String,System.Single,Sandbox.BlendMode,System.Nullable{System.Single},System.Int32)">
-            <summary>
-            Draw text
-            </summary>
-        </member>
-        <member name="M:Sandbox.RenderingManager.RenderUI">
-            <summary>
-            Called from render thread
             </summary>
         </member>
         <member name="T:Sandbox.TextManager">
@@ -4393,45 +3444,6 @@
         <member name="M:Sandbox.VertexBufferExtension.Draw(Sandbox.VertexBuffer,Sandbox.Material)">
             <summary>
             Draw this mesh using Material
-            </summary>
-        </member>
-        <member name="P:Sandbox.AnimSceneObject.AnimationTime">
-            <summary>
-            The current animation time.
-            </summary>
-        </member>
-        <member name="M:Sandbox.AnimSceneObject.Update(System.Single)">
-            <summary>
-            Update this animation. Delta is the time you want to advance, usually RealTime.Delta
-            </summary>
-        </member>
-        <member name="M:Sandbox.AnimSceneObject.SetMaterialGroup(System.String)">
-            <summary>
-            Set material group to replace materials of the model
-            </summary>
-        </member>
-        <member name="M:Sandbox.AnimSceneObject.SetBodyGroup(System.String,System.Int32)">
-            <summary>
-            Set which body group to use
-            </summary>
-        </member>
-        <member name="P:Sandbox.PanelSceneObject.ZBufferMode">
-            <summary>
-            Set an override for the Z buffer mode. This affects how depth tests and writes are handled when
-            rendering this.
-            </summary>
-        </member>
-        <member name="P:Sandbox.SceneObject.SceneObjectFlagAccessor.ExcludeGameLayer">
-            <summary>
-            Don't render in the opaque/translucent game passes. This is useful when you
-            want to only render in the Bloom layer, rather than additionally to it.
-            </summary>
-        </member>
-        <member name="P:Sandbox.SceneObject.SceneObjectFlagAccessor.WantsFrameBufferCopy">
-            <summary>
-            Automatically sets the "FrameBufferCopyTexture" attribute within the material.
-            This does the same thing as Render.CopyFrameBuffer(); except automatically if
-            the pass allows for it.
             </summary>
         </member>
         <member name="P:Sandbox.Streamer.Username">
@@ -4727,12 +3739,12 @@
             Whether the trace started in a solid
             </summary>
         </member>
-        <member name="F:Sandbox.TraceResult.StartPos">
+        <member name="F:Sandbox.TraceResult.StartPosition">
             <summary>
             The start position of the trace
             </summary>
         </member>
-        <member name="F:Sandbox.TraceResult.EndPos">
+        <member name="F:Sandbox.TraceResult.EndPosition">
             <summary>
             The end or hit position of the trace
             </summary>
@@ -5433,6 +4445,16 @@
             Should draw the box shadow, if your renderer supports this
             </summary>
         </member>
+        <member name="M:Sandbox.UI.Render2DExtensions.TextStretched(Sandbox.Render.Render2D,Rect,Color,System.String,System.String,System.Single,Sandbox.BlendMode,System.Nullable{System.Single},System.Int32)">
+            <summary>
+            Draw text, stretched to fit inside the rect
+            </summary>
+        </member>
+        <member name="M:Sandbox.UI.Render2DExtensions.Text(Sandbox.Render.Render2D,Vector3,Color,System.String,System.String,System.Single,Sandbox.BlendMode,System.Nullable{System.Single},System.Int32)">
+            <summary>
+            Draw text
+            </summary>
+        </member>
         <member name="P:Sandbox.UI.RootPanel.WantsMouseInput">
             <summary>
             If any of our panels are visible and want mouse input (pointer-events != none) then 
@@ -5677,7 +4699,7 @@
             Downloading and getting information about a specific addon.
             </summary>
         </member>
-        <member name="M:Sandbox.AddonProvision.ManifestMount.PrepareAndDownloadAsync(Sandbox.AddonProvision.ManifestSchema.File[],Sandbox.ILoadingInterface,System.Threading.CancellationToken)">
+        <member name="M:Sandbox.AddonProvision.ManifestMount.PrepareAndDownloadAsync(Sandbox.ManifestSchema.File[],Sandbox.ILoadingInterface,System.Threading.CancellationToken)">
             <summary>
             Initialize the files from the 
             </summary>
@@ -5931,20 +4953,6 @@
             <param name="data">The message data to send.</param>
             <returns>A <see cref="T:System.Threading.Tasks.ValueTask"/> which completes when the message was queued to be sent.</returns>
         </member>
-        <member name="F:NativeEngine.ESceneObjectTypeFlags.SHOULD_BE_DELETED_BEFORE_WORLD">
-            For objects that can't be considered to be "owned" by the world they are in because they
-            are owned by a manager. All this flag does is cause a warning when such an object is still
-            in the world at world deletion time (a leak).
-        </member>
-        <member name="F:NativeEngine.ESceneObjectTypeFlags.OWNED_BY_ANOTHER_SCENEOBJECT">
-            if this flag is set, then the object will not be deleted when deleting the world, and will not be queued for delete. It's assumed that this object is going to be deleted inside of the destructor of another sceneobject
-        </member>
-        <member name="F:NativeEngine.ESceneObjectTypeFlags.PARTIALLY_ALPHA_BLENDED">
-            We have a mixture of alpha-blended and non-alpha blended draws
-        </member>
-        <member name="F:NativeEngine.ESceneObjectTypeFlags.UNIQUE_BATCH_GROUP">
-            A unique batch flag that allows objects to draw in a separate batch from their original group
-        </member>
         <member name="F:NativeEngine.TraceRequest.ResolveEntities">
             <summary>
             If true, we use a slightly slower path in the trace code that checks each entity.
@@ -5992,64 +5000,9 @@
             A player left the game
             </summary>
         </member>
-        <member name="M:Managed.SourceClient.Exports.Sandboxclient_PhysicsBody_OnObjectCreated(System.IntPtr,System.Int32)">
+        <member name="M:GameServices.SubmitScore(System.Int64,System.Single)">
             <summary>
-            Sandbox.PhysicsBody.OnObjectCreated( ... )
-            </summary>
-        </member>
-        <member name="M:Managed.SourceClient.Exports.Sandboxclient_PhysicsBody_OnObjectDestroyed(System.IntPtr,System.Int32)">
-            <summary>
-            Sandbox.PhysicsBody.OnObjectDestroyed( ... )
-            </summary>
-        </member>
-        <member name="M:Managed.SourceClient.Exports.Sandboxclient_PhysicsGroup_OnObjectCreated(System.IntPtr,System.Int32)">
-            <summary>
-            Sandbox.PhysicsGroup.OnObjectCreated( ... )
-            </summary>
-        </member>
-        <member name="M:Managed.SourceClient.Exports.Sandboxclient_PhysicsGroup_OnObjectDestroyed(System.IntPtr,System.Int32)">
-            <summary>
-            Sandbox.PhysicsGroup.OnObjectDestroyed( ... )
-            </summary>
-        </member>
-        <member name="M:Managed.SourceClient.Exports.Sandboxclient_PhysicsJoint_OnObjectCreated(System.IntPtr,System.Int32)">
-            <summary>
-            Sandbox.PhysicsJoint.OnObjectCreated( ... )
-            </summary>
-        </member>
-        <member name="M:Managed.SourceClient.Exports.Sandboxclient_PhysicsJoint_OnObjectDestroyed(System.IntPtr,System.Int32)">
-            <summary>
-            Sandbox.PhysicsJoint.OnObjectDestroyed( ... )
-            </summary>
-        </member>
-        <member name="M:Managed.SourceClient.Exports.Sandboxclient_PhysicsShape_OnObjectCreated(System.IntPtr,System.Int32)">
-            <summary>
-            Sandbox.PhysicsShape.OnObjectCreated( ... )
-            </summary>
-        </member>
-        <member name="M:Managed.SourceClient.Exports.Sandboxclient_PhysicsShape_OnObjectDestroyed(System.IntPtr,System.Int32)">
-            <summary>
-            Sandbox.PhysicsShape.OnObjectDestroyed( ... )
-            </summary>
-        </member>
-        <member name="M:Managed.SourceClient.Exports.Sandboxclient_SceneObject_OnObjectCreated(System.IntPtr,System.Int32)">
-            <summary>
-            Sandbox.SceneObject.OnObjectCreated( ... )
-            </summary>
-        </member>
-        <member name="M:Managed.SourceClient.Exports.Sandboxclient_SceneObject_OnObjectDestroyed(System.IntPtr,System.Int32)">
-            <summary>
-            Sandbox.SceneObject.OnObjectDestroyed( ... )
-            </summary>
-        </member>
-        <member name="M:Managed.SourceClient.Exports.Sandboxclient_SceneWorld_OnObjectCreated(System.IntPtr,System.Int32)">
-            <summary>
-            Sandbox.SceneWorld.OnObjectCreated( ... )
-            </summary>
-        </member>
-        <member name="M:Managed.SourceClient.Exports.Sandboxclient_SceneWorld_OnObjectDestroyed(System.IntPtr,System.Int32)">
-            <summary>
-            Sandbox.SceneWorld.OnObjectDestroyed( ... )
+            Immediately submit a player's score for non-elo ranking modes
             </summary>
         </member>
         <member name="M:Managed.SourceClient.Exports.Sandbox_ClientEntity_OnNativeEntity(System.UInt32,System.IntPtr)">
@@ -6512,11 +5465,6 @@
             Sandbox.GameLoop.PhysicsImpactSound( ... )
             </summary>
         </member>
-        <member name="M:Managed.SourceClient.Exports.Sandbox_GameLoop_OnPhysicsJointBreak(System.Int32)">
-            <summary>
-            Sandbox.GameLoop.OnPhysicsJointBreak( ... )
-            </summary>
-        </member>
         <member name="M:Managed.SourceClient.Exports.Sandbox_GameLoop_RunBotCommands">
             <summary>
             Sandbox.GameLoop.RunBotCommands( ... )
@@ -6562,6 +5510,16 @@
             Sandbox.GameLoop.OnModelReloaded( ... )
             </summary>
         </member>
+        <member name="M:Managed.SourceClient.Exports.Sandbox_GameLoop_OnWorldSession">
+            <summary>
+            Sandbox.GameLoop.OnWorldSession( ... )
+            </summary>
+        </member>
+        <member name="M:Managed.SourceClient.Exports.Sandbox_GameLoop_OnPhysicsWorld(System.Int32)">
+            <summary>
+            Sandbox.GameLoop.OnPhysicsWorld( ... )
+            </summary>
+        </member>
         <member name="M:Managed.SourceClient.Exports.Sandbox_InputBuilder_Process(System.IntPtr)">
             <summary>
             Sandbox.InputBuilder.Process( ... )
@@ -6570,6 +5528,11 @@
         <member name="M:Managed.SourceClient.Exports.Sandbox_Networking_OnNetMessage(System.IntPtr,System.Int32,System.Int32)">
             <summary>
             Sandbox.Networking.OnNetMessage( ... )
+            </summary>
+        </member>
+        <member name="M:Managed.SourceClient.Exports.Sandbox_PhysicsEngine_OnPhysicsJointBreak(System.Int32)">
+            <summary>
+            Sandbox.PhysicsEngine.OnPhysicsJointBreak( ... )
             </summary>
         </member>
         <member name="M:Managed.SourceClient.Exports.Sandbox_PlayerCommand_RunClient(System.UInt32,System.IntPtr)">
@@ -6602,29 +5565,14 @@
             Sandbox.RealTime.Update( ... )
             </summary>
         </member>
-        <member name="M:Managed.SourceClient.Exports.Sandbox_RenderingManager_RenderUI">
+        <member name="M:Managed.SourceClient.Exports.Sandbox_Render_Start(System.IntPtr,System.IntPtr,System.IntPtr)">
             <summary>
-            Sandbox.RenderingManager.RenderUI( ... )
+            Sandbox.Render.Start( ... )
             </summary>
         </member>
-        <member name="M:Managed.SourceClient.Exports.Sandbox_RenderingManager_RenderSceneObject(System.Int32)">
+        <member name="M:Managed.SourceClient.Exports.Sandbox_Render_Finish">
             <summary>
-            Sandbox.RenderingManager.RenderSceneObject( ... )
-            </summary>
-        </member>
-        <member name="M:Managed.SourceClient.Exports.Sandbox_RenderingManager_BlockStart(System.IntPtr,System.IntPtr,System.IntPtr)">
-            <summary>
-            Sandbox.RenderingManager.BlockStart( ... )
-            </summary>
-        </member>
-        <member name="M:Managed.SourceClient.Exports.Sandbox_RenderingManager_BlockEnd">
-            <summary>
-            Sandbox.RenderingManager.BlockEnd( ... )
-            </summary>
-        </member>
-        <member name="M:Managed.SourceClient.Exports.Sandbox_RenderingManager_PostProcess(System.Int32)">
-            <summary>
-            Sandbox.RenderingManager.PostProcess( ... )
+            Sandbox.Render.Finish( ... )
             </summary>
         </member>
         <member name="M:Managed.SourceClient.Exports.Sandbox_StringTables_Init">
@@ -7107,11 +6055,6 @@
             Sandbox.GameLoop.PhysicsImpactSound( ... )
             </summary>
         </member>
-        <member name="M:Managed.SourceServer.Exports.Sandbox_GameLoop_OnPhysicsJointBreak(System.Int32)">
-            <summary>
-            Sandbox.GameLoop.OnPhysicsJointBreak( ... )
-            </summary>
-        </member>
         <member name="M:Managed.SourceServer.Exports.Sandbox_GameLoop_RunBotCommands">
             <summary>
             Sandbox.GameLoop.RunBotCommands( ... )
@@ -7157,9 +6100,24 @@
             Sandbox.GameLoop.OnModelReloaded( ... )
             </summary>
         </member>
+        <member name="M:Managed.SourceServer.Exports.Sandbox_GameLoop_OnWorldSession">
+            <summary>
+            Sandbox.GameLoop.OnWorldSession( ... )
+            </summary>
+        </member>
+        <member name="M:Managed.SourceServer.Exports.Sandbox_GameLoop_OnPhysicsWorld(System.Int32)">
+            <summary>
+            Sandbox.GameLoop.OnPhysicsWorld( ... )
+            </summary>
+        </member>
         <member name="M:Managed.SourceServer.Exports.Sandbox_Networking_OnNetMessage(System.IntPtr,System.Int32,System.Int32)">
             <summary>
             Sandbox.Networking.OnNetMessage( ... )
+            </summary>
+        </member>
+        <member name="M:Managed.SourceServer.Exports.Sandbox_PhysicsEngine_OnPhysicsJointBreak(System.Int32)">
+            <summary>
+            Sandbox.PhysicsEngine.OnPhysicsJointBreak( ... )
             </summary>
         </member>
         <member name="M:Managed.SourceServer.Exports.Sandbox_PlayerCommand_RunClient(System.UInt32,System.IntPtr)">
@@ -7182,64 +6140,14 @@
             Sandbox.RealTime.Update( ... )
             </summary>
         </member>
-        <member name="M:Managed.SourceServer.Exports.Sandboxserver_PhysicsBody_OnObjectCreated(System.IntPtr,System.Int32)">
+        <member name="M:Managed.SourceServer.Exports.Sandbox_Render_Start(System.IntPtr,System.IntPtr,System.IntPtr)">
             <summary>
-            Sandbox.PhysicsBody.OnObjectCreated( ... )
+            Sandbox.Render.Start( ... )
             </summary>
         </member>
-        <member name="M:Managed.SourceServer.Exports.Sandboxserver_PhysicsBody_OnObjectDestroyed(System.IntPtr,System.Int32)">
+        <member name="M:Managed.SourceServer.Exports.Sandbox_Render_Finish">
             <summary>
-            Sandbox.PhysicsBody.OnObjectDestroyed( ... )
-            </summary>
-        </member>
-        <member name="M:Managed.SourceServer.Exports.Sandboxserver_PhysicsGroup_OnObjectCreated(System.IntPtr,System.Int32)">
-            <summary>
-            Sandbox.PhysicsGroup.OnObjectCreated( ... )
-            </summary>
-        </member>
-        <member name="M:Managed.SourceServer.Exports.Sandboxserver_PhysicsGroup_OnObjectDestroyed(System.IntPtr,System.Int32)">
-            <summary>
-            Sandbox.PhysicsGroup.OnObjectDestroyed( ... )
-            </summary>
-        </member>
-        <member name="M:Managed.SourceServer.Exports.Sandboxserver_PhysicsJoint_OnObjectCreated(System.IntPtr,System.Int32)">
-            <summary>
-            Sandbox.PhysicsJoint.OnObjectCreated( ... )
-            </summary>
-        </member>
-        <member name="M:Managed.SourceServer.Exports.Sandboxserver_PhysicsJoint_OnObjectDestroyed(System.IntPtr,System.Int32)">
-            <summary>
-            Sandbox.PhysicsJoint.OnObjectDestroyed( ... )
-            </summary>
-        </member>
-        <member name="M:Managed.SourceServer.Exports.Sandboxserver_PhysicsShape_OnObjectCreated(System.IntPtr,System.Int32)">
-            <summary>
-            Sandbox.PhysicsShape.OnObjectCreated( ... )
-            </summary>
-        </member>
-        <member name="M:Managed.SourceServer.Exports.Sandboxserver_PhysicsShape_OnObjectDestroyed(System.IntPtr,System.Int32)">
-            <summary>
-            Sandbox.PhysicsShape.OnObjectDestroyed( ... )
-            </summary>
-        </member>
-        <member name="M:Managed.SourceServer.Exports.Sandboxserver_SceneObject_OnObjectCreated(System.IntPtr,System.Int32)">
-            <summary>
-            Sandbox.SceneObject.OnObjectCreated( ... )
-            </summary>
-        </member>
-        <member name="M:Managed.SourceServer.Exports.Sandboxserver_SceneObject_OnObjectDestroyed(System.IntPtr,System.Int32)">
-            <summary>
-            Sandbox.SceneObject.OnObjectDestroyed( ... )
-            </summary>
-        </member>
-        <member name="M:Managed.SourceServer.Exports.Sandboxserver_SceneWorld_OnObjectCreated(System.IntPtr,System.Int32)">
-            <summary>
-            Sandbox.SceneWorld.OnObjectCreated( ... )
-            </summary>
-        </member>
-        <member name="M:Managed.SourceServer.Exports.Sandboxserver_SceneWorld_OnObjectDestroyed(System.IntPtr,System.Int32)">
-            <summary>
-            Sandbox.SceneWorld.OnObjectDestroyed( ... )
+            Sandbox.Render.Finish( ... )
             </summary>
         </member>
         <member name="M:Managed.SourceServer.Exports.Sandbox_StringTables_Init">

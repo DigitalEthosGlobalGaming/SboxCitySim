@@ -82,26 +82,6 @@
             Absolute path to the .addon file
             </summary>
         </member>
-        <member name="T:Sandbox.AddonProvision.BaseAddonProvider">
-            <summary>
-            Downloading and getting information about a specific addon.
-            </summary>
-        </member>
-        <member name="M:Sandbox.AddonProvision.BaseAddonProvider.ExtractZip(System.Byte[],System.String)">
-            <summary>
-            Extract the zip to the target folder and filesystem
-            </summary>
-        </member>
-        <member name="T:Sandbox.AddonProvision.GithubAddonProvider">
-            <summary>
-            Downloading and getting information about a specific addon.
-            </summary>
-        </member>
-        <member name="T:Sandbox.AddonProvision.HttpAddonProvider">
-            <summary>
-            Downloading and getting information about a specific addon.
-            </summary>
-        </member>
         <member name="M:Sandbox.RuntimeGame.Recompile">
             <summary>
             Force the assembly to be recompiled
@@ -588,6 +568,12 @@
             Send a game description to the backend. We can update leaderboards and shit from this.
             </summary>
         </member>
+        <member name="M:Sandbox.Api.CommitScore(System.String,System.String,System.Int64,System.Single)">
+            <summary>
+            Commit a player's score to the backend
+            </summary>
+            <returns></returns>
+        </member>
         <member name="M:Sandbox.Api.GetAccountInformation">
             <summary>
             Get linked service credentials, ie "twitch". Under the hood, on our server, we will
@@ -686,6 +672,11 @@
             Returns true if a user is a member of this organization
             </summary>
         </member>
+        <member name="T:Sandbox.ManifestSchema">
+            <summary>
+            An addon's manifest, describing what files are available
+            </summary>
+        </member>
         <member name="P:Sandbox.Package.Updated">
             <summary>
             When the entry was last updated. If these are different between packages 
@@ -705,6 +696,11 @@
         <member name="M:Sandbox.Package.GetCachedTitle(System.String)">
             <summary>
             If we have this package information, try to get its name
+            </summary>
+        </member>
+        <member name="P:Sandbox.Package.Query.Type">
+            <summary>
+            The type of package to query for
             </summary>
         </member>
         <member name="M:Sandbox.CodeEditor.OpenSolution(System.String,System.Int32)">
@@ -841,6 +837,12 @@
             Given a folder of .cs files, this will produce (and load) an assembly
             </summary>
         </member>
+        <member name="T:Sandbox.ISingletonComponent">
+            <summary>
+            If a component is marked with this, then only one of that type of component
+            will be allowed. When adding a component, it'll automatically replace any others.
+            </summary>
+        </member>
         <member name="T:Sandbox.DisallowMultipleComponentAttribute">
             <summary>
             Should only allow one of these type of components
@@ -915,39 +917,9 @@
             Game is closing
             </summary>
         </member>
-        <member name="F:Sandbox.BlendMode.Rgb">
+        <member name="T:Sandbox.BlendMode">
             <summary>
-            dest.rgb = src.rgb
-            </summary>
-        </member>
-        <member name="F:Sandbox.BlendMode.NoWrite">
-            <summary>
-            no write to dest
-            </summary>
-        </member>
-        <member name="F:Sandbox.BlendMode.Rgba">
-            <summary>
-            dest.rgba = src.rgba
-            </summary>
-        </member>
-        <member name="F:Sandbox.BlendMode.AlphaBlend">
-            <summary>
-            dest.rgb = lerp( dest.rgb, src.srb, src.a )
-            </summary>
-        </member>
-        <member name="F:Sandbox.BlendMode.Additive">
-            <summary>
-            dest.rgb = src.rgb * src.a + dest.rgb
-            </summary>
-        </member>
-        <member name="F:Sandbox.BlendMode.AdditiveIgnoreAlpha">
-            <summary>
-            dest.rgb += src.rgb
-            </summary>
-        </member>
-        <member name="F:Sandbox.BlendMode.Multiply">
-            <summary>
-            dest.rgba *= src.rgba
+            Blend modes used by the UI system
             </summary>
         </member>
         <member name="F:Sandbox.SceneLayerType.Translucent">
@@ -1440,14 +1412,65 @@
             usually a static on your Handle object called HandleIndex.
             </summary>
         </member>
-        <member name="M:Sandbox.HandleIndex.ForceNextObject(Sandbox.IHandle)">
+        <member name="F:Sandbox.CollisionGroup.Always">
             <summary>
-            Force the next object created to be this object
+            This will *ALWAYS* collide
+            This group does not generate contacts or interact with any other groups by default
             </summary>
         </member>
-        <member name="M:Sandbox.HandleIndex.UsedNextObject(Sandbox.IHandle)">
+        <member name="F:Sandbox.CollisionGroup.Never">
             <summary>
-            A safety measure so we know it's being used
+            Never collide with anything
+            </summary>
+        </member>
+        <member name="F:Sandbox.CollisionGroup.Trigger">
+            <summary>
+            Trigger layer, never collides with anything, only triggers/interacts
+            </summary>
+        </member>
+        <member name="F:Sandbox.CollisionGroup.ConditionallySolid">
+            <summary>
+            Conditionally solid means that the collision response will be zero or as defined in the table when there are matching interactions
+            </summary>
+        </member>
+        <member name="F:Sandbox.CollisionGroup.Default">
+            <summary>
+            standard dynamic rigid object, finite mass
+            </summary>
+        </member>
+        <member name="F:Sandbox.CollisionGroup.Debris">
+            <summary>
+            Collides with nothing but world and static stuff
+            </summary>
+        </member>
+        <member name="F:Sandbox.CollisionGroup.DebrisInteractive">
+            <summary>
+            Collides with everything except other interactive debris or debris
+            </summary>
+        </member>
+        <member name="F:Sandbox.CollisionGroup.Interactive">
+            <summary>
+            Collides with everything except interactive debris or debris
+            </summary>
+        </member>
+        <member name="F:Sandbox.CollisionLayer.Player">
+            <summary>
+            Player hull (movement and trace attacks)
+            </summary>
+        </member>
+        <member name="F:Sandbox.CollisionLayer.Debris">
+            <summary>
+            Ragdolls etc
+            </summary>
+        </member>
+        <member name="F:Sandbox.MoveType.Physics">
+            <summary>
+            Use physics simulation
+            </summary>
+        </member>
+        <member name="F:Sandbox.MoveType.Push">
+            <summary>
+            no clip to world, push and crush
             </summary>
         </member>
         <member name="T:Sandbox.ClientRpcAttribute">
@@ -1494,6 +1517,252 @@
         <member name="M:Sandbox.Performance.Scope(System.String)">
             <summary>
             Creates a profile scope in SuperLuminal
+            </summary>
+        </member>
+        <member name="P:Sandbox.SpringJoint.SpringLinear">
+            <summary>
+            How springy and tight the joint will be
+            </summary>
+        </member>
+        <member name="P:Sandbox.SpringJoint.MaxLength">
+            <summary>
+            Maximum length it should be allowed to go
+            </summary>
+        </member>
+        <member name="P:Sandbox.SpringJoint.MinLength">
+            <summary>
+            Minimum length it should be allowed to go. At which point it acts a bit like a rod.
+            </summary>
+        </member>
+        <member name="P:Sandbox.SpringJoint.ReferenceMass">
+            <summary>
+            You shouldn't really ever need to change this, the default works out
+            what the reference mass should be based on actual physics.
+            </summary>
+        </member>
+        <member name="T:Sandbox.PhysicsBody">
+            <summary>
+            Represents a physics object. An entity can have multiple physics objects. See <see cref="P:Sandbox.PhysicsBody.PhysicsGroup">PhysicsGroup</see>.
+            A physics objects conists of one or more <see cref="T:Sandbox.PhysicsShape">PhysicsShape</see>s.
+            </summary>
+        </member>
+        <member name="P:Sandbox.PhysicsBody.EnableTouch">
+            <summary>
+            Allow Touch callbacks to be called
+            </summary>
+        </member>
+        <member name="M:Sandbox.PhysicsBody.ClearShapes">
+            <summary>
+            Completely remove all shapes
+            </summary>
+        </member>
+        <member name="M:Sandbox.PhysicsBody.RemoveShape(Sandbox.PhysicsShape)">
+            <summary>
+            Called from Shape.Remove()
+            </summary>
+        </member>
+        <member name="P:Sandbox.PhysicsBody.Sleeping">
+            <summary>
+            Physics bodies automatically go to sleep after a certain amount of time of inactivity to save on performance. 
+            You can use this to wake the body up, or prematurely send it to sleep.
+            </summary>
+        </member>
+        <member name="P:Sandbox.PhysicsBody.Parent">
+            <summary>
+            The physics body we are attached to, if any
+            </summary>
+        </member>
+        <member name="P:Sandbox.PhysicsBody.PhysicsGroup">
+            <summary>
+            The physics group we belong to.
+            </summary>
+        </member>
+        <member name="M:Sandbox.PhysicsBody.SetSurface(System.String)">
+            <summary>
+            Sets a physical properties on all child <see cref="T:Sandbox.PhysicsShape">PhysicsShape</see>s.
+            </summary>
+        </member>
+        <member name="M:Sandbox.PhysicsBody.GetDominantSurface">
+            <summary>
+            Returns the most commonly occuring surface name between all <see cref="T:Sandbox.PhysicsShape">PhysicsShape</see>s of this <see cref="T:Sandbox.PhysicsShape">PhysicsBody</see>.
+            </summary>
+        </member>
+        <member name="P:Sandbox.PhysicsBody.GroupName">
+            <summary>
+            What is this body called in the group?
+            </summary>
+        </member>
+        <member name="P:Sandbox.PhysicsBody.GroupIndex">
+            <summary>
+            Return the index of this body in its PhysicsGroup
+            </summary>
+        </member>
+        <member name="T:Sandbox.PhysicsGroup">
+            <summary>
+            Represets a set of <see cref="T:Sandbox.PhysicsBody">PhysicsBody</see> objects. Think ragdoll.
+            </summary>
+        </member>
+        <member name="P:Sandbox.PhysicsGroup.Sleeping">
+            <summary>
+            Physics bodies automatically go to sleep after a certain amount of time of inactivity to save on performance. 
+            You can use this to wake the body up, or prematurely send it to sleep.
+            </summary>
+        </member>
+        <member name="M:Sandbox.PhysicsGroup.SetSurface(System.String)">
+            <summary>
+            Sets the physical properties of each <see cref="T:Sandbox.PhysicsShape">PhysicsShape</see> of this group.
+            </summary>
+        </member>
+        <member name="E:Sandbox.PhysicsJoint.OnBreak">
+            <summary>
+            Called when the joint breaks
+            </summary>
+        </member>
+        <member name="P:Sandbox.PhysicsJoint.Strength">
+            <summary>
+            Strength of the linear constraint. If it takes any more energy than this, it'll break
+            </summary>
+        </member>
+        <member name="P:Sandbox.PhysicsJoint.AngularStrength">
+            <summary>
+            Strength of the angular constraint. If it takes any more energy than this, it'll break
+            </summary>
+        </member>
+        <member name="M:Sandbox.PhysicsJoint.CreateFixed(Sandbox.PhysicsPoint,Sandbox.PhysicsPoint)">
+            <summary>
+            Creates an almost solid constraint between two physics bodies
+            </summary>
+        </member>
+        <member name="M:Sandbox.PhysicsJoint.CreateLength(Sandbox.PhysicsPoint,Sandbox.PhysicsPoint,System.Single)">
+            <summary>
+            Creates a constraint like a rope, where it has no minimum length but its max length is restained
+            </summary>
+        </member>
+        <member name="M:Sandbox.PhysicsJoint.CreateSpring(Sandbox.PhysicsPoint,Sandbox.PhysicsPoint,System.Single,System.Single)">
+            <summary>
+            Creates a constraint that will try to stay the same length, like a spring, or a rod
+            </summary>
+        </member>
+        <member name="M:Sandbox.PhysicsJoint.CreateHinge(Sandbox.PhysicsBody,Sandbox.PhysicsBody,Vector3,Vector3)">
+            <summary>
+            Creates an axis, like a 
+            </summary>
+        </member>
+        <member name="T:Sandbox.PhysicsPoint">
+            <summary>
+            Used to describe a point on a physics body. This is used for things like joints where
+            you want to pass in just a body, or sometimes you want to pass in a body with a specific
+            location and rotation to attach to.
+            </summary>
+        </member>
+        <member name="M:Sandbox.PhysicsPoint.Local(Sandbox.PhysicsBody,System.Nullable{Vector3},System.Nullable{Rotation})">
+            <summary>
+            Describe an attachment using a position/rotation local to the body
+            </summary>
+        </member>
+        <member name="M:Sandbox.PhysicsPoint.World(Sandbox.PhysicsBody,System.Nullable{Vector3},System.Nullable{Rotation})">
+            <summary>
+            Describe an attachment using a position/rotation from the world
+            </summary>
+        </member>
+        <member name="T:Sandbox.PhysicsShape">
+            <summary>
+            Represents a basic, convex shape. A <see cref="T:Sandbox.PhysicsBody">PhysicsBody</see> consists of one or more of these.
+            </summary>
+        </member>
+        <member name="P:Sandbox.PhysicsShape.Body">
+            <summary>
+            The physics body we belong to.
+            </summary>
+        </member>
+        <member name="M:Sandbox.PhysicsShape.EnableAllCollision">
+            <summary>
+            Enable contact, trace and touch
+            </summary>
+        </member>
+        <member name="M:Sandbox.PhysicsShape.DisableAllCollision">
+            <summary>
+            Disable contact, trace and touch
+            </summary>
+        </member>
+        <member name="P:Sandbox.PhysicsShape.IsMeshShape">
+            <summary>
+            Is this a MeshShape
+            </summary>
+        </member>
+        <member name="P:Sandbox.PhysicsShape.IsHullShape">
+            <summary>
+            Is this a HullShape
+            </summary>
+        </member>
+        <member name="P:Sandbox.PhysicsShape.IsSphereShape">
+            <summary>
+            Is this a SphereShape
+            </summary>
+        </member>
+        <member name="P:Sandbox.PhysicsShape.IsCapsuleShape">
+            <summary>
+            Is this a CapsuleShape
+            </summary>
+        </member>
+        <member name="M:Sandbox.PhysicsShape.UpdateMesh(System.Collections.Generic.List{Vector3},System.Collections.Generic.List{System.Int32})">
+            <summary>
+            Recreate the collision mesh (Only if this physics shape is type Mesh)
+            </summary>
+        </member>
+        <member name="M:Sandbox.PhysicsShape.UpdateMesh(System.Span{Vector3},System.Span{System.Int32})">
+            <summary>
+            Recreate the collision mesh (Only if this physics shape is type Mesh)
+            </summary>
+        </member>
+        <member name="P:Sandbox.PhysicsShape.SurfaceMaterial">
+            <summary>
+            Sets a physical properties of this physics shape.
+            </summary>
+        </member>
+        <member name="M:Sandbox.PhysicsShape.Remove">
+            <summary>
+            Remove this shape. After calling this the shape should be considered released and not used again.
+            </summary>
+        </member>
+        <member name="F:Sandbox.PhysicsSpring.Frequency">
+            <summary>
+            The stiffness of the spring
+            </summary>
+        </member>
+        <member name="F:Sandbox.PhysicsSpring.Damping">
+            <summary>
+            The damping ratio of the spring, usually between 0 and 1
+            </summary>
+        </member>
+        <member name="M:Sandbox.Render.GetDynamicVB(System.Boolean)">
+            <summary>
+            Get the vertex buffer
+            </summary>
+        </member>
+        <member name="M:Sandbox.Render.SetupLighting(Sandbox.SceneObject)">
+            <summary>
+            Setup the lighting attributes for this object, place them in Render.Attributes
+            </summary>
+        </member>
+        <member name="M:Sandbox.Render.SetupLighting(Sandbox.SceneObject,Sandbox.RenderAttributes)">
+            <summary>
+            Setup the lighting attributes for this current object. Place them in the targetAttributes
+            </summary>
+        </member>
+        <member name="M:Sandbox.Render.CopyDepthBuffer">
+            <summary>
+            Grabs the current depth buffer and stores it in 'DepthBufferCopyTexture'
+            </summary>
+        </member>
+        <member name="M:Sandbox.Render.CopyFrameBuffer">
+            <summary>
+            Grabs the current viewport buffer and stores it in 'FrameBufferCopyTexture'
+            </summary>
+        </member>
+        <member name="M:Sandbox.RenderContext.#ctor">
+            <summary>
+            Careful now. This isn't garbage collected, you NEED to call Dispose!
             </summary>
         </member>
         <member name="M:Sandbox.Material.CreateCopy">
@@ -2024,11 +2293,6 @@
             </summary>
             <param name="isAnonymous">Set if it's anonymous or not</param>
         </member>
-        <member name="M:Sandbox.Texture3DBuilder.Finish(System.Boolean)">
-            <summary>
-            Build and create the actual texture
-            </summary>
-        </member>
         <member name="M:Sandbox.Texture3DBuilder.Finish">
             <summary>
             Build and create the actual texture
@@ -2304,11 +2568,6 @@
             </summary>
             <param name="isAnonymous">Set if it's anonymous or not</param>
         </member>
-        <member name="M:Sandbox.TextureCubeBuilder.Finish(System.Boolean)">
-            <summary>
-            Build and create the actual texture
-            </summary>
-        </member>
         <member name="M:Sandbox.TextureCubeBuilder.Finish">
             <summary>
             Build and create the actual texture
@@ -2351,6 +2610,82 @@
         <member name="M:Sandbox.VertexBuffer.AddRawIndex(System.Int32)">
             <summary>
             Add an index. This is relative to the top of the vertex buffer. So 0 is Vertex.Count.
+            </summary>
+        </member>
+        <member name="P:Sandbox.SceneLight.LightColor">
+            <summary>
+            Color and brightness of the light
+            </summary>
+        </member>
+        <member name="P:Sandbox.SceneLight.Falloff">
+            <summary>
+            Attenuation of how much brightness the light loses the more it travels
+            </summary>
+        </member>
+        <member name="P:Sandbox.SceneLight.Radius">
+            <summary>
+            Radius of the light in units
+            </summary>
+        </member>
+        <member name="P:Sandbox.SceneModel.AnimationTime">
+            <summary>
+            The current animation time.
+            </summary>
+        </member>
+        <member name="M:Sandbox.SceneModel.Update(System.Single)">
+            <summary>
+            Update this animation. Delta is the time you want to advance, usually RealTime.Delta
+            </summary>
+        </member>
+        <member name="M:Sandbox.SceneModel.SetMaterialGroup(System.String)">
+            <summary>
+            Set material group to replace materials of the model
+            </summary>
+        </member>
+        <member name="M:Sandbox.SceneModel.SetBodyGroup(System.String,System.Int32)">
+            <summary>
+            Set which body group to use
+            </summary>
+        </member>
+        <member name="P:Sandbox.SceneObject.SceneObjectFlagAccessor.ExcludeGameLayer">
+            <summary>
+            Don't render in the opaque/translucent game passes. This is useful when you
+            want to only render in the Bloom layer, rather than additionally to it.
+            </summary>
+        </member>
+        <member name="P:Sandbox.SceneObject.SceneObjectFlagAccessor.WantsFrameBufferCopy">
+            <summary>
+            Automatically sets the "FrameBufferCopyTexture" attribute within the material.
+            This does the same thing as Render.CopyFrameBuffer(); except automatically if
+            the pass allows for it.
+            </summary>
+        </member>
+        <member name="T:Sandbox.SceneParticles">
+            <summary>
+            A SceneObject used to render particles.
+            We need to be careful with what we do here, becuse this object is created for in-engine particles
+            as well as custom scene object particles.
+            With custom particles there's no automatic Simulate, or deletion.. You're completely on your own. This
+            is perhaps a good thing though, it's maybe what you want to happen. To be completely isolated and completely
+            in control. But at the same time maybe it's not and it's something we need to sort out.
+            </summary>
+        </member>
+        <member name="P:Sandbox.SceneParticles.Particles">
+            <summary>
+            TODO: Lets find a way to expose the IParticleCollection a bit raw'er
+            </summary>
+        </member>
+        <member name="P:Sandbox.SceneSpotLight.SpotCone">
+            <summary>
+            Sets how much the spot light would spread, with inner and outer cone angles in degrees
+            </summary>
+        </member>
+        <member name="P:Sandbox.SceneWorld.IsTransient">
+            <summary>
+            If a world is transient, it means it was created by game code, and should
+            be deleted at the end of the game session. If they're non transient then 
+            they were created in the menu, or by the engine code and will be released
+            properly by that code.
             </summary>
         </member>
         <member name="M:Sandbox.StreamPoll.End(System.Boolean)">
@@ -2514,6 +2849,11 @@
             Download afile to a target filename (todo - progress)
             </summary>
         </member>
+        <member name="M:Sandbox.Utility.Web.GrabFile(System.String,System.Threading.CancellationToken,Sandbox.Utility.IWebProgress)">
+            <summary>
+            Download afile to a target filename (todo - progress)
+            </summary>
+        </member>
         <member name="M:Sandbox.Utility.Web.PutAsync(System.IO.Stream,System.String,System.Threading.CancellationToken,Sandbox.Utility.IWebProgress)">
             <summary>
             Download afile to a target filename (todo - progress)
@@ -2538,6 +2878,20 @@
             that take a StringToken with millions of random strings to make the Cache so full
             that calling FindOrCreate takes ages. So maybe we want to keep an eye on it.
             </summary>
+        </member>
+        <member name="F:NativeEngine.ESceneObjectTypeFlags.SHOULD_BE_DELETED_BEFORE_WORLD">
+            For objects that can't be considered to be "owned" by the world they are in because they
+            are owned by a manager. All this flag does is cause a warning when such an object is still
+            in the world at world deletion time (a leak).
+        </member>
+        <member name="F:NativeEngine.ESceneObjectTypeFlags.OWNED_BY_ANOTHER_SCENEOBJECT">
+            if this flag is set, then the object will not be deleted when deleting the world, and will not be queued for delete. It's assumed that this object is going to be deleted inside of the destructor of another sceneobject
+        </member>
+        <member name="F:NativeEngine.ESceneObjectTypeFlags.PARTIALLY_ALPHA_BLENDED">
+            We have a mixture of alpha-blended and non-alpha blended draws
+        </member>
+        <member name="F:NativeEngine.ESceneObjectTypeFlags.UNIQUE_BATCH_GROUP">
+            A unique batch flag that allows objects to draw in a separate batch from their original group
         </member>
         <member name="F:NativeEngine.SceneSystemWellKnownRenderTargetID.SCENE_RTGT_SCRATCH_TEXTURE_8888">
             <summary>
@@ -2566,6 +2920,35 @@
         </member>
         <member name="M:Hammer.SkipPropertyAttribute.#ctor(System.String)">
             <param name="internal_name">The internal/fgd name to skip. Usually all lowecase and with underscores (_) instead of spaces.</param>
+        </member>
+        <member name="T:Hammer.MinMaxAttribute">
+            <summary>
+            Makes this propery have a numeric slider with (if the FGD type is numeric) with given min/max values.
+            </summary>
+        </member>
+        <member name="T:Hammer.SolidAttribute">
+            <summary>
+            This is a brush based enity class. It can only be a mesh tied to an entity. If this is not used, the entity will be considered a point class and will only appear in the Entity Tool.
+            </summary>
+        </member>
+        <member name="T:Hammer.SupportsSolidAttribute">
+            <summary>
+            This is a point class entity (appears in Entity Tool), but does support being a brush entity (a mesh tied to an entity).
+            </summary>
+        </member>
+        <member name="T:Hammer.PathAttribute">
+            <summary>
+            This is a path class, used with Hammer's Path Tool.
+            </summary>
+        </member>
+        <member name="M:Hammer.PathAttribute.#ctor(System.String,System.Boolean)">
+            <param name="nodeClassName">Class name of the node entity.</param>
+            <param name="spawnEnts">If set to true, will actually create node entities. If set to false, node data will be serialized to a JSON key-value.</param>
+        </member>
+        <member name="T:Hammer.PathNodeAttribute">
+            <summary>
+            This is a path node class. May not necessarily be an entity.
+            </summary>
         </member>
         <member name="T:Hammer.AutoApplyMaterialAttribute">
             <summary>
@@ -2636,24 +3019,9 @@
             Tells Hammer that this entity has a particle effect keyvalue that needs to be visualized.
             </summary>
         </member>
-        <member name="T:Hammer.SolidAttribute">
-            <summary>
-            This is a brush based enity class. It can only be a mesh tied to an entity. If this is not used, the entity will be considered a point class and will only appear in the Entity Tool.
-            </summary>
-        </member>
-        <member name="T:Hammer.SupportsSolidAttribute">
-            <summary>
-            This is a point class entity (appears in Entity Tool), but does support being a brush entity (a mesh tied to an entity).
-            </summary>
-        </member>
         <member name="T:Hammer.PhysicsTypeOverrideMeshAttribute">
             <summary>
             Indicate to the map builder that any meshes associated with the entity should have a mesh physics type.
-            </summary>
-        </member>
-        <member name="T:Hammer.VisGroupAttribute">
-            <summary>
-            Makes the entity show up under given automatic visibility group in Hammer.
             </summary>
         </member>
         <member name="T:Hammer.VisGroup">
@@ -2701,18 +3069,9 @@
             Entities that do not move via physics but are still intreactable with or otherwise non static.
             </summary>
         </member>
-        <member name="T:Hammer.PathAttribute">
+        <member name="T:Hammer.VisGroupAttribute">
             <summary>
-            This is a path class, used with Hammer's Path Tool.
-            </summary>
-        </member>
-        <member name="M:Hammer.PathAttribute.#ctor(System.String,System.Boolean)">
-            <param name="nodeClassName">Class name of the node entity.</param>
-            <param name="spawnEnts">If set to true, will actually create node entities. If set to false, node data will be serialized to a JSON key-value.</param>
-        </member>
-        <member name="T:Hammer.PathNodeAttribute">
-            <summary>
-            This is a path node class. May not necessarily be an entity.
+            Makes the entity show up under given automatic visibility group in Hammer.
             </summary>
         </member>
         <member name="T:Hammer.EntityToolAttribute">
@@ -2740,11 +3099,6 @@
             <example>
             [Hammer.RenderFields]
             </example>
-        </member>
-        <member name="T:Hammer.MinMaxAttribute">
-            <summary>
-            Makes this propery have a numeric slider with (if the FGD type is numeric) with given min/max values.
-            </summary>
         </member>
         <member name="T:Hammer.FrustumBoundlessAttribute">
             <summary>
@@ -2885,6 +3239,11 @@
         <member name="T:Hammer.BakeSkyLightAttribute">
             <summary>
             Used by light_environment entity internally.
+            </summary>
+        </member>
+        <member name="T:Editor.EnableColorAlphaAttribute">
+            <summary>
+            If used on a Color or Color32 property, enables alpha modification in editors.
             </summary>
         </member>
         <member name="T:ModelDoc.GameDataAttribute">
@@ -3231,6 +3590,31 @@
             Sandbox.EngineLoop.Exiting( ... )
             </summary>
         </member>
+        <member name="M:Managed.SandboxEngine.Exports.Sandbox_EngineLoop_RenderUI(System.IntPtr,System.IntPtr,System.IntPtr)">
+            <summary>
+            Sandbox.EngineLoop.RenderUI( ... )
+            </summary>
+        </member>
+        <member name="M:Managed.SandboxEngine.Exports.Sandbox_EngineLoop_PostProcessPass(System.Int32)">
+            <summary>
+            Sandbox.EngineLoop.PostProcessPass( ... )
+            </summary>
+        </member>
+        <member name="M:Managed.SandboxEngine.Exports.Sandbox_EngineLoop_WantsPostProcessPass(System.Int32)">
+            <summary>
+            Sandbox.EngineLoop.WantsPostProcessPass( ... )
+            </summary>
+        </member>
+        <member name="M:Managed.SandboxEngine.Exports.Sandbox_HandleIndex_RegisterHandle(System.IntPtr,System.UInt32)">
+            <summary>
+            Sandbox.HandleIndex.RegisterHandle( ... )
+            </summary>
+        </member>
+        <member name="M:Managed.SandboxEngine.Exports.Sandbox_HandleIndex_FreeHandle(System.Int32)">
+            <summary>
+            Sandbox.HandleIndex.FreeHandle( ... )
+            </summary>
+        </member>
         <member name="M:Managed.SandboxEngine.Exports.Sandbox_INetworkClient_Shutdown(System.UInt32)">
             <summary>
             Sandbox.INetworkClient.Shutdown( ... )
@@ -3286,9 +3670,29 @@
             Sandbox.INetworkServer.FillServerInfo( ... )
             </summary>
         </member>
+        <member name="M:Managed.SandboxEngine.Exports.Sandbox_PhysicsEngine_OnPhysicsJointBreak(System.Int32)">
+            <summary>
+            Sandbox.PhysicsEngine.OnPhysicsJointBreak( ... )
+            </summary>
+        </member>
         <member name="M:Managed.SandboxEngine.Exports.Sandbox_RealTime_Update(System.Single)">
             <summary>
             Sandbox.RealTime.Update( ... )
+            </summary>
+        </member>
+        <member name="M:Managed.SandboxEngine.Exports.Sandbox_Render_Start(System.IntPtr,System.IntPtr,System.IntPtr)">
+            <summary>
+            Sandbox.Render.Start( ... )
+            </summary>
+        </member>
+        <member name="M:Managed.SandboxEngine.Exports.Sandbox_Render_Finish">
+            <summary>
+            Sandbox.Render.Finish( ... )
+            </summary>
+        </member>
+        <member name="M:Managed.SandboxEngine.Exports.Sandbox_ScnCstmbjctRndr_RenderObject(System.Int32)">
+            <summary>
+            Sandbox.SceneCustomObjectRender.RenderObject( ... )
             </summary>
         </member>
         <member name="T:Noise">
@@ -4620,14 +5024,6 @@
         <member name="M:Steamworks.SteamUser.GetAuthSessionTicket">
             <summary>
             Retrieve a authentication ticket to be sent to the entity who wishes to authenticate you.
-            </summary>
-        </member>
-        <member name="M:Steamworks.SteamUser.GetAuthSessionTicketAsync(System.Double,System.Threading.CancellationToken)">
-            <summary>
-            Retrieve a authentication ticket to be sent to the entity who wishes to authenticate you.
-            This waits for a positive response from the backend before returning the ticket. This means
-            the ticket is definitely ready to go as soon as it returns. Will return null if the callback
-            times out or returns negatively.
             </summary>
         </member>
         <member name="P:Steamworks.SteamUser.IsBehindNAT">

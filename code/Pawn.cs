@@ -13,9 +13,18 @@ namespace CitySim
 
 		public RoadTile LastHighlighted { get; set; }
 
+		[Net, Local]
 		public RoadTile StartSpace { get; set; }
 		public RoadTile EndSpace { get; set; }
 		public List<GridSpace> OldPath { get; set; } = new List<GridSpace>();
+
+		[Net]
+		public float Score { get; set; }
+
+		public bool IsAdmin { get; set; } = false;
+
+		[Net]
+		public RoadTile.TileTypeEnum SelectedTileType { get; set; } = RoadTile.TileTypeEnum.Base;
 		public override void Spawn()
 		{
 			base.Spawn();
@@ -39,7 +48,7 @@ namespace CitySim
 			var endPos = EyePosition + (EyeRotation.Forward * 4000);
 			var mytrace = Trace.Ray( EyePosition, endPos );
 			var tr = mytrace.Run();
-			if ( tr.Entity != null )
+			if ( tr.Entity != null && tr.Entity is RoadTile )
 			{
 				RoadTile ent = (RoadTile)tr.Entity;
 				return ent;
@@ -53,6 +62,10 @@ namespace CitySim
 		public override void Simulate( Client cl )
 		{
 			base.Simulate( cl );
+
+			var map = MyGame.GetMap();
+
+
 
 			Rotation = Input.Rotation;
 			EyeRotation = Rotation;
@@ -70,78 +83,137 @@ namespace CitySim
 
 			// apply it to our position using MoveHelper, which handles collision
 			// detection and sliding across surfaces for us
+
 			MoveHelper helper = new MoveHelper( Position, Velocity );
-			helper.Trace = helper.Trace.Size( 16 );
-			if ( helper.TryMove( Time.Delta ) > 0 )
-			{
-				Position = helper.Position;
-			}
 
-			// If we're running serverside and Attack1 was just pressed, spawn a ragdoll
-			if ( IsServer && Input.Pressed( InputButton.Attack1 ) )
-			{
-				var tile = GetRoadTileLookedAt();
-				if (tile != null) {
-					tile.RenderColor = Color.Orange;
-					tile.SetHasRoad( !tile.HasRoad );
-				}
-			}
-
-			if ( IsServer && Input.Pressed( InputButton.Attack2 )  )
-			{
-				var tile = GetRoadTileLookedAt();
-				if ( tile != null )
+			if ( !map.IsEnd) { 
+				helper.Trace = helper.Trace.Size( 16 );
+				if ( helper.TryMove( Time.Delta ) > 0 )
 				{
-					if ( Input.Down( InputButton.Jump ) )
-					{
-						
-						StartSpace = tile;
-					} else
-					{
-						
-							EndSpace = tile;
-					}
-					if (StartSpace != null && EndSpace != null)
-					{
+					Position = helper.Position;
+				}
 
-						var map = ((MyGame)Game.Current).Map;
-						OldPath = map.CreatePath( StartSpace.GridPosition, EndSpace.GridPosition );
-						foreach ( var item in OldPath )
+				// If we're running serverside and Attack1 was just pressed, spawn a ragdoll
+				if ( IsServer && Input.Pressed( InputButton.Attack1 ) )
+				{
+					var tile = GetRoadTileLookedAt();
+					if ( tile != null )
+					{
+						if ( CanPlaceTyle(tile) )
 						{
-							item.Position = item.Position + Vector3.Up * 50f;
+							OnTileSelect( tile );
 						}
-						var ent = new MovementEntity(  );
-						ent.Init( OldPath );
+					}
+				
+				}
 
+				if ( IsServer && IsAdmin )
+				{
+					if ( Input.Pressed( InputButton.Slot0 ) )
+					{
+						Log.Info( "1" );
+						SelectedTileType = RoadTile.TileTypeEnum.Base;
+					}
+					if ( Input.Pressed( InputButton.Slot1 ) )
+					{
+						Log.Info( "2" );
+						SelectedTileType = RoadTile.TileTypeEnum.Business;
+					}
+					if ( Input.Pressed( InputButton.Slot2 ) )
+					{
+						Log.Info( "3" );
+						SelectedTileType = RoadTile.TileTypeEnum.Park;
+					}
+					if ( Input.Pressed( InputButton.Slot3 ) )
+					{
+						Log.Info( "4" );
+						SelectedTileType = RoadTile.TileTypeEnum.House;
+					}
+
+					if ( Input.Pressed( InputButton.Slot4 ) )
+					{
+						Log.Info( "5" );
+						SelectedTileType = RoadTile.TileTypeEnum.Road;
 					}
 				}
-				
-			}
 
-			if ( IsClient )
-			{
-				var endPos = EyeRotation.Forward * 4000;
-				var mytrace = Trace.Ray( EyePosition, EyePosition + endPos );
-				var tr = mytrace.Run();
-				if ( tr.Entity != null )
+
+				if ( IsClient )
 				{
+
+					var tile = GetRoadTileLookedAt();
+
 					if ( LastHighlighted != null )
 					{
-						LastHighlighted.RenderColor = Color.White;
+						OnTileHoverOff( LastHighlighted );
 						LastHighlighted = null;
 					}
-					if ( tr.Entity is RoadTile )
+
+					if ( tile != null )
 					{
-						RoadTile ent = (RoadTile)tr.Entity;
-						if ( ent != null )
-						{
-							ent.RenderColor = Color.Gray;
-							LastHighlighted = ent;
-						}
+						OnTileHover( tile );
+						LastHighlighted = tile;
+
 					}
+				}
+	
+			}
+		}
+
+		public bool CanPlaceTyle(RoadTile tile)
+		{
+			if (IsAdmin)
+			{
+				return true;
+			}
+
+			if (tile.HasRoad() )
+			{
+				return false;
+			}
+
+			if (tile.TileType == RoadTile.TileTypeEnum.Base)
+			{
+				return true;
+			}
+			return false;
+		}
+
+		public void OnTileHoverOff(RoadTile tile)
+		{
+			tile.UpdateModel();
+		}
+
+		public void OnTileHover(RoadTile tile)
+		{
+
+			tile.UpdateModel();
+			if ( IsClient )
+			{
+				if (!CanPlaceTyle(tile))
+				{
+					return;
+				}
+
+				if (tile.CanSetType(SelectedTileType)) {
+					tile.RenderColor = Color.Gray;
+				} else
+				{
+					tile.RenderColor = Color.Yellow;
 				}
 			}
 		}
+
+		public void OnTileSelect(RoadTile tile)
+		{
+			var didPlace = tile.SetTileType( SelectedTileType );
+			SelectedTileType = RoadTile.TileTypeEnum.Base;
+			if ( didPlace )
+			{
+				Score = Score + 1;
+			}
+		}
+
 
 		/// <summary>
 		/// Called every frame on the client

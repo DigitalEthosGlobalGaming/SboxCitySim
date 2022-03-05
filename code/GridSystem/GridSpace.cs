@@ -10,10 +10,11 @@ namespace GridSystem
 		[Net]
         public Vector2 GridPosition { get; set; }
 
+		[Net]
 		public GridMap Map { get; set; }
 
-
-        public List<GridItem> Items = new List<GridItem>();
+		[Net]
+		public List<GridItem> Items { get; set; } = new List<GridItem>();
 
 
 

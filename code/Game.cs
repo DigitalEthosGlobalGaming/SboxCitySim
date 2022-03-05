@@ -1,6 +1,7 @@
 ﻿
 using System;
 using System.Linq;
+using GridSystem.Ui;
 using Sandbox;
 
 //
@@ -18,11 +19,22 @@ namespace CitySim
 	/// </summary>
 	public partial class MyGame : Sandbox.Game
 	{
+
+		public static MyGame GameObject { get; set; }
+		public static GameUi Ui { get; set; } = null;
+
+		public static RoadMap GetMap()
+		{
+			return GameObject.Map;
+		}
+
 		[Net]
 		public RoadMap Map { get; set; }
 		public MyGame()
 		{
+			GameObject = this;
 			ResetMap();
+			CreateUi();
 		}
 
 		/// <summary>
@@ -36,19 +48,9 @@ namespace CitySim
 			var pawn = new Pawn();
 			client.Pawn = pawn;
 
-			// Get all of the spawnpoints
-			var spawnpoints = Entity.All.OfType<SpawnPoint>();
+			pawn.Position = Map.Position + (Vector3.Up * 500f);
 
-			// chose a random one
-			var randomSpawnPoint = spawnpoints.OrderBy( x => Guid.NewGuid() ).FirstOrDefault();
 
-			// if it exists, place the pawn there
-			if ( randomSpawnPoint != null )
-			{
-				var tx = randomSpawnPoint.Transform;
-				tx.Position = tx.Position + Vector3.Up * 50.0f; // raise it up
-				pawn.Transform = tx;
-			}
 		}
 
 		[ServerCmd( "check_models" )]
@@ -62,6 +64,21 @@ namespace CitySim
 			((MyGame)Current).ResetMap();
 		}
 
+		public void CreateUi()
+		{
+			if ( IsClient )
+			{
+					if (Ui != null)
+				{
+					Ui.Delete();
+				}
+
+			
+				Ui = new GameUi();
+			}
+
+		}
+
 		[Event.Hotload]
 		public void OnLoad()
 		{
@@ -69,6 +86,8 @@ namespace CitySim
 			{
 				//this.RefreshMap();
 			}
+
+			CreateUi();
 		}
 
 
@@ -110,6 +129,19 @@ namespace CitySim
 			if ( TickableCollection.Global != null)
 			{
 				TickableCollection.Global.ServerTick();
+			}
+			if ( Map != null )
+			{
+				Map.ServerTick();
+			}
+		}
+
+		[Event.Tick]
+		public void SharedTick()
+		{
+			if ( TickableCollection.Global != null )
+			{
+				TickableCollection.Global.SharedTick();
 			}
 		}
 		public void ResetMap()

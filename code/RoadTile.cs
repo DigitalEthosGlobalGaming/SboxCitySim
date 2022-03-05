@@ -20,8 +20,6 @@ namespace CitySim
 		}
 
 		[Net]
-		public bool HasRoad { get; set; }
-		[Net]
 		public bool UpConnected { get; set; } = false;
 		[Net]
 		public bool DownConnected { get; set; } = false;
@@ -56,25 +54,28 @@ namespace CitySim
 		public override void OnAddToMap()
 		{
 			base.OnAddToMap();
+			Position = GetWorldPosition();
 			TargetPosition = Position;
 			SetModel( "models/roads/street_4way.vmdl" );
 			RoadType = ( RoadTypeEnum.StreetEmpty );
 			SetupPhysicsFromModel( PhysicsMotionType.Static, false );
-			var rnd = new Random();
-			var item = rnd.Next( 0, 16 );
-			SetHasRoad( item > 10 );
 			UpdateName();
 		}
 
 		public void UpdateName()
 		{
 			var suffix = "";
-			if (HasRoad)
+			if (HasRoad())
 			{
 				suffix = "R";
 			}
 
 			Name = $"[{GridPosition.x},{GridPosition.y}] {suffix}";
+		}
+
+		public bool HasRoad()
+		{
+			return TileType == TileTypeEnum.Road;
 		}
 
 		public void OnRoadTypeChanged( RoadTypeEnum oldValue, RoadTypeEnum newValue )
@@ -85,9 +86,9 @@ namespace CitySim
 
 		public override float GetMovementWeight( GridSpace a )
 		{
-			if (a  is RoadTile )
+			if (a is RoadTile )
 			{
-				if ( HasRoad && ((RoadTile)a).HasRoad )
+				if ( HasRoad() )
 				{
 					return 10;
 				}
@@ -99,11 +100,13 @@ namespace CitySim
 
 		public void SetHasRoad(bool hasRoad)
 		{
-			if ( hasRoad != HasRoad )
+			SetTileType( TileTypeEnum.Road );
+
+			if ( hasRoad != HasRoad() )
 			{
 				var transitionAmount = 10f;
 				Position = GetWorldPosition() + new Vector3( Rand.Float( -transitionAmount, transitionAmount ), Rand.Float( -transitionAmount, transitionAmount ), Rand.Float( 100f, 150f ) );
-				HasRoad = hasRoad;
+				SetTileType( TileTypeEnum.Road );
 				CheckModel();
 				RoadTile[] neighbours = GetNeighbours<RoadTile>();
 				neighbours[0]?.CheckModel();
@@ -112,6 +115,29 @@ namespace CitySim
 				neighbours[3]?.CheckModel();
 			}
 			UpdateName();
+		}
+
+		public RoadTile GetRoadNeighbour()
+		{
+			RoadTile[] neighbours = GetNeighbours<RoadTile>();
+			if (neighbours[0]?.HasRoad() ?? false)
+			{
+				return neighbours[0];
+			}
+			if ( neighbours[1]?.HasRoad() ?? false )
+			{
+				return neighbours[1];
+			}
+			if ( neighbours[2]?.HasRoad() ?? false )
+			{
+				return neighbours[2];
+			}
+			if ( neighbours[3]?.HasRoad() ?? false )
+			{
+				return neighbours[3];
+			}
+			return null;
+			
 		}
 
 		public void Test()
@@ -127,7 +153,7 @@ namespace CitySim
 			var rotation = 0f;
 
 			RenderColor = Color.White;
-			if ( !HasRoad )
+			if ( !HasRoad() )
 			{
 				RoadType = RoadTypeEnum.StreetEmpty;
 			}
@@ -140,10 +166,10 @@ namespace CitySim
 				DownTile = neighbours[2];
 				LeftTile = neighbours[3];
 				Neighbours = neighbours;
-				UpConnected = UpTile?.HasRoad ?? false;
-				RightConnected = RightTile?.HasRoad ?? false;
-				DownConnected = DownTile?.HasRoad ?? false;
-				LeftConnected = LeftTile?.HasRoad ?? false;
+				UpConnected = UpTile?.HasRoad() ?? false;
+				RightConnected = RightTile?.HasRoad() ?? false;
+				DownConnected = DownTile?.HasRoad() ?? false;
+				LeftConnected = LeftTile?.HasRoad() ?? false;
 				var up = UpConnected;
 				var right = RightConnected;
 				var down = DownConnected;
@@ -300,11 +326,19 @@ namespace CitySim
 		protected override void OnDestroy()
 		{
 			base.OnDestroy();
-			ParentCollection.Remove( this );
+			if ( ParentCollection != null )
+			{
+				ParentCollection.Remove( this );
+			}
 		}
 
 
 		public void OnClientTick( float delta, float currentTick )
+		{
+
+		}
+
+		public void OnSharedTick( float delta, float currentTick )
 		{
 
 		}
@@ -317,12 +351,11 @@ namespace CitySim
 			if ( TransitionPercentage < 1)
 			{
 				TransitionPercentage = TransitionPercentage + (10f * delta);
-
-
 			} else
 			{
 				TransitionPercentage = 1;
 			}
+			UpdateNeeds();
 		}
 
 

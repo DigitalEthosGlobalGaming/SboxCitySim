@@ -56,6 +56,11 @@ namespace GridSystem
 		}
 	}
 
+	class NavMap
+	{
+
+	}
+
 	class NavMesh
 	{
 		GridMap Map;
@@ -119,7 +124,9 @@ namespace GridSystem
 
 				if (node.GetPosition().Equals(endV))
 				{
-					return node.BackTrace(new List<GridSpace>());
+					var results = node.BackTrace( new List<GridSpace>() );
+					results.Reverse();
+					return results;
 				}
 
 				var neighbours = node.Space.GetNeighbours<GridSpace>();

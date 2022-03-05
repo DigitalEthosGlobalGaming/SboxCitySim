@@ -255,6 +255,12 @@
             Console variable that is available via the menu
             </summary>
         </member>
+        <member name="T:Sandbox.Utility.ApplicationTimings">
+            <summary>
+            For internal use. We use this for timings things such as loading and compiling. 
+            This is not meant for timing things that happen every frame.
+            </summary>
+        </member>
         <member name="P:Sandbox.Utility.CommandLine.Full">
             <summary>
             Returns the full command line, reconstructed from System.Environment.GetCommandLineArgs
@@ -9172,6 +9178,11 @@
         <member name="M:Sandbox.Parse.Is(System.Char,System.Int32,System.Boolean)">
             <summary>
             Return true if the char at the pointer is this
+            </summary>
+        </member>
+        <member name="T:Sandbox.PooledArrayBuffer`1">
+            <summary>
+            A result of SpeedTest.MemoryAlloc - to make it easy to use this instead of AllocHGlobal
             </summary>
         </member>
         <member name="T:Sandbox.Rand">

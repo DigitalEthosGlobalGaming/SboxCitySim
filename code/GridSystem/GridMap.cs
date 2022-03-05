@@ -17,6 +17,12 @@ namespace GridSystem
 		[Net]
 		public int YSize { get; set; }
 
+		public int CurrentX { get; set; }
+		public int CurrentY { get; set; }
+
+		public bool IsStarting { get; set; }
+
+		public Queue<Func<bool>> SetupFunctions { get; set; }
 
 		[Net]
 		public Vector2 GridSize { get; set; }
@@ -35,9 +41,11 @@ namespace GridSystem
 
 			foreach(var i in Grid)
 			{
-				i.Delete();
-			}
-				
+				if ( IsServer )
+				{
+					i.Delete();
+				}
+			}				
 		}
 
 
@@ -56,20 +64,42 @@ namespace GridSystem
 				Grid = new List<GridSpace>( xSize * ySize );
 				Position = position;
 				GridSize = gridSize;
+				SetupFunctions = new Queue<Func<bool>>();
 				for ( int x = 0; x < XSize; x++ )
 				{
 					for ( int y = 0; y < YSize; y++ )
 					{
-						var newSpace = new T();
-						newSpace.Map = this;
-						newSpace.GridPosition = new Vector2( x, y );
-						Grid.Add( newSpace );
-						newSpace.SetParent( this );
-						newSpace.OnAddToMap();
+						var tempX = x;
+						var tempY = y;
+						SetupFunctions.Enqueue( () => CreateNextTile<T>( tempX, tempY ) );
 					}
 				}
 			}
-			IsSetup = true;
+		}
+
+		public bool CreateNextTile<T>(int x, int y) where T : GridSpace, new()
+		{
+			try
+			{
+				var newSpace = new T();
+				newSpace.Map = this;
+				newSpace.GridPosition = new Vector2( x, y );
+				Grid.Add( newSpace );
+				newSpace.SetParent( this );
+				OnSpaceSetup( newSpace );
+				newSpace.OnAddToMap();
+				return true;
+			} catch(Exception e)
+			{
+				Log.Info( e );
+				return false;
+			}
+			
+		}
+
+		public void CheckFinish()
+		{
+			IsStarting = true;
 		}
 
 		public int TransformGridPosition(int x, int y)		{
@@ -80,6 +110,16 @@ namespace GridSystem
 			return ((int)x * XSize) + ((int)y);
 		}
 
+		public List<GridSpace> GetGridAsList()
+		{
+			var grid = new List<GridSpace>();
+
+			foreach(var item in Grid)
+			{
+				grid.Add( item );
+			}
+			return grid;
+		}
 
 
 		public GridSpace GetSpace( Vector2 position )
@@ -126,6 +166,12 @@ namespace GridSystem
 			var mesh =  new NavMesh( this );
 			return mesh.BuildPath( start, end );
 		}
+
+		public bool IsPath( Vector2 start, Vector2 end )
+		{
+			var mesh = new NavMesh( this );
+			return mesh.BuildPath( start, end ).Count > 0;
+		}
 		public GridSpace GetRandomSpace()
 		{
 			var rnd = new Random();
@@ -168,35 +214,57 @@ namespace GridSystem
 			return true;
 		}
 
-		public List<GridItem> GetItems( Vector2 position )
+		public virtual void OnSpaceSetup(GridSpace space)
 		{
-			var space = GetSpace( position );
-			if ( space == null )
-			{
-				return new List<GridItem>();
-			}
-			else
-			{
-				return space.Items;
-			}
+
 		}
 
-
-		public void ClientTick()
+		public virtual void OnSetup()
 		{
-			foreach(var item in Grid)
+
+		}
+
+		
+
+
+		public virtual void ClientTick()
+		{
+			if ( IsSetup )
 			{
-				if ( item != null )
+				foreach ( var item in Grid )
 				{
-					item.ClientTick( Time.Delta );
+					if ( item != null )
+					{
+						item.ClientTick( Time.Delta );
+					}
 				}
 			}
 		}
-		public void ServerTick()
+
+		public virtual void ServerTick()
 		{
-			foreach ( var item in Grid )
+			var startTime = Time.Now;
+			var amountToCreateAtOnce = 10;
+
+			if ( IsSetup == false )
 			{
-				item.ServerTick( Time.Delta );
+				while ( amountToCreateAtOnce > 0 && !IsSetup )
+				{
+					amountToCreateAtOnce = amountToCreateAtOnce - 1;
+					if ( SetupFunctions.Count > 0 )
+					{
+						var callBack = SetupFunctions.Dequeue();
+						if ( callBack != null )
+						{
+							callBack();
+						}
+					}
+					else
+					{
+						IsSetup = true;
+						OnSetup();
+					}
+				}
 			}
 		}
 

@@ -9,6 +9,7 @@ namespace CitySim
 		public TickableCollection ParentCollection { get; set; }
 		public void OnClientTick( float delta, float currentTick );
 		public void OnServerTick( float delta, float currentTick );
+		public void OnSharedTick( float delta, float currentTick );
 	}
 	public partial class TickableCollection
 	{
@@ -56,6 +57,21 @@ namespace CitySim
 					if ( item != null )
 					{
 						item.OnServerTick( Time.Delta, Time.Tick );
+					}
+				}
+			}
+		}
+
+		public void SharedTick()
+		{
+			if ( Items != null )
+			{
+				var itemsToTick = new List<ITickable>( Items );
+				foreach ( var item in itemsToTick )
+				{
+					if ( item != null )
+					{
+						item.OnSharedTick( Time.Delta, Time.Tick );
 					}
 				}
 			}

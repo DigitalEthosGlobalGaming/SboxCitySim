@@ -250,68 +250,68 @@
             hits, like if you're going through layers or ricocet'ing or something.
             </summary>
         </member>
-        <member name="P:Sandbox.Camera.Viewer">
+        <member name="P:Sandbox.CameraMode.Viewer">
             <summary>
             If this is set, we won't draw the third person model for this entity
             </summary>
         </member>
-        <member name="P:Sandbox.Camera.DoFPoint">
+        <member name="P:Sandbox.CameraMode.DoFPoint">
             <summary>
             Length until the Depth of Field focus point
             </summary>
         </member>
-        <member name="P:Sandbox.Camera.DoFBlurSize">
+        <member name="P:Sandbox.CameraMode.DoFBlurSize">
             <summary>
             How big is the DoF aperture, in pixels
             </summary>
         </member>
-        <member name="P:Sandbox.Camera.ViewModelFieldOfView">
+        <member name="P:Sandbox.CameraMode.ViewModelFieldOfView">
             <summary>
             Viewmodel specific setup
             </summary>
         </member>
-        <member name="P:Sandbox.Camera.ViewModelZNear">
+        <member name="P:Sandbox.CameraMode.ViewModelZNear">
             <summary>
             The viewmodel near Z clip plane
             </summary>
         </member>
-        <member name="P:Sandbox.Camera.ViewModelZFar">
+        <member name="P:Sandbox.CameraMode.ViewModelZFar">
             <summary>
             The viewmodel far Z clip plane
             </summary>
         </member>
-        <member name="P:Sandbox.Camera.ZNear">
+        <member name="P:Sandbox.CameraMode.ZNear">
             <summary>
             The near Z clip plane
             </summary>
         </member>
-        <member name="P:Sandbox.Camera.ZFar">
+        <member name="P:Sandbox.CameraMode.ZFar">
             <summary>
             The far Z clip plane
             </summary>
         </member>
-        <member name="P:Sandbox.Camera.Ortho">
+        <member name="P:Sandbox.CameraMode.Ortho">
             <summary>
             Use orthographic projection
             </summary>
         </member>
-        <member name="P:Sandbox.Camera.OrthoSize">
+        <member name="P:Sandbox.CameraMode.OrthoSize">
             <summary>
             Acts as a zoom when ortho is enabled
             </summary>
         </member>
-        <member name="M:Sandbox.Camera.BuildInput(Sandbox.InputBuilder)">
+        <member name="M:Sandbox.CameraMode.BuildInput(Sandbox.InputBuilder)">
             <summary>
             This builds the default behaviour for our input
             </summary>
         </member>
-        <member name="M:Sandbox.Camera.Activated">
+        <member name="M:Sandbox.CameraMode.Activated">
             <summary>
             Camera has become the active camera. You can use this as an opportunity
             to snap the positions if you're lerping etc.
             </summary>
         </member>
-        <member name="M:Sandbox.Camera.Deactivated">
+        <member name="M:Sandbox.CameraMode.Deactivated">
             <summary>
             Camera has stopped being the active camera.
             </summary>
@@ -490,16 +490,6 @@
         <member name="M:Sandbox.WaterSceneObject.MakeCube(Vector3,Vector3)">
             <summary>
             Makes a vertex buffer cube for fog with the given bounds
-            </summary>
-        </member>
-        <member name="T:Sandbox.WaterSea">
-            <summary>
-            Simple water effect
-            </summary>
-        </member>
-        <member name="T:Sandbox.WaterVolume">
-            <summary>
-            Garry: wtf is this for
             </summary>
         </member>
         <member name="T:Sandbox.GenericPathEntity">
@@ -749,16 +739,6 @@
             A generic button that is useful to control other map entities via inputs/outputs.
             </summary>
         </member>
-        <member name="P:Sandbox.ButtonEntity.ActivationSettings">
-            <summary>
-            How this button can be activated
-            </summary>
-        </member>
-        <member name="P:Sandbox.ButtonEntity.SpawnSettings">
-            <summary>
-            Settings that are only relevant on spawn
-            </summary>
-        </member>
         <member name="P:Sandbox.ButtonEntity.MoveDir">
             <summary>
             Specifies the direction to move in when the button is used, or axis of rotation for rotating buttons.
@@ -782,7 +762,12 @@
         </member>
         <member name="P:Sandbox.ButtonEntity.Speed">
             <summary>
-            The speed that the button moves, in inches per second
+            The speed at which the button moves, in inches per second or degress per second.
+            </summary>
+        </member>
+        <member name="P:Sandbox.ButtonEntity.ReturnSpeed">
+            <summary>
+            The speed at which the button returns to the initial position. 0 or less will function as the 'forward' move speed.
             </summary>
         </member>
         <member name="P:Sandbox.ButtonEntity.ResetDelay">
@@ -800,10 +785,34 @@
             Sound played when the button is pressed and is locked
             </summary>
         </member>
-        <member name="P:Sandbox.ButtonEntity.Ease">
+        <member name="P:Sandbox.ButtonEntity.Toggle">
             <summary>
-            The easing function for both movement and rotation
-            TODO: Expose to hammer in a nice way
+            If enabled, the button will have to be activated again to return to initial position.
+            </summary>
+        </member>
+        <member name="P:Sandbox.ButtonEntity.Momentary">
+            <summary>
+            If enabled, the button will have to be held to reach the pressed in state.
+            </summary>
+        </member>
+        <member name="P:Sandbox.ButtonEntity.Locked">
+            <summary>
+            Whether the button is locked or not.
+            </summary>
+        </member>
+        <member name="P:Sandbox.ButtonEntity.ActivationSettings">
+            <summary>
+            How this button can be activated
+            </summary>
+        </member>
+        <member name="P:Sandbox.ButtonEntity.SpawnSettings">
+            <summary>
+            Settings that are only relevant on spawn
+            </summary>
+        </member>
+        <member name="P:Sandbox.ButtonEntity.OnProgress">
+            <summary>
+            Fired when the button position changes, carries 0...1 as argument.
             </summary>
         </member>
         <member name="P:Sandbox.ButtonEntity.OnUseLocked">
@@ -823,7 +832,12 @@
         </member>
         <member name="P:Sandbox.ButtonEntity.OnPressed">
             <summary>
-            Fired when the button is pressed
+            Fired when the button is pressed by any means. This is not the same as button reaching its pressed in position.
+            </summary>
+        </member>
+        <member name="P:Sandbox.ButtonEntity.OnReleased">
+            <summary>
+            Fired when the button was released. This is not the same as button reaching its initial position.
             </summary>
         </member>
         <member name="P:Sandbox.ButtonEntity.OnIn">
@@ -992,6 +1006,11 @@
             <summary>
             The easing function for both movement and rotation
             TODO: Expose to hammer in a nice way
+            </summary>
+        </member>
+        <member name="M:Sandbox.DoorEntity.SetPosition(System.Single)">
+            <summary>
+            Sets the door's position to given percentage. The expected input range is 0..1
             </summary>
         </member>
         <member name="P:Sandbox.DoorEntity.OnLockedUse">
@@ -1366,9 +1385,9 @@
             </summary>
         </member>
         <member name="M:Sandbox.ParticleSystemEntity.Start">
-             <summary>
-            Tell the particle system to start emitting
-             </summary>
+            <summary>
+            Tell the particle system to start emitting.
+            </summary>
         </member>
         <member name="M:Sandbox.ParticleSystemEntity.Stop">
             <summary>
@@ -1382,7 +1401,7 @@
         </member>
         <member name="M:Sandbox.ParticleSystemEntity.DestroyImmediately">
             <summary>
-            Destroy the particle system and remove all particles immediately
+            Destroy the particle system and remove all particles immediately.
             </summary>
         </member>
         <member name="M:Sandbox.ParticleSystemEntity.SetControlPoint">
@@ -1592,6 +1611,11 @@
         <member name="P:Sandbox.PlatformEntity.CurrentRotation">
             <summary>
             Contains the current rotation of the platform in degrees.
+            </summary>
+        </member>
+        <member name="M:Sandbox.PlatformEntity.SetPosition(System.Single)">
+            <summary>
+            Sets the platforms's position to given percentage between start and end positions. The expected input range is 0..1
             </summary>
         </member>
         <member name="M:Sandbox.PlatformEntity.StartMoving">
@@ -1835,22 +1859,22 @@
             the param on the animgraph.
             </summary>
         </member>
-        <member name="M:Sandbox.PawnAnimator.SetParam(System.String,Vector3)">
+        <member name="M:Sandbox.PawnAnimator.SetAnimParameter(System.String,Vector3)">
             <summary>
             Sets the param on the animgraph
             </summary>
         </member>
-        <member name="M:Sandbox.PawnAnimator.SetParam(System.String,System.Single)">
+        <member name="M:Sandbox.PawnAnimator.SetAnimParameter(System.String,System.Single)">
             <summary>
             Sets the param on the animgraph
             </summary>
         </member>
-        <member name="M:Sandbox.PawnAnimator.SetParam(System.String,System.Boolean)">
+        <member name="M:Sandbox.PawnAnimator.SetAnimParameter(System.String,System.Boolean)">
             <summary>
             Sets the param on the animgraph
             </summary>
         </member>
-        <member name="M:Sandbox.PawnAnimator.SetParam(System.String,System.Int32)">
+        <member name="M:Sandbox.PawnAnimator.SetAnimParameter(System.String,System.Int32)">
             <summary>
             Sets the param on the animgraph
             </summary>
@@ -1861,7 +1885,7 @@
             has a "name" param with the auto reset property set.
             </summary>
         </member>
-        <member name="M:Sandbox.PawnAnimator.ResetParams">
+        <member name="M:Sandbox.PawnAnimator.ResetParameters">
             <summary>
             Resets all params to default values on the animgraph
             </summary>
@@ -1936,6 +1960,11 @@
         <member name="P:Sandbox.Player.DevController">
             <summary>
             This is used for noclip mode
+            </summary>
+        </member>
+        <member name="P:Sandbox.Player.ActiveChild">
+            <summary>
+            The active weapon, or tool, or whatever else
             </summary>
         </member>
         <member name="M:Sandbox.Player.GetActiveController">
@@ -2020,6 +2049,11 @@
         <member name="M:Sandbox.Player.OnActiveChildChanged(Sandbox.Entity,Sandbox.Entity)">
             <summary>
             Called when the Active child is detected to have changed
+            </summary>
+        </member>
+        <member name="P:Sandbox.Player.CameraMode">
+            <summary>
+            Provides an easy way to switch our current cameramode component
             </summary>
         </member>
         <member name="M:Sandbox.Player.TickPlayerUse">
@@ -2424,7 +2458,7 @@
         </member>
         <member name="M:Sandbox.Game.DefaultCleanupFilter(System.String,Sandbox.Entity)">
             <summary>
-            This is the default map cleanup filter, for use with <see cref="M:Sandbox.EntityManager.CleanUpMap(Sandbox.EntityManager.CleanupEntityFilter)">EntityManager.CleanUpMap</see>
+            This is the default map cleanup filter, for use with <see cref="!:EntityManager.CleanUpMap">EntityManager.CleanUpMap</see>
             </summary>
         </member>
         <member name="M:Sandbox.Game.MoveToSpawnpoint(Sandbox.Entity)">
@@ -2629,6 +2663,471 @@
         <member name="M:Sandbox.WalkController.StayOnGround">
             <summary>
             Try to keep a walking player on the ground when running down slopes etc
+            </summary>
+        </member>
+        <member name="P:Sandbox.StandardPostProcess.BlurSettings.Enabled">
+            <summary>
+            Enable blur post processing
+            </summary>
+        </member>
+        <member name="P:Sandbox.StandardPostProcess.BlurSettings.UseFalloff">
+            <summary>
+            Enable the usage of the post processing distance fall off for this
+            post processing effect
+            </summary>
+        </member>
+        <member name="P:Sandbox.StandardPostProcess.BlurSettings.Strength">
+            <summary>
+            Set how strong/the size of the blur is.
+            Range 0->1
+            </summary>
+        </member>
+        <member name="P:Sandbox.StandardPostProcess.BrightnessSettings.Enabled">
+            <summary>
+            Enables brightness post processing effect
+            </summary>
+        </member>
+        <member name="P:Sandbox.StandardPostProcess.BrightnessSettings.UseFalloff">
+            <summary>
+            Enable the usage of the post processing distance fall off for this
+            post processing effect
+            </summary>
+        </member>
+        <member name="P:Sandbox.StandardPostProcess.BrightnessSettings.Multiplier">
+            <summary>
+            How much to rotate the hue by, this is a value from 0->n. The default value for this is 1.0f which means no change
+            </summary>
+        </member>
+        <member name="P:Sandbox.StandardPostProcess.ChromaticAberrationSettings.Enabled">
+            <summary>
+            Enable chromatic abberation
+            </summary>
+        </member>
+        <member name="P:Sandbox.StandardPostProcess.ChromaticAberrationSettings.UseFalloff">
+            <summary>
+            Enable the usage of the post processing distance fall off for this
+            post processing effect
+            </summary>
+        </member>
+        <member name="P:Sandbox.StandardPostProcess.ChromaticAberrationSettings.Offset">
+            <summary>
+            The pixel offset for each color channel. These values should
+            be very small as it's in UV space. (0.004 for example)
+            X = Red
+            Y = Green
+            Z = Blue
+            </summary>
+        </member>
+        <member name="T:Sandbox.StandardPostProcess.ColorOverlaySettings.OverlayMode">
+            <summary>
+            Color overlay mode to use
+            </summary>
+        </member>
+        <member name="P:Sandbox.StandardPostProcess.ColorOverlaySettings.Enabled">
+            <summary>
+            Enable the color overlay
+            </summary>
+        </member>
+        <member name="P:Sandbox.StandardPostProcess.ColorOverlaySettings.UseFalloff">
+            <summary>
+            Enable the usage of the post processing distance fall off for this
+            post processing effect
+            </summary>
+        </member>
+        <member name="P:Sandbox.StandardPostProcess.ColorOverlaySettings.Mode">
+            <summary>
+            Determine which color overlay we should use
+            </summary>
+        </member>
+        <member name="P:Sandbox.StandardPostProcess.ColorOverlaySettings.Color">
+            <summary>
+            The color which should be used with the color overlay
+            </summary>
+        </member>
+        <member name="P:Sandbox.StandardPostProcess.ColorOverlaySettings.Amount">
+            <summary>
+            How much the color overlays influence is. This is a value between
+            0.0f -> 1.0f
+            </summary>
+        </member>
+        <member name="P:Sandbox.StandardPostProcess.ContrastSettings.Enabled">
+            <summary>
+            Enables the constrast post processing effect
+            </summary>
+        </member>
+        <member name="P:Sandbox.StandardPostProcess.ContrastSettings.UseFalloff">
+            <summary>
+            Enable the usage of the post processing distance fall off for this
+            post processing effect
+            </summary>
+        </member>
+        <member name="P:Sandbox.StandardPostProcess.ContrastSettings.Contrast">
+            <summary>
+            How much contrast the screen should have? The default value for this is 1.0f which means no change
+            </summary>
+        </member>
+        <member name="T:Sandbox.StandardPostProcess.DepthOfFieldSettings.BlurColorMode">
+            <summary>
+            Out of focus coloring modes
+            </summary>
+        </member>
+        <member name="P:Sandbox.StandardPostProcess.DepthOfFieldSettings.FilmWidth">
+            <summary>
+            Defines the current camera sensors width in mm. By default we have this as 35mm
+            </summary>
+        </member>
+        <member name="P:Sandbox.StandardPostProcess.DepthOfFieldSettings.BlurCircleOfConfusion">
+            <summary>
+            Provide an aditional blur on our circle of confusion to remove harsh transitions from in focus objects to out of focus objects
+            </summary>
+        </member>
+        <member name="P:Sandbox.StandardPostProcess.DepthOfFieldSettings.BleedFocusEdge">
+            <summary>
+            Allow in focus objects to bleed their colors into out of focus objects
+            </summary>
+        </member>
+        <member name="P:Sandbox.StandardPostProcess.DepthOfFieldSettings.BlurColoringMode">
+            <summary>
+            Ability to color the scene for what's out of focus. This is meant to give a more stylized look to your scenes.
+            </summary>
+        </member>
+        <member name="P:Sandbox.StandardPostProcess.DepthOfFieldSettings.BlurColor">
+            <summary>
+            Sets the out of focus color, this only works if the BlurColoringMode is set to BlurColorMode.Colorize
+            </summary>
+        </member>
+        <member name="P:Sandbox.StandardPostProcess.DepthOfFieldSettings.Radius">
+            <summary>
+            Define how much we should blur what's out of focus
+            </summary>
+        </member>
+        <member name="P:Sandbox.StandardPostProcess.DepthOfFieldSettings.FocalPoint">
+            <summary>
+            Define where our point of focus is. This is in engine units or inches
+            </summary>
+        </member>
+        <member name="P:Sandbox.StandardPostProcess.DepthOfFieldSettings.FStop">
+            <summary>
+            Define what our current F-Stop/Appeture size is
+            </summary>
+        </member>
+        <member name="P:Sandbox.StandardPostProcess.DepthOfFieldSettings.FocalLength">
+            <summary>
+            Define our current focal length, this is in engine units or inches
+            </summary>
+        </member>
+        <member name="P:Sandbox.StandardPostProcess.FalloffSettings.Enabled">
+            <summary>
+            Enables distance based fall off on all of the post processing effects
+            </summary>
+        </member>
+        <member name="P:Sandbox.StandardPostProcess.FalloffSettings.StartDistance">
+            <summary>
+            The distance(in units) on where the post processing effect should begin
+            </summary>
+        </member>
+        <member name="P:Sandbox.StandardPostProcess.FalloffSettings.EndDistance">
+            <summary>
+            The distance(in units) on how far the post processing effect should be before it reaches full intensity
+            </summary>
+        </member>
+        <member name="P:Sandbox.StandardPostProcess.FalloffSettings.Exponent">
+            <summary>
+            The fall off exponent to adjust how quickly the falloff should happen
+            A range from 0.001 -> 8 seems to work best
+            </summary>
+        </member>
+        <member name="P:Sandbox.StandardPostProcess.FilmGrainSettings.Enabled">
+            <summary>
+            Enable the grain post processing
+            </summary>
+        </member>
+        <member name="P:Sandbox.StandardPostProcess.FilmGrainSettings.UseFalloff">
+            <summary>
+            Enable the usage of the post processing distance fall off for this
+            post processing effect
+            </summary>
+        </member>
+        <member name="P:Sandbox.StandardPostProcess.FilmGrainSettings.Intensity">
+            <summary>
+            How intense the grain output should be. This is a value
+            from 0->1
+            </summary>
+        </member>
+        <member name="P:Sandbox.StandardPostProcess.FilmGrainSettings.Response">
+            <summary>
+            How responsive the grain should be to light values. A result
+            of 0 will lead to the grain being very responsive everywhere
+            whereas a value of 1 will lead to the grain only being responsive in darker
+            areas.
+            The range is from 0->1
+            </summary>
+        </member>
+        <member name="P:Sandbox.StandardPostProcess.HueRotateSettings.Enabled">
+            <summary>
+            Enables hue rotation post processing
+            </summary>
+        </member>
+        <member name="P:Sandbox.StandardPostProcess.HueRotateSettings.UseFalloff">
+            <summary>
+            Enable the usage of the post processing distance fall off for this
+            post processing effect
+            </summary>
+        </member>
+        <member name="P:Sandbox.StandardPostProcess.HueRotateSettings.Angle">
+            <summary>
+            How much to rotate the hue by, this is a value from 0->360.
+            The default value for this is 0.0f which means no change
+            </summary>
+        </member>
+        <member name="P:Sandbox.StandardPostProcess.LensDistortionSettings.K1">
+            <summary>
+            Lens distortion multiplier 1
+            The range should be from -1.0 -> 1.0
+            Positive values = More Convex
+            Negative values = More Concave
+            </summary>
+        </member>
+        <member name="P:Sandbox.StandardPostProcess.LensDistortionSettings.K2">
+            <summary>
+            Lens distortion multiplier 2.
+            The range should be from -1.0 -> 1.0
+            Positive values = More Convex
+            Negative values = More Concave
+            </summary>
+        </member>
+        <member name="P:Sandbox.StandardPostProcess.MotionBlurSettings.Enabled">
+            <summary>
+            Enable motion blur
+            </summary>
+        </member>
+        <member name="P:Sandbox.StandardPostProcess.MotionBlurSettings.UseFalloff">
+            <summary>
+            Enable the usage of the post processing distance fall off for this
+            post processing effect
+            </summary>
+        </member>
+        <member name="P:Sandbox.StandardPostProcess.MotionBlurSettings.Scale">
+            <summary>
+            How strong the motion blur should be.
+            Smaller values seem to work better here, default value is ~0.05f
+            </summary>
+        </member>
+        <member name="P:Sandbox.StandardPostProcess.MotionBlurSettings.Samples">
+            <summary>
+            How many blur samples we should take. The higher this value is the
+            more expensive it is. This value determines how smooth the blur will be
+            </summary>
+        </member>
+        <member name="P:Sandbox.StandardPostProcess.PaniniProjectionSettings.Enabled">
+            <summary>
+            Enable Panini Projection
+            </summary>
+        </member>
+        <member name="P:Sandbox.StandardPostProcess.PaniniProjectionSettings.Amount">
+            <summary>
+            How intense the panini projection should be?
+            A range from 0->1 seems to work best here
+            </summary>
+        </member>
+        <member name="P:Sandbox.StandardPostProcess.PaniniProjectionSettings.Crop">
+            <summary>
+            How much of the excess view should be cropped
+            Range 0->1
+            </summary>
+        </member>
+        <member name="P:Sandbox.StandardPostProcess.PixelateSettings.Enabled">
+            <summary>
+            Enable pixelation post processing
+            </summary>
+        </member>
+        <member name="P:Sandbox.StandardPostProcess.PixelateSettings.UseFalloff">
+            <summary>
+            Enable the usage of the post processing distance fall off for this
+            post processing effect
+            </summary>
+        </member>
+        <member name="P:Sandbox.StandardPostProcess.PixelateSettings.PixelCount">
+            <summary>
+            Amount of pixels on the x/y axis of the screen.
+            </summary>
+        </member>
+        <member name="P:Sandbox.StandardPostProcess.SaturateSettings.Enabled">
+            <summary>
+            Enable the saturation post processing effect
+            </summary>
+        </member>
+        <member name="P:Sandbox.StandardPostProcess.SaturateSettings.UseFalloff">
+            <summary>
+            Enable the usage of the post processing distance fall off for this
+            post processing effect
+            </summary>
+        </member>
+        <member name="P:Sandbox.StandardPostProcess.SaturateSettings.Amount">
+            <summary>
+            How saturated our view should be. A value of 
+            0 is a grayscale result whereas 1 is no change. Any
+            value greater than 1 will lead to an over-saturated or
+            "deepfried" look
+            </summary>
+        </member>
+        <member name="P:Sandbox.StandardPostProcess.SharpenSettings.Enabled">
+            <summary>
+            Enable sharpen post processing
+            </summary>
+        </member>
+        <member name="P:Sandbox.StandardPostProcess.SharpenSettings.UseFalloff">
+            <summary>
+            Enable the usage of the post processing distance fall off for this
+            post processing effect
+            </summary>
+        </member>
+        <member name="P:Sandbox.StandardPostProcess.SharpenSettings.Strength">
+            <summary>
+            How strong the sharpening effect should be.
+            This is a range from 0->1 however the range can be
+            higher to yield and even stronger effect
+            </summary>
+        </member>
+        <member name="M:Sandbox.StandardPostProcess.BuildRenderTargets">
+            <summary>
+            We use this to monitor recreation of render targets on resolution changes. We can't do this in
+            post processing because we cannot create textures in the render block
+            </summary>
+        </member>
+        <member name="F:Sandbox.StandardPostProcess.Falloff">
+            <summary>
+            Fall-Off allows you to adjust the distance of influence for most of the
+            post processing effects. This is used as a modifier to adjust how much
+            influence the post processing effect has based on a start and end distance.
+            This allows you to fade a post-processing effect based on how far away
+            a point is in the world. It's like depth of field but for
+            all post processing effects.
+            </summary>
+        </member>
+        <member name="F:Sandbox.StandardPostProcess.Pixelate">
+            <summary>
+            Pixelate lets you define how many pixels should be drawn on the screen
+            at once. This is identical to scaling your screen down to a specific size
+            and resizing it back to it's original use using a nearest neighbour filter.
+            </summary>
+        </member>
+        <member name="F:Sandbox.StandardPostProcess.LensDistortion">
+            <summary>
+            Lens Distortion is used to mainly create a "barrel" distortion or a "fish-eye"
+            effect. Both parameters control how the distorted the image becomes. This is done
+            by making the lens a more concave or a more convex shape
+            </summary>
+        </member>
+        <member name="F:Sandbox.StandardPostProcess.PaniniProjection">
+            <summary>
+            Panini Projection distorts the view similar to what lens distortion does, however
+            it's distorted in a way to give the feel of having a wider field of view. The
+            sides of the view is distorted to allow for this
+            </summary>
+        </member>
+        <member name="F:Sandbox.StandardPostProcess.ChromaticAberration">
+            <summary>
+            Chromatic Aberration is how much the seperate color channels should
+            seperate. As this is in UV space, the color channel seperation should be extremely minimal
+            (close to zero) values.
+            </summary>
+        </member>
+        <member name="F:Sandbox.StandardPostProcess.MotionBlur">
+            <summary>
+            Motion blur defines how much an object should blur(based on the current view)
+            depending on how fast it's moving. The faster the user looks around, the more the
+            objects will blur.
+            </summary>
+        </member>
+        <member name="F:Sandbox.StandardPostProcess.Sharpen">
+            <summary>
+            Sharpen brings emphasis on edges and smaller details. As this is
+            increased, the edges and details become more defined in the scene
+            </summary>
+        </member>
+        <member name="F:Sandbox.StandardPostProcess.Blur">
+            <summary>
+            Blur does a simple gaussian blur on the current view.
+            </summary>
+        </member>
+        <member name="F:Sandbox.StandardPostProcess.DepthOfField">
+            <summary>
+            Depth of field is used to emulate an actual camera with focus. It allows
+            the user to keep objects in focus and adjust various other settings to emulate
+            how a film camera works.
+            </summary>
+        </member>
+        <member name="F:Sandbox.StandardPostProcess.ColorOverlay">
+            <summary>
+            Color Overlays allow tinting, mixing or completely changing the color of the
+            current view. This allows for tinting how the world looks or implementation of
+            such effects such as flashing
+            </summary>
+        </member>
+        <member name="F:Sandbox.StandardPostProcess.Saturate">
+            <summary>
+            Saturation defines how saturated a view is. A saturation of 0 leads to 
+            a black and white view, whereas a saturation of 1 leads to the regular view.
+            </summary>
+        </member>
+        <member name="F:Sandbox.StandardPostProcess.FilmGrain">
+            <summary>
+            Film grain introduces noise to the screen. The noise can be customised to
+            introduce more noise in darker areas. This allows the emulation of a camera
+            sensor.
+            </summary>
+        </member>
+        <member name="F:Sandbox.StandardPostProcess.Vignette">
+            <summary>
+            This creates a vignette or a sort of black border around the the edges of the screen.
+            This is faily used to bring attention to the center of the frame
+            </summary>
+        </member>
+        <member name="F:Sandbox.StandardPostProcess.HueRotate">
+            <summary>
+            Shift the hue of all the current colors on the screen. This is also known as hue shifting
+            </summary>
+        </member>
+        <member name="F:Sandbox.StandardPostProcess.Brightness">
+            <summary>
+            Boosting of the brightness or dimming of the brightness of the screen
+            </summary>
+        </member>
+        <member name="F:Sandbox.StandardPostProcess.Contrast">
+            <summary>
+            Ability to increase or decrease the contrast of the screen
+            </summary>
+        </member>
+        <member name="P:Sandbox.StandardPostProcess.VignetteSettings.Enabled">
+            <summary>
+            Enables vignette post processing
+            </summary>
+        </member>
+        <member name="P:Sandbox.StandardPostProcess.VignetteSettings.Color">
+            <summary>
+            The color of the vignette or the "border"
+            </summary>
+        </member>
+        <member name="P:Sandbox.StandardPostProcess.VignetteSettings.Intensity">
+            <summary>
+            How strong the vignette is. This is a value between 0 -> 1
+            </summary>
+        </member>
+        <member name="P:Sandbox.StandardPostProcess.VignetteSettings.Smoothness">
+            <summary>
+            How much fall off or how blurry the vignette is
+            </summary>
+        </member>
+        <member name="P:Sandbox.StandardPostProcess.VignetteSettings.Roundness">
+            <summary>
+            How circular or round the vignette is
+            </summary>
+        </member>
+        <member name="P:Sandbox.StandardPostProcess.VignetteSettings.Center">
+            <summary>
+            The center of the vignette in relation to UV space. This means
+            a value of {0.5, 0.5} is the center of the screen
             </summary>
         </member>
         <member name="M:Sandbox.UI.Button.SetText(System.String)">
@@ -3147,11 +3646,6 @@
         <member name="M:Sandbox.BaseInventory.Contains(Sandbox.Entity)">
             <summary>
             Returns true if this inventory contains this entity
-            </summary>
-        </member>
-        <member name="P:Sandbox.BaseInventory.Active">
-            <summary>
-            Returns the active entity
             </summary>
         </member>
         <member name="M:Sandbox.BaseInventory.SetActive(Sandbox.Entity)">

@@ -94,17 +94,24 @@ namespace CitySim
 				}
 
 				// If we're running serverside and Attack1 was just pressed, spawn a ragdoll
-				if ( IsServer && Input.Pressed( InputButton.Attack1 ) )
+				if ( IsServer)
 				{
-					var tile = GetRoadTileLookedAt();
-					if ( tile != null )
+					if ( Input.Pressed( InputButton.Attack1 ) )
 					{
-						if ( CanPlaceTyle(tile) )
+						var tile = GetRoadTileLookedAt();
+						if ( tile != null )
 						{
-							OnTileSelect( tile );
+							if ( CanPlaceTyle( tile ) )
+							{
+								OnTileSelect( tile );
+							}
 						}
+					} else if ( Input.Pressed( InputButton.Attack2 ) )
+					{
+						SelectedTileType = RoadTile.TileTypeEnum.Base;
 					}
-				
+
+
 				}
 
 				if ( IsServer && IsAdmin )

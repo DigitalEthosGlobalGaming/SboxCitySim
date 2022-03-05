@@ -29,7 +29,7 @@ namespace GridSystem.Ui
 				var selectedTile = player.SelectedTileType;
 				if ( selectedTile == RoadTile.TileTypeEnum.Base )
 				{
-					CurrentItem.Text = "Tile Placed";
+					CurrentItem.Text = "Empty";
 				}
 				else
 				{

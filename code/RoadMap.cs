@@ -77,7 +77,7 @@ namespace CitySim
 
 		public void Init()
 		{
-			Init<RoadTile>( new Vector3( 0, 0, 1000 ), new Vector2( 200, 200 ), 5, 5 );
+			Init<RoadTile>( new Vector3( 0, 0, 1000 ), new Vector2( 200, 200 ), 25, 25 );
 		}
 
 		public override void OnSpaceSetup(GridSpace space)
@@ -154,16 +154,19 @@ namespace CitySim
 				if (player is Pawn)
 				{
 					var p = player as Pawn;
-					var start = 1;
-					var end = 6;
-					var rndInt = Rand.Int( start, end );
-					if ( rndInt > 4 )
+					if ( p.SelectedTileType == RoadTile.TileTypeEnum.Base )
 					{
-						p.SelectedTileType = RoadTile.TileTypeEnum.House;
-					}
-					else
-					{
-						p.SelectedTileType = (RoadTile.TileTypeEnum)Enum.GetValues( typeof( RoadTile.TileTypeEnum ) ).GetValue( rndInt );
+						var start = 1;
+						var end = 6;
+						var rndInt = Rand.Int( start, end );
+						if ( rndInt > 4 )
+						{
+							p.SelectedTileType = RoadTile.TileTypeEnum.House;
+						}
+						else
+						{
+							p.SelectedTileType = (RoadTile.TileTypeEnum)Enum.GetValues( typeof( RoadTile.TileTypeEnum ) ).GetValue( rndInt );
+						}
 					}
 				}
 			}

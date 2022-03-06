@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace CitySim
 {
-	partial class RoadTile : GridSpace, ITickable
+	public partial class RoadTile : GridSpace, ITickable
 	{
 
 		public bool HasNeeds { get; set; }

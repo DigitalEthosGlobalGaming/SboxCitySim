@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace CitySim
 {
-	partial class RoadTile : GridSpace, ITickable
+	public partial class RoadTile : GridSpace, ITickable
 	{
 		public enum TileTypeEnum
 		{
@@ -23,7 +23,7 @@ namespace CitySim
 
 		public static string GetModelForTileType( TileTypeEnum type )
 		{
-			TileTypeModels = new string[]{ "", "models/buildings/forest.vmdl", "models/buildings/shop.vmdl", "models/buildings/house_01.vmdl", "models/roads/street_4way.vmdl" };
+			TileTypeModels = new string[]{ "models/roads/street_4way.vmdl", "models/buildings/forest.vmdl", "models/buildings/shop.vmdl", "models/buildings/house_01.vmdl", "models/roads/street_4way.vmdl" };
 			return TileTypeModels[(int)type] ?? "models/roads/street_4way.vmdl";
 		}
 
@@ -64,13 +64,13 @@ namespace CitySim
 			neighbours[3]?.CheckModel();
 		}
 
-		public bool SetTileType( TileTypeEnum type)
+		public int SetTileType( TileTypeEnum type)
 		{
 			if (IsServer)
 			{
 				if (!CanSetType(type))
 				{
-					return false;
+					return 0;
 				}
 
 				TileType = type;
@@ -91,9 +91,9 @@ namespace CitySim
 				}
 
 				MyGame.GetMap().UpdateScore();
-				return true;
+				return MyGame.GetMap().CalculateTileScore( this );
 			}
-			return false;
+			return 0;
 		}
 
 		public bool IsNextToRoad()

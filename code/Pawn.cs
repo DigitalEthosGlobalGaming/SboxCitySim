@@ -1,6 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using GridSystem;
 using Sandbox;
+using Sandbox.UI;
 
 namespace CitySim
 {
@@ -14,12 +16,12 @@ namespace CitySim
 		public RoadTile LastHighlighted { get; set; }
 
 		[Net, Local]
+		public bool DisabledControls { get; set; }
+
+		[Net, Local]
 		public RoadTile StartSpace { get; set; }
 		public RoadTile EndSpace { get; set; }
 		public List<GridSpace> OldPath { get; set; } = new List<GridSpace>();
-
-		[Net]
-		public float Score { get; set; }
 
 		public bool IsAdmin { get; set; } = false;
 
@@ -35,12 +37,20 @@ namespace CitySim
 			EnableHideInFirstPerson = true;
 			EnableShadowInFirstPerson = true;
 		}
-
 		
 		[Event.Hotload]
 		public void OnLoad()
 		{
 
+		}
+
+
+		[ServerCmd]
+		public static void SetControlsDisabledCmd(bool value)
+		{
+			Pawn pawn = (Pawn)ConsoleSystem.Caller.Pawn;
+			pawn.DisabledControls = value;
+			Log.Info( pawn );
 		}
 
 		public RoadTile GetRoadTileLookedAt()
@@ -61,9 +71,12 @@ namespace CitySim
 		/// </summary>
 		public override void Simulate( Client cl )
 		{
-			base.Simulate( cl );
+			if ( DisabledControls )
+			{
+				return;
+			}
 
-			var map = MyGame.GetMap();
+			base.Simulate( cl );
 
 
 
@@ -86,12 +99,15 @@ namespace CitySim
 
 			MoveHelper helper = new MoveHelper( Position, Velocity );
 
-			if ( !map.IsEnd) { 
-				helper.Trace = helper.Trace.Size( 16 );
-				if ( helper.TryMove( Time.Delta ) > 0 )
-				{
-					Position = helper.Position;
-				}
+
+			helper.Trace = helper.Trace.Size( 16 );
+			if ( helper.TryMove( Time.Delta ) > 0 )
+			{
+				Position = helper.Position;
+			}
+			
+			if ( MyGame.GameState == MyGame.GameStateEnum.Playing )
+			{
 
 				// If we're running serverside and Attack1 was just pressed, spawn a ragdoll
 				if ( IsServer)
@@ -160,7 +176,6 @@ namespace CitySim
 					{
 						OnTileHover( tile );
 						LastHighlighted = tile;
-
 					}
 				}
 	
@@ -188,7 +203,13 @@ namespace CitySim
 
 		public void OnTileHoverOff(RoadTile tile)
 		{
-			tile.UpdateModel();
+			try
+			{
+				tile.UpdateModel();
+			} catch(Exception e)
+			{
+
+			}
 		}
 
 		public void OnTileHover(RoadTile tile)
@@ -213,12 +234,11 @@ namespace CitySim
 
 		public void OnTileSelect(RoadTile tile)
 		{
-			var didPlace = tile.SetTileType( SelectedTileType );
+			var score = tile.SetTileType( SelectedTileType );
 			SelectedTileType = RoadTile.TileTypeEnum.Base;
-			if ( didPlace )
-			{
-				Score = Score + 1;
-			}
+			var clientScore = Client.GetInt( "score", 0 );
+			clientScore = clientScore + score;
+			Client.SetInt( "score", clientScore );
 		}
 
 

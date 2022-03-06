@@ -4,7 +4,7 @@ using System;
 
 namespace CitySim
 {
-	partial class RoadTile : GridSpace, ITickable
+	public partial class RoadTile : GridSpace, ITickable
 	{
 		public TickableCollection ParentCollection { get; set; }
 

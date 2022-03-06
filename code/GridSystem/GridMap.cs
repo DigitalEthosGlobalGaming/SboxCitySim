@@ -103,7 +103,7 @@ namespace GridSystem
 		}
 
 		public int TransformGridPosition(int x, int y)		{
-			return (x * XSize) + y;
+			return (x * YSize) + y;
 		}
 		public int TransformGridPosition( float x, float y )
 		{
@@ -244,7 +244,7 @@ namespace GridSystem
 		public virtual void ServerTick()
 		{
 			var startTime = Time.Now;
-			var amountToCreateAtOnce = 10;
+			var amountToCreateAtOnce = 1;
 
 			if ( IsSetup == false )
 			{

@@ -31,7 +31,6 @@ namespace CitySim
 		public MyGame()
 		{
 			GameObject = this;
-			ResetMap();
 			CreateUi();
 		}
 
@@ -46,9 +45,11 @@ namespace CitySim
 			var pawn = new Pawn();
 			client.Pawn = pawn;
 
-			pawn.Position = Map.Position + (Vector3.Up * 500f);
-
-
+			if (Map != null)
+			{
+				pawn.Position = Map.Position + (Vector3.Up * 500f);
+			}
+			UpdateClientGameState( GameState );
 		}
 
 		[ServerCmd( "check_models" )]
@@ -56,11 +57,7 @@ namespace CitySim
 		{
 			((MyGame)Current).RefreshMap();
 		}
-		[ServerCmd( "reset_map" )]
-		public static void ResetMapCmd()
-		{
-			((MyGame)Current).ResetMap();
-		}
+
 
 		public void CreateUi()
 		{
@@ -142,24 +139,7 @@ namespace CitySim
 				TickableCollection.Global.SharedTick();
 			}
 		}
-		public void ResetMap()
-		{
-			if ( Map != null )
-			{
-				Map.Delete();
-				Map = null;
-			}
 
-			
-			if ( IsServer )
-			{
-				if ( Map == null )
-				{
-					Map = new RoadMap();
-					Map.Init();
-				}
-			}
-		}
 	}
 
 }

@@ -9,6 +9,7 @@ namespace CitySim
 
 		[Net]
 		public bool IsEnd { get; set; }
+
 		public float TimeBetweenPieces { get; set; } = 3;
 
 		[Net]
@@ -17,73 +18,90 @@ namespace CitySim
 		public float Score { get; set;}
 
 		public void UpdateScore() {
-
-			Score = CalculateScore();
 			CheckGameEnd();
+		}
 
+		public static bool IsCombination(RoadTile aTile, RoadTile bTile, RoadTile.TileTypeEnum a, RoadTile.TileTypeEnum b)
+		{
+			if (aTile.TileType == a && bTile.TileType == b)
+			{
+				return true;
+			}
+			if ( bTile.TileType == a && aTile.TileType == b )
+			{
+				return true;
+			}
+
+			return false;
 		}
 
 
-		public float CalculateScore()
+		public int CalculateTileScore(RoadTile tile)
 		{
-			var score = 0;
-			var totalBusinesses = 0;
-			var totalHouses = 0;
-			foreach(var s in Grid)
-			{
-				var tile = (RoadTile)s;
-				var neighbours = tile.GetNeighbours<RoadTile>();
-				if (tile.TileType == RoadTile.TileTypeEnum.House)
-				{
-					totalHouses += 1;
-					score = score + 5;
-					foreach ( var n in neighbours )
-					{
-						if (n != null)
-						{
-							if ( n.TileType == RoadTile.TileTypeEnum.Business )
-							{
-								score = score - 10;
-							}
-							else if ( n.TileType == RoadTile.TileTypeEnum.Park )
-							{
-								score = score + 10;
-							}
-						}
-					}
-				} else if (tile.TileType == RoadTile.TileTypeEnum.Business)
-				{
-					totalBusinesses += 1;
+			var score = 1;
 
-					foreach ( var n in neighbours )
+			var neighbours = tile.GetNeighbours<RoadTile>();
+			var a = tile;
+
+			foreach ( var b in neighbours )
+			{
+				if ( b != null )
+				{
+					// House House
+					if ( IsCombination( a, b, RoadTile.TileTypeEnum.House, RoadTile.TileTypeEnum.House ) )
 					{
-						if ( n != null )
-						{
-							if ( n.TileType == RoadTile.TileTypeEnum.Business )
-							{
-								score = score + 1;
-							}
-							else if ( n.TileType == RoadTile.TileTypeEnum.Park )
-							{
-								score = score - 1;
-							}
-						}
+						score = score + 1;
+					// House Park
+					} else if ( IsCombination( a, b, RoadTile.TileTypeEnum.House, RoadTile.TileTypeEnum.Park ) )
+					{
+						score = score + 2;
+					}
+					// House Business
+					else if ( IsCombination( a, b, RoadTile.TileTypeEnum.House, RoadTile.TileTypeEnum.Business ) )
+					{
+						score = score - 1;
+					}
+					// Park Park
+					else if ( IsCombination( a, b, RoadTile.TileTypeEnum.Park, RoadTile.TileTypeEnum.Park ) )
+					{
+						score = score + 2;
+					}
+					// Park Road
+					else if ( IsCombination( a, b, RoadTile.TileTypeEnum.Park, RoadTile.TileTypeEnum.Road ) )
+					{
+						score = score - 1;
+					}
+					// Park Business
+					else if ( IsCombination( a, b, RoadTile.TileTypeEnum.Park, RoadTile.TileTypeEnum.Business ) )
+					{
+						score = score - 1;
+					}					
+					// Business Business
+					else if ( IsCombination( a, b, RoadTile.TileTypeEnum.Business, RoadTile.TileTypeEnum.Business ) )
+					{
+						score = score + 2;
 					}
 				}
+			}
+
+			if ( score  < 0)
+			{
+				score = 0;
 			}
 
 			return score;
 		}
 
-		public void Init()
+		public void Init(int xAmount, int yAmount)
 		{
-			Init<RoadTile>( new Vector3( 0, 0, 1000 ), new Vector2( 200, 200 ), 25, 25 );
+			Init<RoadTile>( new Vector3( 0, 0, 1000 ), new Vector2( 200, 200 ), xAmount, yAmount );
 		}
 
 		public override void OnSpaceSetup(GridSpace space)
 		{
 			
 		}
+
 		public override void OnSetup()
 		{
 			var numberOfRows = Rand.Int( 1, 4 );
@@ -120,6 +138,9 @@ namespace CitySim
 					}
 				}
 			}
+
+
+			Event.Run( "citysim.map_setup", this );
 		}
 
 		public int GetBlankTiles()
@@ -148,9 +169,13 @@ namespace CitySim
 
 		public void GivePlayersNewPiece()
 		{
-			Log.Info( "New pieces please" );
-			foreach(var player in Player.All)
+			if (MyGame.GameState != MyGame.GameStateEnum.Playing)
 			{
+				return;
+			}
+			foreach(var client in Client.All)
+			{
+				var player = client.Pawn;
 				if (player is Pawn)
 				{
 					var p = player as Pawn;
@@ -176,7 +201,7 @@ namespace CitySim
 		{
 			base.ServerTick();
 
-			if ( IsSetup )
+			if (MyGame.GameState == MyGame.GameStateEnum.Playing)
 			{
 				if ( TimeForNewPiece < Time.Now )
 				{

@@ -15,7 +15,6 @@ namespace GridSystem.Ui
 		public Label GameOverTime { get; set; }
 		public Main()
 		{
-
 			SetTemplate( "Ui/Main.html" );
 			StyleSheet.Load( "Ui/main.scss" );
 		}
@@ -38,8 +37,9 @@ namespace GridSystem.Ui
 
 
 				var map = MyGame.GetMap();
+				var score = Local.Client.GetInt( "score", 0 );
 
-				CurrentScore.Text = (map.Score + player.Score) + " Points";
+				CurrentScore.Text = (score) + " Points";
 
 				var timeToPeice = Math.Round(map.TimeForNewPiece - Time.Now);
 				if ( timeToPeice  <= 0)

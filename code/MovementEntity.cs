@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace CitySim
 {
-	partial class MovementEntity : ModelEntity, ITickable
+	public partial class MovementEntity : ModelEntity, ITickable
 	{
 
 		public RoadTile LastHighlighted { get; set; }

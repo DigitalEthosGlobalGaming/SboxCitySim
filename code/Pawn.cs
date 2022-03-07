@@ -248,12 +248,12 @@ namespace CitySim
 			tile.UpdateModel();
 			if ( IsClient )
 			{
-				SpawnGhost( tile );
-
 				if ( !CanPlaceTyle( tile ) )
 				{
 					return;
 				}
+
+				SpawnGhost( tile );
 
 				if ( tile.CanSetType( SelectedTileType ) )
 				{

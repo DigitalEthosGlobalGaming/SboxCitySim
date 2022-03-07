@@ -360,6 +360,7 @@ namespace CitySim
 					{
 						// Spawn's the Ghost Local Model
 						GhostTile = new ModelEntity();
+						GhostTile.Name = "Ghost Tile";
 						GhostTile.PhysicsEnabled = false;
 						GhostTile.Transmit = TransmitType.Never;
 						GhostTile.EnableHitboxes = false;

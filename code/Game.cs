@@ -56,13 +56,35 @@ namespace CitySim
 			UpdateClientGameState( GameState );
 		}
 
-#if DEBUG && !RELEASE
-		[ServerCmd( "cs.test.restart" )]
-		public static void TestRestartCmd()
+		[ServerCmd( "cs.debug.cleanupEntities" )]
+		public static void CleanupEntitiesCmd()
 		{
-			MyGame.EndGameCmd();
-			MyGame.StartGameCmd();
+			foreach ( var entity in Entity.All )
+			{
+				if ( entity is MovementEntity )
+				{
+					entity.DeleteAsync( 0 );
+				}
+			}
+
+			CleanupWorldUIRpc();
 		}
+		[ClientCmd("cs.debug.cleanupWorldUI")]
+		public static void CleanupWorldUICmd()
+		{
+			CleanupWorldUIRpc();
+		}
+
+		[ClientRpc]
+		public static void CleanupWorldUIRpc()
+		{
+			foreach ( var ui in WorldTileStatUI.All )
+			{
+				ui.Delete();
+			}
+		}
+
+#if DEBUG && !RELEASE
 		[ServerCmd( "cs.test.updateMap" )]
 		public static void TestServerCmd()
 		{

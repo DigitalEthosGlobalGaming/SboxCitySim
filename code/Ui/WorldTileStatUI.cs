@@ -1,11 +1,14 @@
 ﻿using Sandbox;
 using Sandbox.UI;
 using Sandbox.UI.Construct;
+using System.Collections.Generic;
 
 namespace CitySim.UI
 {
 	public class WorldTileStatUI : WorldPanel
 	{
+		public static List<WorldTileStatUI> All { get; private set; } = new List<WorldTileStatUI>();
+
 		public Panel Base { get; set; }
 		private string name;
 		public string Name { 
@@ -34,6 +37,8 @@ namespace CitySim.UI
 
 		public WorldTileStatUI()
 		{
+			All.Add( this );
+
 			var size = 2000;
 			PanelBounds = new Rect( -size, -size, size, size );
 			SetTemplate( "Ui/WorldTileStatUi.html" );

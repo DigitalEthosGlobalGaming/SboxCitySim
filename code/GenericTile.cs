@@ -343,8 +343,6 @@ namespace CitySim
 				ghostViewModel.Rotation = Rotation.FromAxis( Vector3.Up, rotation );
 			}
 
-			Log.Info( rotation );
-
 		}
 
 

@@ -34,30 +34,22 @@ namespace CitySim
 			SetGameState( GameStateEnum.Playing );
 		}
 
-		[ServerCmd( "cs.test.cleanupEntities" )]
-		public static void CleanupEntitiesCmd()
-		{
-			foreach ( var entity in Entity.All )
-			{
-				if ( entity is MovementEntity )
-				{
-					entity.DeleteAsync( 0 );
-				}
-			}
-		}
-
 		[ServerCmd( "cs.game.start" )]
 		public static void StartGameCmd()
 		{
 			// Delete all Cars; if we are resetting.
 			CleanupEntitiesCmd();
 
-			Log.Info( "Game Starting..." );
-
 			var options = new GameOptions();
 			options.XSize = Rand.Int(10, 20);
 			options.YSize = Rand.Int(10, 20);
 			GameObject.StartGame( options );
+		}
+		[ServerCmd( "cs.game.restart" )]
+		public static void TestRestartCmd()
+		{
+			MyGame.EndGameCmd();
+			MyGame.StartGameCmd();
 		}
 
 		[ServerCmd( "cs.game.end" )]

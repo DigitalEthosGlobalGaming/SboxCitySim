@@ -27,7 +27,6 @@ namespace GridSystem.Ui
 		public void OnGameStateChange()
 		{
 			var state = MyGame.GameState;
-			Log.Info( "STATE: " + state.ToString() );
 
 			StartScreenElement?.Delete();
 			MainElement?.Delete();

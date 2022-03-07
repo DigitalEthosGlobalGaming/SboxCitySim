@@ -6,10 +6,9 @@ using System.Collections.Generic;
 
 namespace GridSystem.Ui
 {
-	public partial class TestPage : Panel
+	public partial class CreditsPage : Panel
 	{
 
-		public Panel Base { get; set; }
 
 		public bool Opened { get; set; }
 
@@ -20,11 +19,11 @@ namespace GridSystem.Ui
 		public List<Panel> Pages {get;set;}
 
 
-		public TestPage()
+		public CreditsPage()
 		{
-			SetTemplate( "Ui/GameMenuPages/TestPage.html" );
-			StyleSheet.Load( "Ui/GameMenuPages/TestPage.scss" );
-			AddClass( "how-to-play" );
+			SetTemplate( "Ui/GameMenuPages/CreditsPage.html" );
+			StyleSheet.Load( "Ui/GameMenuPages/CreditsPage.scss" );
+			AddClass( "main" );
 		}
 
 

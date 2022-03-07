@@ -1,7 +1,7 @@
 ﻿@import "variables.scss";
 
 .button {
-    background-color: $c-secondary;
+    background-color: $c-primary;
     cursor: pointer;
     color: rgba(255,255,255,0.9);
     padding-left: $size-md;
@@ -10,46 +10,12 @@
     padding-bottom: $size-sm;
 
     &:hover {
-        background-color: rgba( $c-primary );
-    }
-}
-
-.container {
-    border: none;
-    padding: 5px 20px;
-    padding-left: 0px;
-    min-height: 0px;
-    opacity: 0.1;
-    transition: all 0.2s ease;
-    background-color: transparent;
-    mix-blend-mode: lighten;
-    font-size: 15px;
-    font-weight: 300;
-
-    .iconpanel {
-        margin: 0;
-        margin-right: 5px;
-    }
-
-    &.tight {
-        padding: 0;
-        height: 20px; // hack
-        min-width: 0px;
-        justify-content: center;
-    }
-
-    &:hover {
-        border: none;
-        opacity: 0.15;
+        background-color: $c-secondary;
+        color: rgba(0,0,0,0.90);
     }
 
     &.active {
-        border: none;
-        opacity: 1;
-    }
-
-    &.hidden {
-        border: none;
-        display: none;
+        background-color: $c-secondary;
+        color: rgba(0,0,0,0.90);
     }
 }

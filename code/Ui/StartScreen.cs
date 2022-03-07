@@ -16,14 +16,18 @@ namespace GridSystem.Ui
 		{
 			SetTemplate( "Ui/StartScreen.html" );
 			StyleSheet.Load( "Ui/StartScreen.scss" );
+			StyleSheet.Load( "Ui/Styles/button.scss" );
 			AddClass("start-screen");
+			StartButton.Text =  "Press [Jump (Space)] To Start" ;
+			StartButton.AddClass( "button" );
+			StartButton.AddEventListener( "onclick", () => { VoteToStart(); } );
 		}
 
 		public override void Tick()
 		{
 
 			SetClass( "open", Input.Down( InputButton.Score ) );
-			if ( Input.Down( InputButton.Jump ) )
+			if ( Input.Pressed( InputButton.Jump ) )
 			{
 				VoteToStart();
 			}
@@ -31,7 +35,13 @@ namespace GridSystem.Ui
 
 		public void VoteToStart()
 		{
-			MyGame.VoteToStart();
+			var pawn = (Pawn)Local.Client.Pawn;
+			var opened = pawn.DisabledControls;
+			if ( !opened )
+			{
+				MyGame.VoteToStart();
+			}
+			
 		}
 
 	}

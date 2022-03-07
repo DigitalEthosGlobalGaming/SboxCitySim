@@ -6,6 +6,7 @@ namespace CitySim
 {
 	public partial class RoadMap : GridMap
 	{
+		public const float TileScale = 0.5f;
 
 		[Net]
 		public bool IsEnd { get; set; }
@@ -45,7 +46,7 @@ namespace CitySim
 
 		public void Init(int xAmount, int yAmount)
 		{
-			Init<GenericTile>( new Vector3( 0, 0, 1000 ), new Vector2( 200, 200 ), xAmount, yAmount );
+			Init<GenericTile>( new Vector3( 0, 0, 1000 ), new Vector2( TileScale * 200.0f, TileScale * 200.0f ), xAmount, yAmount );
 		}
 
 		public override void OnSpaceSetup(GridSpace space)

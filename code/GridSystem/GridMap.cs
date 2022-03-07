@@ -2,6 +2,7 @@
 using System;
 using Sandbox;
 using System.Collections.Generic;
+using CitySim;
 
 namespace GridSystem
 {
@@ -82,6 +83,7 @@ namespace GridSystem
 			try
 			{
 				var newSpace = new T();
+				newSpace.Scale = RoadMap.TileScale;
 				newSpace.Map = this;
 				newSpace.GridPosition = new Vector2( x, y );
 				Grid.Add( newSpace );

@@ -6,6 +6,7 @@ namespace CitySim.UI
 {
 	public class WorldTileStatUI : WorldPanel
 	{
+		public Panel Base { get; set; }
 		private string name;
 		public string Name { 
 			get { return name; }
@@ -16,14 +17,14 @@ namespace CitySim.UI
 				name = value;
 			} 
 		}
-		private string points;
-		public string Points
+		private int points;
+		public int Points
 		{
 			get { return points; }
 			set
 			{
 				if (pointsLabel != null)
-					pointsLabel.Text = value;
+					pointsLabel.Text = value.ToString();
 				points = value;
 			}
 		}
@@ -33,20 +34,23 @@ namespace CitySim.UI
 
 		public WorldTileStatUI()
 		{
-			Style.FontColor = Color.White;
-			Style.FontSize = Length.Pixels(64);
+			var size = 2000;
+			PanelBounds = new Rect( -size, -size, size, size );
+			SetTemplate( "Ui/WorldTileStatUi.html" );
+			StyleSheet.Load( "Ui/WorldTileStatUi.scss" );
+			AddClass( "stat-ui" );
+			AddClass( "open" );
 
 
-
-			nameLabel = Add.Label( "Unknown Name" );
-			pointsLabel = Add.Label( "0" );
+			pointsLabel = Base.Add.Label( "0" );
 		}
-
+		
 		public override void Tick()
 		{
 			base.Tick();
 
-
+			SetClass( "bad", points < 0 );
+			SetClass( "good", points > 0 );
 			// Closest calculation for now.... there's a bug here.
 			Rotation = Rotation.LookAt( (Local.Pawn.Position - Transform.Position).Normal );
 		}

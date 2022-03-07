@@ -81,7 +81,7 @@ namespace CitySim
 				return;
 
 			WorldUI.Name = _name;
-			WorldUI.Points = _points > 0 ? "+" + _points : "" + _points;
+			WorldUI.Points = _points;
 		}
 		[ClientRpc]
 		public void DestroyWorldUI()

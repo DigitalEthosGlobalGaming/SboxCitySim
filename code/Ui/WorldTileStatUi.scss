@@ -1,0 +1,26 @@
+﻿@import "./Styles/variables.scss";
+
+.stat-ui {
+    display: flex;
+    flex-direction: column;
+    align-content: center;
+    text-align: center;
+    justify-content: center;
+    border-radius: 100%;
+    font-size: 256;
+    background-color: $c-primary;
+    border-color: rgba(0,0,0,0.8);
+    border-style: solid;
+    border-width: 50px;
+    color: white;
+    font-weight: bold;
+    padding: 8px;
+
+    &.good {
+        background-color: $c-success;
+    }
+
+    &.bad {
+        background-color: $c-danger;
+    }
+}

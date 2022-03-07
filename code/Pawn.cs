@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using GridSystem;
 using Sandbox;
 using Sandbox.UI;
+using static CitySim.GenericTile;
 
 namespace CitySim
 {
@@ -255,9 +256,13 @@ namespace CitySim
 						if (neighbourTile != null)
 						{
 							int score = tile.GetTileScore( neighbourTile, SelectedTileType );
+
+							if ( neighbourTile.TileType != TileTypeEnum.Base )
+							{
+								neighbourTile.SpawnUI();
 							
-							neighbourTile.SpawnUI();
-							neighbourTile.UpdateWorldUI( Enum.GetName( typeof( GenericTile.TileTypeEnum ), neighbourTile.TileType ), score);
+								neighbourTile.UpdateWorldUI( Enum.GetName( typeof( GenericTile.TileTypeEnum ), neighbourTile.TileType ), score );
+							}
 						}
 					}
 				}

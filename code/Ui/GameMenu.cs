@@ -10,13 +10,9 @@ namespace GridSystem.Ui
 	public partial class GameMenu : Panel
 	{
 		public Panel Base { get; set; }
-
 		public bool Opened { get; set; }
-		public int Page { get; set; }
-
 		public float LastTick { get; set; }
 
-		public List<Panel> Pages {get;set;}
 		public Panel NavBar { get; set; }
 		public FormattableString IsClient { get; private set; }
 
@@ -25,9 +21,7 @@ namespace GridSystem.Ui
 			SetTemplate( "Ui/GameMenu.html" );
 			StyleSheet.Load( "Ui/GameMenu.scss" );
 			AddClass( "game-menu" );
-			Pages = new List<Panel>();
-
-			Opened = true;
+			Opened = false;
 
 			var nav = NavBar.AddChild<NavPanel>();
 			nav.AddPage<HowToPlay>("Welcome");

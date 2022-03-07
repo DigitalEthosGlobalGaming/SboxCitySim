@@ -1,20 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "E:\\Program Files (x86)\\Steam\\steamapps\\common\\sbox\\addons\\SboxCitySim\\code\\citysim.csproj": {}
+    "C:\\Program Files (x86)\\Steam\\steamapps\\common\\sbox\\addons\\some-sort-of-dice-game\\code\\citysim.csproj": {}
   },
   "projects": {
-    "E:\\Program Files (x86)\\Steam\\steamapps\\common\\sbox\\addons\\base\\code\\base.csproj": {
+    "C:\\Program Files (x86)\\Steam\\steamapps\\common\\sbox\\addons\\base\\code\\base.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "E:\\Program Files (x86)\\Steam\\steamapps\\common\\sbox\\addons\\base\\code\\base.csproj",
+        "projectUniqueName": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\sbox\\addons\\base\\code\\base.csproj",
         "projectName": "base",
-        "projectPath": "E:\\Program Files (x86)\\Steam\\steamapps\\common\\sbox\\addons\\base\\code\\base.csproj",
-        "packagesPath": "C:\\Users\\SysAdmin\\.nuget\\packages\\",
-        "outputPath": "E:\\Program Files (x86)\\Steam\\steamapps\\common\\sbox\\addons\\base\\code\\obj\\",
+        "projectPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\sbox\\addons\\base\\code\\base.csproj",
+        "packagesPath": "C:\\Users\\jonest\\.nuget\\packages\\",
+        "outputPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\sbox\\addons\\base\\code\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Users\\SysAdmin\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\jonest\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -58,17 +58,17 @@
         }
       }
     },
-    "E:\\Program Files (x86)\\Steam\\steamapps\\common\\sbox\\addons\\SboxCitySim\\code\\citysim.csproj": {
+    "C:\\Program Files (x86)\\Steam\\steamapps\\common\\sbox\\addons\\some-sort-of-dice-game\\code\\citysim.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "E:\\Program Files (x86)\\Steam\\steamapps\\common\\sbox\\addons\\SboxCitySim\\code\\citysim.csproj",
+        "projectUniqueName": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\sbox\\addons\\some-sort-of-dice-game\\code\\citysim.csproj",
         "projectName": "citysim",
-        "projectPath": "E:\\Program Files (x86)\\Steam\\steamapps\\common\\sbox\\addons\\SboxCitySim\\code\\citysim.csproj",
-        "packagesPath": "C:\\Users\\SysAdmin\\.nuget\\packages\\",
-        "outputPath": "E:\\Program Files (x86)\\Steam\\steamapps\\common\\sbox\\addons\\SboxCitySim\\code\\obj\\",
+        "projectPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\sbox\\addons\\some-sort-of-dice-game\\code\\citysim.csproj",
+        "packagesPath": "C:\\Users\\jonest\\.nuget\\packages\\",
+        "outputPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\sbox\\addons\\some-sort-of-dice-game\\code\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Users\\SysAdmin\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\jonest\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -82,8 +82,8 @@
           "net6.0": {
             "targetAlias": "net6.0",
             "projectReferences": {
-              "E:\\Program Files (x86)\\Steam\\steamapps\\common\\sbox\\addons\\base\\code\\base.csproj": {
-                "projectPath": "E:\\Program Files (x86)\\Steam\\steamapps\\common\\sbox\\addons\\base\\code\\base.csproj"
+              "C:\\Program Files (x86)\\Steam\\steamapps\\common\\sbox\\addons\\base\\code\\base.csproj": {
+                "projectPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\sbox\\addons\\base\\code\\base.csproj"
               }
             }
           }

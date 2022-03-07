@@ -67,7 +67,7 @@ namespace CitySim
 			WorldTileStatUI WorldUI = new WorldTileStatUI();
 			Assert.NotNull( WorldUI );
 			WorldUI.Name = "Test World UI";
-			WorldUI.Points = "+500";
+			WorldUI.Points = 500;
 			WorldUI.Position = Local.Pawn.Position;
 		}
 #endif

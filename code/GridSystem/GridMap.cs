@@ -244,7 +244,7 @@ namespace GridSystem
 		public virtual void ServerTick()
 		{
 			var startTime = Time.Now;
-			var amountToCreateAtOnce = 1;
+			var amountToCreateAtOnce = 10;
 
 			if ( IsSetup == false )
 			{

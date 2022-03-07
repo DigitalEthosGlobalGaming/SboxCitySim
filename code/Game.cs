@@ -57,7 +57,13 @@ namespace CitySim
 		}
 
 #if DEBUG && !RELEASE
-		[ServerCmd( "check_models" )]
+		[ServerCmd( "cs.test.restart" )]
+		public static void TestRestartCmd()
+		{
+			MyGame.EndGameCmd();
+			MyGame.StartGameCmd();
+		}
+		[ServerCmd( "cs.test.updateMap" )]
 		public static void TestServerCmd()
 		{
 			((MyGame)Current).RefreshMap();

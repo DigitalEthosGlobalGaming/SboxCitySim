@@ -143,10 +143,10 @@ namespace CitySim
 				SetTileType( TileTypeEnum.Road, 0 );
 				CheckModel();
 				GenericTile[] neighbours = GetNeighbours<GenericTile>();
-				neighbours[0]?.CheckModel();
-				neighbours[1]?.CheckModel();
-				neighbours[2]?.CheckModel();
-				neighbours[3]?.CheckModel();
+				foreach ( GenericTile neighbor in neighbours )
+				{
+					neighbor?.CheckModel();
+				}
 			}
 			UpdateName();
 		}
@@ -154,21 +154,12 @@ namespace CitySim
 		public GenericTile GetRoadNeighbour()
 		{
 			GenericTile[] neighbours = GetNeighbours<GenericTile>();
-			if (neighbours[0]?.HasRoad() ?? false)
+			foreach (GenericTile tile in neighbours)
 			{
-				return neighbours[0];
-			}
-			if ( neighbours[1]?.HasRoad() ?? false )
-			{
-				return neighbours[1];
-			}
-			if ( neighbours[2]?.HasRoad() ?? false )
-			{
-				return neighbours[2];
-			}
-			if ( neighbours[3]?.HasRoad() ?? false )
-			{
-				return neighbours[3];
+				if (tile?.HasRoad() ?? false)
+				{
+					return tile;
+				}
 			}
 			return null;
 			
@@ -188,81 +179,49 @@ namespace CitySim
 			if ( ghostViewModel == null )
 				ghostViewModel = influencer;
 
-			RoadTypeEnum newRoadType = influencer.RoadType;
-			var rotation = 0f;
+			float rotation = 0;
 
-			ghostViewModel.RenderColor = Color.White;
 
-			if (influencer.TileType != TileTypeEnum.Road)
-			{
-				return;
-			}
+			GenericTile[] neighbours = influencer.GetNeighbours<GenericTile>();
+			influencer.UpTile = neighbours[0];
+			influencer.RightTile = neighbours[1];
+			influencer.DownTile = neighbours[2];
+			influencer.LeftTile = neighbours[3];
+			influencer.Neighbours = neighbours;
+			influencer.UpConnected = influencer.UpTile?.HasRoad() ?? false;
+			influencer.RightConnected = influencer.RightTile?.HasRoad() ?? false;
+			influencer.DownConnected = influencer.DownTile?.HasRoad() ?? false;
+			influencer.LeftConnected = influencer.LeftTile?.HasRoad() ?? false;
+			var up = influencer.UpConnected;
+			var right = influencer.RightConnected;
+			var down = influencer.DownConnected;
+			var left = influencer.LeftConnected;
 
-			
-			if ( !influencer.HasRoad() || (ghostTileType != null && ghostTileType != TileTypeEnum.Road) )
+			if ( influencer.TileType == TileTypeEnum.Road || (ghostTileType != null && ghostTileType == TileTypeEnum.Road) )
 			{
-				newRoadType = RoadTypeEnum.StreetEmpty;
-			}
-			else
-			{
-				GenericTile[] neighbours = influencer.GetNeighbours<GenericTile>();
-				influencer.UpTile = neighbours[0];
-				influencer.RightTile = neighbours[1];
-				influencer.DownTile = neighbours[2];
-				influencer.LeftTile = neighbours[3];
-				influencer.Neighbours = neighbours;
-				influencer.UpConnected = influencer.UpTile?.HasRoad() ?? false;
-				influencer.RightConnected = influencer.RightTile?.HasRoad() ?? false;
-				influencer.DownConnected = influencer.DownTile?.HasRoad() ?? false;
-				influencer.LeftConnected = influencer.LeftTile?.HasRoad() ?? false;
-				var up = influencer.UpConnected;
-				var right = influencer.RightConnected;
-				var down = influencer.DownConnected;
-				var left = influencer.LeftConnected;
+				// We are a road.
+
+				RoadTypeEnum newRoadType = influencer.RoadType;
 				int totalCount = 0;
 
 				if ( up )
 				{
-					totalCount = totalCount + 1;
+					totalCount++;
 				}
 				if ( down )
 				{
-					totalCount = totalCount + 1;
+					totalCount++;
 				}
 				if ( left )
 				{
-					totalCount = totalCount + 1;
+					totalCount++;
 				}
 				if ( right )
 				{
-					totalCount = totalCount + 1;
+					totalCount++;
 				}
 
-				if ( totalCount == 3 )
-				{
-					if ( up == false )
-					{
-						rotation = 0;
-					}
-					else if ( !right )
-					{
-						rotation = 1;
-					}
-					else if ( !down )
-					{
-						rotation = 2;
-					}
-					else if ( !left )
-					{
-						rotation = 2;
-					}
-				}
-
-				if ( totalCount == 4 )
-				{
-					newRoadType = RoadTypeEnum.FourWay;
-				}
-				else if ( totalCount == 3 )
+				if ( totalCount == 3 ) // THREE WAYS
 				{
 					newRoadType = RoadTypeEnum.ThreeWay;
 					if ( !up )
@@ -282,7 +241,7 @@ namespace CitySim
 						rotation = 90;
 					}
 				}
-				else if ( totalCount == 2 )
+				else if ( totalCount == 2 ) // STRAIGHT OR CURVES
 				{
 					if ( left && right )
 					{
@@ -320,7 +279,7 @@ namespace CitySim
 						}
 					}
 				}
-				else if ( totalCount == 1 )
+				else if ( totalCount == 1 ) // DEAD ENDS
 				{
 					if ( up )
 					{
@@ -344,28 +303,47 @@ namespace CitySim
 				{
 					newRoadType = RoadTypeEnum.FourWay;
 				}
+
+				// Update relating data.
 				influencer.TotalConnected = totalCount;
-
-			}
-
-			if ( newRoadType != influencer.RoadType )
-			{
-				influencer.TargetRotation = Rotation.FromAxis( Vector3.Up, rotation );
-				influencer.TargetPosition = influencer.GetWorldPosition();
-				influencer.TransitionPercentage = 0f;
 				influencer.RoadType = newRoadType;
+
+				// We want to override the base.
+				ghostViewModel.SetBodyGroup( "base", (int)newRoadType );
+			}
+			else
+			{
+				// We are a building.
+
+				if ( up )
+				{
+					rotation = 270;
+				}
+				else if ( down )
+				{
+					rotation = 90;
+				}
+				else if ( left )
+				{
+					rotation = 180;
+				}
+				else if ( right )
+				{
+					rotation = 0;
+				}
 			}
 
-			/*
+			influencer.TargetRotation = Rotation.FromAxis( Vector3.Up, rotation );
+			influencer.TargetPosition = influencer.GetWorldPosition();
+			influencer.TransitionPercentage = 0f;
+
 			if ( ghostViewModel != null )
 			{
 				ghostViewModel.Position = influencer.GetWorldPosition();
 				ghostViewModel.Rotation = Rotation.FromAxis( Vector3.Up, rotation );
-				ghostViewModel.SetBodyGroup( "base", (int)newRoadType );
-				Log.Info( newRoadType );
-				Log.Info( rotation );
 			}
-			*/
+
+			Log.Info( rotation );
 
 		}
 

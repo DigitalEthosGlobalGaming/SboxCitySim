@@ -225,6 +225,12 @@ namespace CitySim
 
 		public void OnTileHoverOff( GenericTile tile )
 		{
+			if (tile != null && !tile.IsValid)
+			{
+				LastHighlighted = null;
+				return;
+			}
+
 			DestroyGhost( tile );
 			tile.UpdateModel();
 			tile.DestroyWorldUI();
@@ -311,6 +317,7 @@ namespace CitySim
 					TileBodyIndex = nextBodyIndex % 4 ?? Rand.Int( 0, 4 );
 					break;
 				default:
+					TileBodyIndex = 0;
 					break;
 			}
 			SelectedTileType = type;
@@ -383,7 +390,7 @@ namespace CitySim
 		[ClientRpc]
 		public void DestroyGhost( GenericTile tile )
 		{
-			if ( tile != null)
+			if ( tile != null && tile.IsValid )
 			{
 				tile.EnableDrawing = true;
 			}

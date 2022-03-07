@@ -192,6 +192,12 @@ namespace CitySim
 			var rotation = 0f;
 
 			ghostViewModel.RenderColor = Color.White;
+
+			if (influencer.TileType != TileTypeEnum.Road)
+			{
+				return;
+			}
+
 			
 			if ( !influencer.HasRoad() || (ghostTileType != null && ghostTileType != TileTypeEnum.Road) )
 			{

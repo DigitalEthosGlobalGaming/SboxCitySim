@@ -44,13 +44,14 @@ namespace CitySim
 				{
 					entity.SetModel( model );
 					entity.SetupPhysicsFromModel( PhysicsMotionType.Static, false );
-					if ( type == TileTypeEnum.Business || type == TileTypeEnum.House )
+					if ( type == TileTypeEnum.Business )
+					{
+						entity.SetBodyGroup( "base", Rand.Int( 0, 2 ) );
+					}
+					if (type == TileTypeEnum.House )
 					{
 						entity.SetBodyGroup( "base", Rand.Int( 0, 4 ) );
-						var numbers = new int[] { 0,90,180,270 };
-						entity.Rotation = Rotation.FromAxis(Vector3.Up, Rand.FromArray( numbers ));
 					}
-					//entity.CurrentModel = model;
 				}
 			}
 			entity.RenderColor = Color.White;

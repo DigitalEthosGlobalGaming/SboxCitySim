@@ -30,12 +30,19 @@ namespace CitySim
 
 		[Net]
 		public TileTypeEnum TileType { get; set; }
+		[Net]
+		public int bodyIndex { get; set; } = 0;
 
-		public void UpdateModel()
+		public void UpdateModel(int? bodyIndex = null)
 		{
-			GenericTile.UpdateModel( this, TileType );
+			if (bodyIndex != null)
+			{
+				this.bodyIndex = bodyIndex.Value;
+			}
+
+			GenericTile.UpdateModel( this, TileType, bodyIndex ?? this.bodyIndex );
 		}
-		public static void UpdateModel( ModelEntity entity, TileTypeEnum type )
+		public static void UpdateModel( ModelEntity entity, TileTypeEnum type, int bodyIndex )
 		{
 			var model = GetModelForTileType( type );
 			if (model != "")
@@ -44,14 +51,7 @@ namespace CitySim
 				{
 					entity.SetModel( model );
 					entity.SetupPhysicsFromModel( PhysicsMotionType.Static, false );
-					if ( type == TileTypeEnum.Business )
-					{
-						entity.SetBodyGroup( "base", Rand.Int( 0, 2 ) );
-					}
-					if (type == TileTypeEnum.House )
-					{
-						entity.SetBodyGroup( "base", Rand.Int( 0, 4 ) );
-					}
+					entity.SetBodyGroup( "base", bodyIndex );
 				}
 			}
 			entity.RenderColor = Color.White;
@@ -128,7 +128,7 @@ namespace CitySim
 			return score;
 		}
 
-		public int SetTileType( TileTypeEnum type)
+		public int SetTileType( TileTypeEnum type, int bodyIndex )
 		{
 			if (IsServer)
 			{
@@ -151,7 +151,7 @@ namespace CitySim
 				}
 				else
 				{
-					UpdateModel( this, TileType );
+					UpdateModel( bodyIndex );
 				}
 
 				IsDirty = true;

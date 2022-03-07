@@ -132,17 +132,7 @@ namespace CitySim
 					var p = player as Pawn;
 					if ( p.SelectedTileType == GenericTile.TileTypeEnum.Base )
 					{
-						var start = 1;
-						var end = 6;
-						var rndInt = Rand.Int( start, end );
-						if ( rndInt > 4 )
-						{
-							p.SelectedTileType = GenericTile.TileTypeEnum.House;
-						}
-						else
-						{
-							p.SelectedTileType = (GenericTile.TileTypeEnum)Enum.GetValues( typeof( GenericTile.TileTypeEnum ) ).GetValue( rndInt );
-						}
+						p.SelectNextRandomTile();
 					}
 				}
 			}

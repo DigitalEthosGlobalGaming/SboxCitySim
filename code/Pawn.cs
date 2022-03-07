@@ -32,6 +32,9 @@ namespace CitySim
 		[Net]
 		public GenericTile.TileTypeEnum SelectedTileType { get; set; } = GenericTile.TileTypeEnum.Base;
 		public GenericTile.TileTypeEnum LastSelectedTileType { get; set; } = GenericTile.TileTypeEnum.Base;
+		[Net]
+		public int TileBodyIndex { get; set; } = 0; 
+
 		public override void Spawn()
 		{
 			base.Spawn();
@@ -145,35 +148,29 @@ namespace CitySim
 					}
 
 #if DEBUG && !RELEASE
-
 					if ( MyGame.IsDevelopment )
 					{
 						// Debug controls for developers to test tiles.
 						if ( Input.Pressed( InputButton.Slot0 ) )
 						{
-							Log.Info( "1" );
-							SelectedTileType = GenericTile.TileTypeEnum.Base;
+							SelectNextTile( GenericTile.TileTypeEnum.Base );
 						}
 						if ( Input.Pressed( InputButton.Slot1 ) )
 						{
-							Log.Info( "2" );
-							SelectedTileType = GenericTile.TileTypeEnum.Business;
+							SelectNextTile( GenericTile.TileTypeEnum.Business );
 						}
 						if ( Input.Pressed( InputButton.Slot2 ) )
 						{
-							Log.Info( "3" );
-							SelectedTileType = GenericTile.TileTypeEnum.Park;
+							SelectNextTile( GenericTile.TileTypeEnum.Park );
 						}
 						if ( Input.Pressed( InputButton.Slot3 ) )
 						{
-							Log.Info( "4" );
-							SelectedTileType = GenericTile.TileTypeEnum.House;
+							SelectNextTile( GenericTile.TileTypeEnum.House );
 						}
 
 						if ( Input.Pressed( InputButton.Slot4 ) )
 						{
-							Log.Info( "5" );
-							SelectedTileType = GenericTile.TileTypeEnum.Road;
+							SelectNextTile( GenericTile.TileTypeEnum.Road );
 						}
 					}
 				}
@@ -288,9 +285,40 @@ namespace CitySim
 			}
 		}
 
+		public void SelectNextRandomTile()
+		{
+			var start = 1;
+			var end = 6;
+			var rndInt = Rand.Int( start, end );
+			if ( rndInt > 4 )
+			{
+				SelectNextTile( GenericTile.TileTypeEnum.House );
+			}
+			else
+			{
+				SelectNextTile((GenericTile.TileTypeEnum)Enum.GetValues( typeof( GenericTile.TileTypeEnum ) ).GetValue( rndInt ));
+			}
+		}
+
+		public void SelectNextTile( TileTypeEnum type, int? nextBodyIndex = null )
+		{
+			switch ( type )
+			{
+				case TileTypeEnum.Business:
+					TileBodyIndex = nextBodyIndex % 2 ?? Rand.Int( 0, 2 );
+					break;
+				case TileTypeEnum.House:
+					TileBodyIndex = nextBodyIndex % 4 ?? Rand.Int( 0, 4 );
+					break;
+				default:
+					break;
+			}
+			SelectedTileType = type;
+		}
+
 		public void PlaceOnTile( GenericTile tile )
 		{
-			var score = tile.SetTileType( SelectedTileType );
+			var score = tile.SetTileType( SelectedTileType, TileBodyIndex );
 			SelectedTileType = GenericTile.TileTypeEnum.Base;
 			var clientScore = Client.GetInt( "score", 0 );
 			clientScore = clientScore + score;
@@ -319,7 +347,6 @@ namespace CitySim
 			{
 				tile.EnableDrawing = false;
 
-
 				if ( SelectedTileType != GenericTile.TileTypeEnum.Base && tile.CanSetType( SelectedTileType ) )
 				{
 					if ( GhostTile == null )
@@ -341,7 +368,7 @@ namespace CitySim
 					}
 
 					GhostTile.Transform = tile.Transform;
-					GenericTile.UpdateModel( GhostTile, SelectedTileType );
+					GenericTile.UpdateModel( GhostTile, SelectedTileType, TileBodyIndex );
 					GenericTile.CheckModel( tile, GhostTile, SelectedTileType );
 					GhostTile.RenderColor = new Color( 0, 1, 0, 0.75f );
 				}

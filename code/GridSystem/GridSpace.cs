@@ -61,6 +61,7 @@ namespace GridSystem
 		public T GetNeighbour<T>( int x, int y ) where T : GridSpace
 		{
 			var positionToGet = new Vector2(x,y) + GridPosition;
+			Assert.NotNull( Map );
 			return (T)Map.GetSpace( positionToGet );
 		}
 		// Grabs immediate neighbours.

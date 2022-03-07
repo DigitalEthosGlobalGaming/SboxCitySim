@@ -26,6 +26,8 @@ namespace CitySim
 		public GenericTile LastSelectedTile { get; set; }
 		public List<GridSpace> OldPath { get; set; } = new List<GridSpace>();
 
+		public ModelEntity GhostTile { get; private set; }
+
 		[Net]
 		public GenericTile.TileTypeEnum SelectedTileType { get; set; } = GenericTile.TileTypeEnum.Base;
 		public GenericTile.TileTypeEnum LastSelectedTileType { get; set; } = GenericTile.TileTypeEnum.Base;
@@ -60,6 +62,10 @@ namespace CitySim
 		{
 			var endPos = EyePosition + (EyeRotation.Forward * 4000);
 			var mytrace = Trace.Ray( EyePosition, endPos );
+			if (GhostTile != null)
+			{
+				mytrace.Ignore( GhostTile );
+			}
 			var tr = mytrace.Run();
 			if ( tr.Entity != null && tr.Entity is GenericTile )
 			{
@@ -222,6 +228,7 @@ namespace CitySim
 		{
 			try
 			{
+				DestroyGhost( tile );
 				tile.UpdateModel();
 				tile.DestroyWorldUI();
 				foreach (var nextTile in tile.GetNeighbours<GenericTile>())
@@ -237,10 +244,11 @@ namespace CitySim
 
 		public void OnTileHover( GenericTile tile )
 		{
-
 			tile.UpdateModel();
 			if ( IsClient )
 			{
+				SpawnGhost( tile );
+
 				if ( !CanPlaceTyle( tile ) )
 				{
 					return;
@@ -296,6 +304,67 @@ namespace CitySim
 			base.FrameSimulate( cl );
 
 
+		}
+
+
+		[ClientRpc]
+		public void SpawnGhost(GenericTile tile)
+		{
+			if ( tile != null )
+			{
+				tile.EnableDrawing = false;
+
+
+				if ( SelectedTileType != GenericTile.TileTypeEnum.Base && tile.CanSetType( SelectedTileType ) )
+				{
+					if ( GhostTile == null )
+					{
+						// Spawn's the Ghost Local Model
+						GhostTile = new ModelEntity();
+						GhostTile.PhysicsEnabled = false;
+						GhostTile.Transmit = TransmitType.Never;
+						GhostTile.EnableHitboxes = false;
+						GhostTile.EnableAllCollisions = false;
+						GhostTile.EnableSelfCollisions = false;
+						GhostTile.EnableSolidCollisions = false;
+						GhostTile.EnableTouch = false;
+					}
+					else
+					{
+						// Ghost Local Model exists, just update and draw the object.
+						GhostTile.EnableDrawing = true;
+					}
+
+					GhostTile.Transform = tile.Transform;
+					//GhostTile.TargetPosition = tile.Position;
+					//GhostTile.GridPosition = tile.GridPosition;
+					//GhostTile.TileType = SelectedTileType;
+					//Log.Info( GhostTile.TileType );
+					//GhostTile.UpdateModel();
+					//GhostTile.CheckModel();
+					GenericTile.UpdateModel( GhostTile, SelectedTileType );
+					GhostTile.RenderColor = new Color( 0, 1, 0, 0.75f );
+				}
+				else
+				{
+					DestroyGhost( tile );
+				}
+			}
+
+
+		}
+		[ClientRpc]
+		public void DestroyGhost( GenericTile tile )
+		{
+			if ( tile != null)
+			{
+				tile.EnableDrawing = true;
+			}
+
+			if ( GhostTile != null )
+			{
+				GhostTile.EnableDrawing = false;
+			}
 		}
 	}
 }

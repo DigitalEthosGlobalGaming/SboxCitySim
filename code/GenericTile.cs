@@ -46,9 +46,9 @@ namespace CitySim
 		public int TotalConnected { get; set; }
 
 		[Net]
-		public Rotation TargetRotation {get;set;}
+		public Rotation TargetRotation { get; set; }
 		public Vector3 TargetPosition { get; set; }
-		[Net,Change]
+		[Net, Change]
 		public RoadTypeEnum RoadType { get; set; }
 		/// <summary>
 		/// Called when the entity is first created 
@@ -59,7 +59,7 @@ namespace CitySim
 			Position = GetWorldPosition();
 			TargetPosition = Position;
 			SetModel( "models/roads/street_4way.vmdl" );
-			RoadType = ( RoadTypeEnum.StreetEmpty );
+			RoadType = (RoadTypeEnum.StreetEmpty);
 			SetupPhysicsFromModel( PhysicsMotionType.Static, false );
 			UpdateName();
 		}
@@ -75,7 +75,7 @@ namespace CitySim
 			WorldUI.Position = this.Position + Vector3.Up * 200.0f;
 		}
 		[ClientRpc]
-		public void UpdateWorldUI(string _name, int _points = 0)
+		public void UpdateWorldUI( string _name, int _points = 0 )
 		{
 			if ( WorldUI == null )
 				return;

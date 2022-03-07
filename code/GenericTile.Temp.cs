@@ -33,23 +33,27 @@ namespace CitySim
 
 		public void UpdateModel()
 		{
-			var model = GetModelForTileType(TileType);
+			GenericTile.UpdateModel( this, TileType );
+		}
+		public static void UpdateModel( ModelEntity entity, TileTypeEnum type )
+		{
+			var model = GetModelForTileType( type );
 			if (model != "")
 			{
-				if ( model != CurrentModel )
+				if ( model != entity.Model.Name )
 				{
-					SetModel( model );
-					SetupPhysicsFromModel( PhysicsMotionType.Static, false );
-					if ( TileType == TileTypeEnum.Business || TileType == TileTypeEnum.House )
+					entity.SetModel( model );
+					entity.SetupPhysicsFromModel( PhysicsMotionType.Static, false );
+					if ( type == TileTypeEnum.Business || type == TileTypeEnum.House )
 					{
-						SetBodyGroup( "base", Rand.Int( 0, 4 ) );
+						entity.SetBodyGroup( "base", Rand.Int( 0, 4 ) );
 						var numbers = new int[] { 0,90,180,270 };
-						Rotation = Rotation.FromAxis(Vector3.Up, Rand.FromArray( numbers ));
+						entity.Rotation = Rotation.FromAxis(Vector3.Up, Rand.FromArray( numbers ));
 					}
-					CurrentModel = model;
+					//entity.CurrentModel = model;
 				}
 			}
-			RenderColor = Color.White;
+			entity.RenderColor = Color.White;
 		}
 
 
@@ -146,7 +150,7 @@ namespace CitySim
 				}
 				else
 				{
-					UpdateModel();
+					UpdateModel( this, TileType );
 				}
 
 				IsDirty = true;

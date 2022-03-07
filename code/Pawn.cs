@@ -148,28 +148,22 @@ namespace CitySim
 					// Debug controls for developers to test tiles.
 					if ( Input.Pressed( InputButton.Slot0 ) )
 					{
-						Log.Info( "1" );
 						SelectedTileType = GenericTile.TileTypeEnum.Base;
 					}
 					if ( Input.Pressed( InputButton.Slot1 ) )
 					{
-						Log.Info( "2" );
 						SelectedTileType = GenericTile.TileTypeEnum.Business;
 					}
 					if ( Input.Pressed( InputButton.Slot2 ) )
 					{
-						Log.Info( "3" );
 						SelectedTileType = GenericTile.TileTypeEnum.Park;
 					}
 					if ( Input.Pressed( InputButton.Slot3 ) )
 					{
-						Log.Info( "4" );
 						SelectedTileType = GenericTile.TileTypeEnum.House;
 					}
-
 					if ( Input.Pressed( InputButton.Slot4 ) )
 					{
-						Log.Info( "5" );
 						SelectedTileType = GenericTile.TileTypeEnum.Road;
 					}
 				}
@@ -338,7 +332,7 @@ namespace CitySim
 
 					GhostTile.Transform = tile.Transform;
 					GenericTile.UpdateModel( GhostTile, SelectedTileType );
-					GenericTile.CheckModel( tile, GhostTile );
+					GenericTile.CheckModel( tile, GhostTile, SelectedTileType );
 					GhostTile.RenderColor = new Color( 0, 1, 0, 0.75f );
 				}
 				else

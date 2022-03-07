@@ -183,18 +183,19 @@ namespace CitySim
 		{
 			GenericTile.CheckModel( this );
 		}
-		public static void CheckModel( GenericTile influencer, ModelEntity ghostViewModel = null)
+		public static void CheckModel( GenericTile influencer, ModelEntity ghostViewModel = null, TileTypeEnum? ghostTileType = null)
 		{
 			if ( ghostViewModel == null )
 				ghostViewModel = influencer;
 
-			var newRoadType = influencer.RoadType;
+			RoadTypeEnum newRoadType = influencer.RoadType;
 			var rotation = 0f;
 
 			ghostViewModel.RenderColor = Color.White;
-			if ( !influencer.HasRoad() )
+			
+			if ( !influencer.HasRoad() || (ghostTileType != null && ghostTileType != TileTypeEnum.Road) )
 			{
-				influencer.RoadType = RoadTypeEnum.StreetEmpty;
+				newRoadType = RoadTypeEnum.StreetEmpty;
 			}
 			else
 			{
@@ -214,19 +215,19 @@ namespace CitySim
 				var left = influencer.LeftConnected;
 				int totalCount = 0;
 
-				if ( up == true )
+				if ( up )
 				{
 					totalCount = totalCount + 1;
 				}
-				if ( down == true )
+				if ( down )
 				{
 					totalCount = totalCount + 1;
 				}
-				if ( left == true )
+				if ( left )
 				{
 					totalCount = totalCount + 1;
 				}
-				if ( right == true )
+				if ( right )
 				{
 					totalCount = totalCount + 1;
 				}
@@ -253,11 +254,11 @@ namespace CitySim
 
 				if ( totalCount == 4 )
 				{
-					influencer.RoadType = RoadTypeEnum.FourWay;
+					newRoadType = RoadTypeEnum.FourWay;
 				}
 				else if ( totalCount == 3 )
 				{
-					influencer.RoadType = RoadTypeEnum.ThreeWay;
+					newRoadType = RoadTypeEnum.ThreeWay;
 					if ( !up )
 					{
 						rotation = 180;
@@ -279,16 +280,16 @@ namespace CitySim
 				{
 					if ( left && right )
 					{
-						influencer.RoadType = RoadTypeEnum.Straight;
+						newRoadType = RoadTypeEnum.Straight;
 						rotation = 90;
 					}
 					else if ( up && down )
 					{
-						influencer.RoadType = RoadTypeEnum.Straight;
+						newRoadType = RoadTypeEnum.Straight;
 					}
 					else
 					{
-						influencer.RoadType = RoadTypeEnum.Curve;
+						newRoadType = RoadTypeEnum.Curve;
 						if ( up )
 						{
 							if ( left )
@@ -331,11 +332,11 @@ namespace CitySim
 					{
 						rotation = 270;
 					}
-					influencer.RoadType = RoadTypeEnum.DeadEnd;
+					newRoadType = RoadTypeEnum.DeadEnd;
 				}
 				else
 				{
-					influencer.RoadType = RoadTypeEnum.FourWay;
+					newRoadType = RoadTypeEnum.FourWay;
 				}
 				influencer.TotalConnected = totalCount;
 
@@ -346,12 +347,16 @@ namespace CitySim
 				influencer.TargetRotation = Rotation.FromAxis( Vector3.Up, rotation );
 				influencer.TargetPosition = influencer.GetWorldPosition();
 				influencer.TransitionPercentage = 0f;
+				influencer.RoadType = newRoadType;
 			}
 
 			if ( ghostViewModel != null )
 			{
 				ghostViewModel.Position = influencer.GetWorldPosition();
 				ghostViewModel.Rotation = Rotation.FromAxis( Vector3.Up, rotation );
+				ghostViewModel.SetBodyGroup( "base", (int)newRoadType );
+				Log.Info( newRoadType );
+				Log.Info( rotation );
 			}
 
 		}

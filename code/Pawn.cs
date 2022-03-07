@@ -206,13 +206,6 @@ namespace CitySim
 
 		public bool CanPlaceTyle( GenericTile tile )
 		{
-			/*
-			if (MyGame.InDevelopment)
-			{
-				return true;
-			}
-			*/
-
 			if ( tile.HasRoad() )
 			{
 				return false;

@@ -179,52 +179,55 @@ namespace CitySim
 			CheckModel();
 		}
 
-
-
 		public void CheckModel()
 		{
-			var newRoadType = RoadType;
+			GenericTile.CheckModel( this );
+		}
+		public static void CheckModel( GenericTile influencer, ModelEntity ghostViewModel = null, TileTypeEnum? ghostTileType = null)
+		{
+			if ( ghostViewModel == null )
+				ghostViewModel = influencer;
+
+			RoadTypeEnum newRoadType = influencer.RoadType;
 			var rotation = 0f;
 
-			RenderColor = Color.White;
-			if ( !HasRoad() )
+			ghostViewModel.RenderColor = Color.White;
+			
+			if ( !influencer.HasRoad() || (ghostTileType != null && ghostTileType != TileTypeEnum.Road) )
 			{
-				RoadType = RoadTypeEnum.StreetEmpty;
+				newRoadType = RoadTypeEnum.StreetEmpty;
 			}
 			else
 			{
-
-				GenericTile[] neighbours = GetNeighbours<GenericTile>();
-				UpTile = neighbours[0];
-				RightTile = neighbours[1];
-				DownTile = neighbours[2];
-				LeftTile = neighbours[3];
-				Neighbours = neighbours;
-				UpConnected = UpTile?.HasRoad() ?? false;
-				RightConnected = RightTile?.HasRoad() ?? false;
-				DownConnected = DownTile?.HasRoad() ?? false;
-				LeftConnected = LeftTile?.HasRoad() ?? false;
-				var up = UpConnected;
-				var right = RightConnected;
-				var down = DownConnected;
-				var left = LeftConnected;
+				GenericTile[] neighbours = influencer.GetNeighbours<GenericTile>();
+				influencer.UpTile = neighbours[0];
+				influencer.RightTile = neighbours[1];
+				influencer.DownTile = neighbours[2];
+				influencer.LeftTile = neighbours[3];
+				influencer.Neighbours = neighbours;
+				influencer.UpConnected = influencer.UpTile?.HasRoad() ?? false;
+				influencer.RightConnected = influencer.RightTile?.HasRoad() ?? false;
+				influencer.DownConnected = influencer.DownTile?.HasRoad() ?? false;
+				influencer.LeftConnected = influencer.LeftTile?.HasRoad() ?? false;
+				var up = influencer.UpConnected;
+				var right = influencer.RightConnected;
+				var down = influencer.DownConnected;
+				var left = influencer.LeftConnected;
 				int totalCount = 0;
 
-
-
-				if ( up == true )
+				if ( up )
 				{
 					totalCount = totalCount + 1;
 				}
-				if ( down == true )
+				if ( down )
 				{
 					totalCount = totalCount + 1;
 				}
-				if ( left == true )
+				if ( left )
 				{
 					totalCount = totalCount + 1;
 				}
-				if ( right == true )
+				if ( right )
 				{
 					totalCount = totalCount + 1;
 				}
@@ -251,11 +254,11 @@ namespace CitySim
 
 				if ( totalCount == 4 )
 				{
-					RoadType = RoadTypeEnum.FourWay;
+					newRoadType = RoadTypeEnum.FourWay;
 				}
 				else if ( totalCount == 3 )
 				{
-					RoadType = RoadTypeEnum.ThreeWay;
+					newRoadType = RoadTypeEnum.ThreeWay;
 					if ( !up )
 					{
 						rotation = 180;
@@ -277,16 +280,16 @@ namespace CitySim
 				{
 					if ( left && right )
 					{
-						RoadType = RoadTypeEnum.Straight;
+						newRoadType = RoadTypeEnum.Straight;
 						rotation = 90;
 					}
 					else if ( up && down )
 					{
-						RoadType = RoadTypeEnum.Straight;
+						newRoadType = RoadTypeEnum.Straight;
 					}
 					else
 					{
-						RoadType = RoadTypeEnum.Curve;
+						newRoadType = RoadTypeEnum.Curve;
 						if ( up )
 						{
 							if ( left )
@@ -309,8 +312,6 @@ namespace CitySim
 								rotation = 0;
 							}
 						}
-
-
 					}
 				}
 				else if ( totalCount == 1 )
@@ -331,24 +332,33 @@ namespace CitySim
 					{
 						rotation = 270;
 					}
-					RoadType = RoadTypeEnum.DeadEnd;
+					newRoadType = RoadTypeEnum.DeadEnd;
 				}
 				else
 				{
-					RoadType = RoadTypeEnum.FourWay;
+					newRoadType = RoadTypeEnum.FourWay;
 				}
-				TotalConnected = totalCount;
+				influencer.TotalConnected = totalCount;
 
 			}
 
-			if ( newRoadType != RoadType)
+			if ( newRoadType != influencer.RoadType )
 			{
-				TargetRotation = Rotation.FromAxis( new Vector3( 0, 0, 1 ), rotation );
-				TargetPosition = GetWorldPosition();
-				TransitionPercentage = 0f;
+				influencer.TargetRotation = Rotation.FromAxis( Vector3.Up, rotation );
+				influencer.TargetPosition = influencer.GetWorldPosition();
+				influencer.TransitionPercentage = 0f;
+				influencer.RoadType = newRoadType;
 			}
 
-			
+			if ( ghostViewModel != null )
+			{
+				ghostViewModel.Position = influencer.GetWorldPosition();
+				ghostViewModel.Rotation = Rotation.FromAxis( Vector3.Up, rotation );
+				ghostViewModel.SetBodyGroup( "base", (int)newRoadType );
+				Log.Info( newRoadType );
+				Log.Info( rotation );
+			}
+
 		}
 
 

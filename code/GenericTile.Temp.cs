@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace CitySim
 {
-	public partial class RoadTile : GridSpace, ITickable
+	public partial class GenericTile : GridSpace, ITickable
 	{
 		public enum TileTypeEnum
 		{
@@ -57,7 +57,7 @@ namespace CitySim
 		public void CheckNeighbours()
 		{
 
-			RoadTile[] neighbours = GetNeighbours<RoadTile>();
+			GenericTile[] neighbours = GetNeighbours<GenericTile>();
 			neighbours[0]?.CheckModel();
 			neighbours[1]?.CheckModel();
 			neighbours[2]?.CheckModel();
@@ -90,6 +90,8 @@ namespace CitySim
 					UpdateModel();
 				}
 
+				IsDirty = true;
+
 				MyGame.GetMap().UpdateScore();
 				return MyGame.GetMap().CalculateTileScore( this );
 			}
@@ -98,7 +100,7 @@ namespace CitySim
 
 		public bool IsNextToRoad()
 		{
-			var neighbours = GetNeighbours<RoadTile>();
+			var neighbours = GetNeighbours<GenericTile>();
 			if ( neighbours[0]?.HasRoad() ?? false )
 			{
 				return true;
@@ -144,13 +146,13 @@ namespace CitySim
 
 		public List<GridSpace> GetConnectedTiles(TileTypeEnum type)
 		{
-			var items = new List<RoadTile>();
+			var items = new List<GenericTile>();
 			var gridItems = Map.GetGridAsList();
 			return gridItems.FindAll( ( item ) =>
 			{
-				if ( item is RoadTile )
+				if ( item is GenericTile )
 				{
-					var roadTile = (RoadTile)item;
+					var roadTile = (GenericTile)item;
 					if ( roadTile.TileType == type )
 					{
 						return Map.IsPath( GridPosition, item.GridPosition );
@@ -164,7 +166,7 @@ namespace CitySim
 			} );
 		}
 
-		public RoadTile GetRandomConnectedTile( TileTypeEnum type)
+		public GenericTile GetRandomConnectedTile( TileTypeEnum type)
 		{
 			var connectedTiles = GetConnectedTiles( type );
 			if ( connectedTiles.Count == 0)
@@ -173,7 +175,7 @@ namespace CitySim
 			}
 
 			var index = Rand.Int( 0, connectedTiles.Count - 1 );
-			return (RoadTile) connectedTiles[index];
+			return (GenericTile) connectedTiles[index];
 		}
 	}
 }

@@ -8,7 +8,7 @@ namespace CitySim
 	public partial class MovementEntity : ModelEntity, ITickable
 	{
 
-		public RoadTile LastHighlighted { get; set; }
+		public GenericTile LastHighlighted { get; set; }
 		public List<GridSpace> NavPath { get; set; } = new List<GridSpace>();
 
 		public int CurrentIndex = 0;

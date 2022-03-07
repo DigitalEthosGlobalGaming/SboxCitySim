@@ -6,7 +6,10 @@
   "Schema": 1,
   "HasAssets": true,
   "AssetsPath": "",
-  "ResourcePaths": null,
+  "ResourcePaths": [
+    "/materials",
+    "/models"
+  ],
   "HasCode": true,
   "CodePath": "/code/",
   "RootNamespace": "Sandbox"

@@ -1,11 +1,13 @@
-﻿using GridSystem;
+﻿using CitySim.UI;
+using GridSystem;
 using Sandbox;
 using System;
 
 namespace CitySim
 {
-	public partial class RoadTile : GridSpace, ITickable
+	public partial class GenericTile : GridSpace, ITickable
 	{
+		public WorldTileStatUI WorldUI { get; private set; }
 		public TickableCollection ParentCollection { get; set; }
 
 		public enum RoadTypeEnum
@@ -28,18 +30,18 @@ namespace CitySim
 		[Net]
 		public bool RightConnected { get; set; } = false;
 		[Net]
-		public RoadTile UpTile { get; set; }
+		public GenericTile UpTile { get; set; }
 		[Net]
-		public RoadTile DownTile { get; set; }
+		public GenericTile DownTile { get; set; }
 		[Net]
-		public RoadTile LeftTile { get; set; }
+		public GenericTile LeftTile { get; set; }
 		[Net]
-		public RoadTile RightTile { get; set; }
+		public GenericTile RightTile { get; set; }
 
 		[Net]
 		public float TransitionPercentage { get; set; } = 1f;
 
-		public RoadTile[] Neighbours = { null, null, null, null };
+		public GenericTile[] Neighbours = { null, null, null, null };
 		[Net]
 		public int TotalConnected { get; set; }
 
@@ -60,6 +62,26 @@ namespace CitySim
 			RoadType = ( RoadTypeEnum.StreetEmpty );
 			SetupPhysicsFromModel( PhysicsMotionType.Static, false );
 			UpdateName();
+
+			// Spawn the UI 
+			SpawnUI();
+		}
+
+		[ClientRpc]
+		public void SpawnUI()
+		{
+			// Create a World UI Per Tile, so we can modify it at realtime. This helps with pooling, and removes the issues with GC.
+			WorldUI = new WorldTileStatUI();
+			WorldUI.Transform = this.Transform;
+		}
+		[ClientRpc]
+		public void UpdateWorldUI(string _name, int _points = 0)
+		{
+			if ( WorldUI == null )
+				return;
+
+			WorldUI.Name = _name;
+			WorldUI.Points = _points > 0 ? "+" + _points : "" + _points;
 		}
 
 		public void UpdateName()
@@ -71,6 +93,9 @@ namespace CitySim
 			}
 
 			Name = $"[{GridPosition.x},{GridPosition.y}] {suffix}";
+
+
+			UpdateWorldUI( Name );
 		}
 
 		public bool HasRoad()
@@ -86,7 +111,7 @@ namespace CitySim
 
 		public override float GetMovementWeight( GridSpace a )
 		{
-			if (a is RoadTile )
+			if (a is GenericTile )
 			{
 				if ( HasRoad() )
 				{
@@ -108,7 +133,7 @@ namespace CitySim
 				Position = GetWorldPosition() + new Vector3( Rand.Float( -transitionAmount, transitionAmount ), Rand.Float( -transitionAmount, transitionAmount ), Rand.Float( 100f, 150f ) );
 				SetTileType( TileTypeEnum.Road );
 				CheckModel();
-				RoadTile[] neighbours = GetNeighbours<RoadTile>();
+				GenericTile[] neighbours = GetNeighbours<GenericTile>();
 				neighbours[0]?.CheckModel();
 				neighbours[1]?.CheckModel();
 				neighbours[2]?.CheckModel();
@@ -117,9 +142,9 @@ namespace CitySim
 			UpdateName();
 		}
 
-		public RoadTile GetRoadNeighbour()
+		public GenericTile GetRoadNeighbour()
 		{
-			RoadTile[] neighbours = GetNeighbours<RoadTile>();
+			GenericTile[] neighbours = GetNeighbours<GenericTile>();
 			if (neighbours[0]?.HasRoad() ?? false)
 			{
 				return neighbours[0];
@@ -160,7 +185,7 @@ namespace CitySim
 			else
 			{
 
-				RoadTile[] neighbours = GetNeighbours<RoadTile>();
+				GenericTile[] neighbours = GetNeighbours<GenericTile>();
 				UpTile = neighbours[0];
 				RightTile = neighbours[1];
 				DownTile = neighbours[2];

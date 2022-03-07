@@ -1,6 +1,9 @@
-﻿
+﻿#define TEST
+
+using CitySim.UI;
 using GridSystem.Ui;
 using Sandbox;
+
 
 //
 // You don't need to put things in a namespace, but it doesn't hurt.
@@ -17,7 +20,6 @@ namespace CitySim
 	/// </summary>
 	public partial class MyGame : Sandbox.Game
 	{
-
 		public static MyGame GameObject { get; set; }
 		public static GameUi Ui { get; set; } = null;
 
@@ -52,11 +54,23 @@ namespace CitySim
 			UpdateClientGameState( GameState );
 		}
 
+#if DEBUG && !RELEASE
 		[ServerCmd( "check_models" )]
 		public static void TestServerCmd()
 		{
 			((MyGame)Current).RefreshMap();
 		}
+		[ClientCmd( "cs.test.worldUI" )]
+		public static void TestWorldUICmd()
+		{
+			// Test the WorldTileStateUI here.
+			WorldTileStatUI WorldUI = new WorldTileStatUI();
+			Assert.NotNull( WorldUI );
+			WorldUI.Name = "Test World UI";
+			WorldUI.Points = "+500";
+			WorldUI.Position = Local.Pawn.Position;
+		}
+#endif
 
 
 		public void CreateUi()
@@ -92,7 +106,7 @@ namespace CitySim
 			{
 				foreach(var item in Map.Grid)
 				{
-					((RoadTile)item).CheckModel();
+					((GenericTile)item).CheckModel();
 				}
 			}
 			else

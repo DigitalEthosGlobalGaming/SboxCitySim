@@ -21,7 +21,7 @@ namespace CitySim
 			CheckGameEnd();
 		}
 
-		public static bool IsCombination(RoadTile aTile, RoadTile bTile, RoadTile.TileTypeEnum a, RoadTile.TileTypeEnum b)
+		public static bool IsCombination(GenericTile aTile, GenericTile bTile, GenericTile.TileTypeEnum a, GenericTile.TileTypeEnum b)
 		{
 			if (aTile.TileType == a && bTile.TileType == b)
 			{
@@ -36,11 +36,11 @@ namespace CitySim
 		}
 
 
-		public int CalculateTileScore(RoadTile tile)
+		public int CalculateTileScore(GenericTile tile)
 		{
 			var score = 1;
 
-			var neighbours = tile.GetNeighbours<RoadTile>();
+			var neighbours = tile.GetNeighbours<GenericTile>();
 			var a = tile;
 
 			foreach ( var b in neighbours )
@@ -48,36 +48,36 @@ namespace CitySim
 				if ( b != null )
 				{
 					// House House
-					if ( IsCombination( a, b, RoadTile.TileTypeEnum.House, RoadTile.TileTypeEnum.House ) )
+					if ( IsCombination( a, b, GenericTile.TileTypeEnum.House, GenericTile.TileTypeEnum.House ) )
 					{
 						score = score + 1;
 					// House Park
-					} else if ( IsCombination( a, b, RoadTile.TileTypeEnum.House, RoadTile.TileTypeEnum.Park ) )
+					} else if ( IsCombination( a, b, GenericTile.TileTypeEnum.House, GenericTile.TileTypeEnum.Park ) )
 					{
 						score = score + 2;
 					}
 					// House Business
-					else if ( IsCombination( a, b, RoadTile.TileTypeEnum.House, RoadTile.TileTypeEnum.Business ) )
+					else if ( IsCombination( a, b, GenericTile.TileTypeEnum.House, GenericTile.TileTypeEnum.Business ) )
 					{
 						score = score - 1;
 					}
 					// Park Park
-					else if ( IsCombination( a, b, RoadTile.TileTypeEnum.Park, RoadTile.TileTypeEnum.Park ) )
+					else if ( IsCombination( a, b, GenericTile.TileTypeEnum.Park, GenericTile.TileTypeEnum.Park ) )
 					{
 						score = score + 2;
 					}
 					// Park Road
-					else if ( IsCombination( a, b, RoadTile.TileTypeEnum.Park, RoadTile.TileTypeEnum.Road ) )
+					else if ( IsCombination( a, b, GenericTile.TileTypeEnum.Park, GenericTile.TileTypeEnum.Road ) )
 					{
 						score = score - 1;
 					}
 					// Park Business
-					else if ( IsCombination( a, b, RoadTile.TileTypeEnum.Park, RoadTile.TileTypeEnum.Business ) )
+					else if ( IsCombination( a, b, GenericTile.TileTypeEnum.Park, GenericTile.TileTypeEnum.Business ) )
 					{
 						score = score - 1;
 					}					
 					// Business Business
-					else if ( IsCombination( a, b, RoadTile.TileTypeEnum.Business, RoadTile.TileTypeEnum.Business ) )
+					else if ( IsCombination( a, b, GenericTile.TileTypeEnum.Business, GenericTile.TileTypeEnum.Business ) )
 					{
 						score = score + 2;
 					}
@@ -94,7 +94,7 @@ namespace CitySim
 
 		public void Init(int xAmount, int yAmount)
 		{
-			Init<RoadTile>( new Vector3( 0, 0, 1000 ), new Vector2( 200, 200 ), xAmount, yAmount );
+			Init<GenericTile>( new Vector3( 0, 0, 1000 ), new Vector2( 200, 200 ), xAmount, yAmount );
 		}
 
 		public override void OnSpaceSetup(GridSpace space)
@@ -118,7 +118,7 @@ namespace CitySim
 				var xPosition = Rand.Int( startX, xStart );
 				for ( int i = 0; i < XSize; i++ )
 				{
-					var space = (RoadTile)GetSpace( i, xPosition );
+					var space = (GenericTile)GetSpace( i, xPosition );
 					if ( space != null )
 					{
 						space.SetHasRoad( true );
@@ -131,7 +131,7 @@ namespace CitySim
 				var yPosition = Rand.Int( startY, yStart );
 				for ( int i = 0; i < YSize; i++ )
 				{
-					var space = (RoadTile)GetSpace( yPosition, i );
+					var space = (GenericTile)GetSpace( yPosition, i );
 					if ( space != null )
 					{
 						space.SetHasRoad( true );
@@ -148,8 +148,8 @@ namespace CitySim
 			var amount = 0;
 			foreach ( var s in Grid )
 			{
-				var tile = (RoadTile)s;
-				if ( tile.TileType == RoadTile.TileTypeEnum.Base )
+				var tile = (GenericTile)s;
+				if ( tile.TileType == GenericTile.TileTypeEnum.Base )
 				{
 					amount = amount + 1;
 				}
@@ -179,18 +179,18 @@ namespace CitySim
 				if (player is Pawn)
 				{
 					var p = player as Pawn;
-					if ( p.SelectedTileType == RoadTile.TileTypeEnum.Base )
+					if ( p.SelectedTileType == GenericTile.TileTypeEnum.Base )
 					{
 						var start = 1;
 						var end = 6;
 						var rndInt = Rand.Int( start, end );
 						if ( rndInt > 4 )
 						{
-							p.SelectedTileType = RoadTile.TileTypeEnum.House;
+							p.SelectedTileType = GenericTile.TileTypeEnum.House;
 						}
 						else
 						{
-							p.SelectedTileType = (RoadTile.TileTypeEnum)Enum.GetValues( typeof( RoadTile.TileTypeEnum ) ).GetValue( rndInt );
+							p.SelectedTileType = (GenericTile.TileTypeEnum)Enum.GetValues( typeof( GenericTile.TileTypeEnum ) ).GetValue( rndInt );
 						}
 					}
 				}

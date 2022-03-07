@@ -15,7 +15,7 @@ namespace CitySim
 	}
 	public partial class MyGame : Sandbox.Game
 	{
-		
+
 		public static GameOptions CurrentGameOptions { get; set; }
 
 		public static GameStateEnum GameState { get; set; }

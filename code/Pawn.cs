@@ -13,31 +13,34 @@ namespace CitySim
 		/// </summary>
 		/// 
 
-		public RoadTile LastHighlighted { get; set; }
+		public GenericTile LastHighlighted { get; set; }
 
 		[Net, Local]
 		public bool DisabledControls { get; set; }
 
-		[Net, Local]
+		// wtf does this do?
+		/*[Net, Local]
 		public RoadTile StartSpace { get; set; }
 		public RoadTile EndSpace { get; set; }
+		*/
+		public GenericTile LastSelectedTile { get; set; }
 		public List<GridSpace> OldPath { get; set; } = new List<GridSpace>();
 
-		public bool IsAdmin { get; set; } = false;
-
 		[Net]
-		public RoadTile.TileTypeEnum SelectedTileType { get; set; } = RoadTile.TileTypeEnum.Base;
+		public GenericTile.TileTypeEnum SelectedTileType { get; set; } = GenericTile.TileTypeEnum.Base;
+		public GenericTile.TileTypeEnum LastSelectedTileType { get; set; } = GenericTile.TileTypeEnum.Base;
 		public override void Spawn()
 		{
 			base.Spawn();
 
 			SetModel( "models/sbox_props/watermelon/watermelon.vmdl" );
 
+			EnableAllCollisions = false; // Disable all the collisions, so we can ensure we don't collide with the world.
 			EnableDrawing = true;
 			EnableHideInFirstPerson = true;
 			EnableShadowInFirstPerson = true;
 		}
-		
+
 		[Event.Hotload]
 		public void OnLoad()
 		{
@@ -46,21 +49,21 @@ namespace CitySim
 
 
 		[ServerCmd]
-		public static void SetControlsDisabledCmd(bool value)
+		public static void SetControlsDisabledCmd( bool value )
 		{
 			Pawn pawn = (Pawn)ConsoleSystem.Caller.Pawn;
 			pawn.DisabledControls = value;
 			Log.Info( pawn );
 		}
 
-		public RoadTile GetRoadTileLookedAt()
+		public GenericTile GetRoadTileLookedAt()
 		{
 			var endPos = EyePosition + (EyeRotation.Forward * 4000);
 			var mytrace = Trace.Ray( EyePosition, endPos );
 			var tr = mytrace.Run();
-			if ( tr.Entity != null && tr.Entity is RoadTile )
+			if ( tr.Entity != null && tr.Entity is GenericTile )
 			{
-				RoadTile ent = (RoadTile)tr.Entity;
+				GenericTile ent = (GenericTile)tr.Entity;
 				return ent;
 			}
 			return null;
@@ -105,13 +108,14 @@ namespace CitySim
 			{
 				Position = helper.Position;
 			}
-			
+
 			if ( MyGame.GameState == MyGame.GameStateEnum.Playing )
 			{
 
-				// If we're running serverside and Attack1 was just pressed, spawn a ragdoll
-				if ( IsServer)
+				// Input Actions 
+				if ( IsServer )
 				{
+					// Left Click or RT
 					if ( Input.Pressed( InputButton.Attack1 ) )
 					{
 						var tile = GetRoadTileLookedAt();
@@ -122,120 +126,136 @@ namespace CitySim
 								OnTileSelect( tile );
 							}
 						}
-					} else if ( Input.Pressed( InputButton.Attack2 ) )
+					}
+					// Right Click or LT
+					else if ( Input.Pressed( InputButton.Attack2 ) )
 					{
-						SelectedTileType = RoadTile.TileTypeEnum.Base;
+						SelectedTileType = GenericTile.TileTypeEnum.Base;
 					}
 
-
-				}
-
-				if ( IsServer && IsAdmin )
-				{
+#if DEBUG && !RELEASE
+					// Debug controls for developers to test tiles.
 					if ( Input.Pressed( InputButton.Slot0 ) )
 					{
 						Log.Info( "1" );
-						SelectedTileType = RoadTile.TileTypeEnum.Base;
+						SelectedTileType = GenericTile.TileTypeEnum.Base;
 					}
 					if ( Input.Pressed( InputButton.Slot1 ) )
 					{
 						Log.Info( "2" );
-						SelectedTileType = RoadTile.TileTypeEnum.Business;
+						SelectedTileType = GenericTile.TileTypeEnum.Business;
 					}
 					if ( Input.Pressed( InputButton.Slot2 ) )
 					{
 						Log.Info( "3" );
-						SelectedTileType = RoadTile.TileTypeEnum.Park;
+						SelectedTileType = GenericTile.TileTypeEnum.Park;
 					}
 					if ( Input.Pressed( InputButton.Slot3 ) )
 					{
 						Log.Info( "4" );
-						SelectedTileType = RoadTile.TileTypeEnum.House;
+						SelectedTileType = GenericTile.TileTypeEnum.House;
 					}
 
 					if ( Input.Pressed( InputButton.Slot4 ) )
 					{
 						Log.Info( "5" );
-						SelectedTileType = RoadTile.TileTypeEnum.Road;
+						SelectedTileType = GenericTile.TileTypeEnum.Road;
 					}
 				}
-
+#endif
 
 				if ( IsClient )
 				{
+					// Always raycast to check if the user has moved their selection else-where.
+					GenericTile tile = GetRoadTileLookedAt();
 
-					var tile = GetRoadTileLookedAt();
-
-					if ( LastHighlighted != null )
+					// Update when we have moved our Cursor onto another Tile.
+					// This is to medigate the amount of updates being done to a tile, unless it is necessary.
+					if ( 
+						LastSelectedTile != tile								|| 
+						(LastSelectedTile != null && LastSelectedTile.IsDirty)	|| 
+						LastSelectedTileType != SelectedTileType 
+					)
 					{
-						OnTileHoverOff( LastHighlighted );
-						LastHighlighted = null;
-					}
+						if ( LastHighlighted != null )
+						{
+							OnTileHoverOff( LastHighlighted );
+							LastHighlighted = null;
+						}
 
-					if ( tile != null )
-					{
-						OnTileHover( tile );
-						LastHighlighted = tile;
+						if ( tile != null )
+						{
+							OnTileHover( tile );
+							LastHighlighted = tile;
+						}
+
+						LastSelectedTile = tile;
+						LastSelectedTileType = SelectedTileType;
 					}
 				}
-	
+
 			}
 		}
 
-		public bool CanPlaceTyle(RoadTile tile)
+		public bool CanPlaceTyle( GenericTile tile )
 		{
-			if (IsAdmin)
+			/*
+			if (MyGame.InDevelopment)
 			{
 				return true;
 			}
+			*/
 
-			if (tile.HasRoad() )
+			if ( tile.HasRoad() )
 			{
 				return false;
 			}
 
-			if (tile.TileType == RoadTile.TileTypeEnum.Base)
+			if ( tile.TileType == GenericTile.TileTypeEnum.Base )
 			{
 				return true;
 			}
 			return false;
 		}
 
-		public void OnTileHoverOff(RoadTile tile)
+		public void OnTileHoverOff( GenericTile tile )
 		{
 			try
 			{
 				tile.UpdateModel();
-			} catch(Exception e)
+			}
+			catch ( Exception e )
 			{
 
 			}
 		}
 
-		public void OnTileHover(RoadTile tile)
+		public void OnTileHover( GenericTile tile )
 		{
 
 			tile.UpdateModel();
 			if ( IsClient )
 			{
-				if (!CanPlaceTyle(tile))
+				if ( !CanPlaceTyle( tile ) )
 				{
 					return;
 				}
 
-				if (tile.CanSetType(SelectedTileType)) {
-					tile.RenderColor = Color.Gray;
-				} else
+				if ( tile.CanSetType( SelectedTileType ) )
 				{
-					tile.RenderColor = Color.Yellow;
+					tile.RenderColor = Color.Green;
+				}
+				else
+				{
+					tile.RenderColor = Color.Red;
 				}
 			}
 		}
 
-		public void OnTileSelect(RoadTile tile)
+		public void OnTileSelect( GenericTile tile )
 		{
 			var score = tile.SetTileType( SelectedTileType );
-			SelectedTileType = RoadTile.TileTypeEnum.Base;
+			SelectedTileType = GenericTile.TileTypeEnum.Base;
 			var clientScore = Client.GetInt( "score", 0 );
 			clientScore = clientScore + score;
 			Client.SetInt( "score", clientScore );
@@ -248,7 +268,7 @@ namespace CitySim
 		public override void FrameSimulate( Client cl )
 		{
 			base.FrameSimulate( cl );
-			
+
 
 		}
 	}

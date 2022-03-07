@@ -106,6 +106,7 @@ namespace GridSystem.Ui
 
 			SetClass( "open", Opened );
 
+			/*
 			var values = Enum.GetValues( typeof(InputButton) );
 			foreach(var i in values)
 			{
@@ -114,6 +115,7 @@ namespace GridSystem.Ui
 					Log.Info( i );
 				}
 			}
+			*/
 			
 		}
 

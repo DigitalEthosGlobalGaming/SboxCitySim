@@ -27,19 +27,19 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\jonest\\.nuget\\packages\\": {}
+    "C:\\Users\\SysAdmin\\.nuget\\packages\\": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\sbox\\addons\\some-sort-of-dice-game\\code\\citysim.csproj",
+      "projectUniqueName": "E:\\Program Files (x86)\\Steam\\steamapps\\common\\sbox\\addons\\SboxCitySim\\code\\citysim.csproj",
       "projectName": "citysim",
-      "projectPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\sbox\\addons\\some-sort-of-dice-game\\code\\citysim.csproj",
-      "packagesPath": "C:\\Users\\jonest\\.nuget\\packages\\",
-      "outputPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\sbox\\addons\\some-sort-of-dice-game\\code\\obj\\",
+      "projectPath": "E:\\Program Files (x86)\\Steam\\steamapps\\common\\sbox\\addons\\SboxCitySim\\code\\citysim.csproj",
+      "packagesPath": "C:\\Users\\SysAdmin\\.nuget\\packages\\",
+      "outputPath": "E:\\Program Files (x86)\\Steam\\steamapps\\common\\sbox\\addons\\SboxCitySim\\code\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "C:\\Users\\jonest\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Users\\SysAdmin\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [
@@ -53,8 +53,8 @@
         "net6.0": {
           "targetAlias": "net6.0",
           "projectReferences": {
-            "C:\\Program Files (x86)\\Steam\\steamapps\\common\\sbox\\addons\\base\\code\\base.csproj": {
-              "projectPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\sbox\\addons\\base\\code\\base.csproj"
+            "E:\\Program Files (x86)\\Steam\\steamapps\\common\\sbox\\addons\\base\\code\\base.csproj": {
+              "projectPath": "E:\\Program Files (x86)\\Steam\\steamapps\\common\\sbox\\addons\\base\\code\\base.csproj"
             }
           }
         }

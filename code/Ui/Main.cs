@@ -26,7 +26,7 @@ namespace GridSystem.Ui
 			if ( player != null)
 			{
 				var selectedTile = player.SelectedTileType;
-				if ( selectedTile == RoadTile.TileTypeEnum.Base )
+				if ( selectedTile == GenericTile.TileTypeEnum.Base )
 				{
 					CurrentItem.Text = "Empty";
 				}

@@ -130,7 +130,11 @@ namespace CitySim
 						{
 							if ( CanPlaceTyle( tile ) )
 							{
-								OnTileSelect( tile );
+								PlaceOnTile( tile );
+							}
+							else
+							{
+								PlaySound( "sounds/kenney/ui/error_001" );
 							}
 						}
 					}
@@ -220,19 +224,15 @@ namespace CitySim
 
 		public void OnTileHoverOff( GenericTile tile )
 		{
-			try
+			DestroyGhost( tile );
+			tile.UpdateModel();
+			tile.DestroyWorldUI();
+			foreach (var nextTile in tile.GetNeighbours<GenericTile>())
 			{
-				DestroyGhost( tile );
-				tile.UpdateModel();
-				tile.DestroyWorldUI();
-				foreach (var nextTile in tile.GetNeighbours<GenericTile>())
+				if (nextTile != null)
 				{
 					nextTile.DestroyWorldUI();
 				}
-			}
-			catch ( Exception e )
-			{
-
 			}
 		}
 
@@ -284,13 +284,16 @@ namespace CitySim
 			}
 		}
 
-		public void OnTileSelect( GenericTile tile )
+		public void PlaceOnTile( GenericTile tile )
 		{
 			var score = tile.SetTileType( SelectedTileType );
 			SelectedTileType = GenericTile.TileTypeEnum.Base;
 			var clientScore = Client.GetInt( "score", 0 );
 			clientScore = clientScore + score;
 			Client.SetInt( "score", clientScore );
+
+			// Place!
+			PlaySound( "sounds/kenney/ui/click1" );
 		}
 
 
@@ -334,13 +337,8 @@ namespace CitySim
 					}
 
 					GhostTile.Transform = tile.Transform;
-					//GhostTile.TargetPosition = tile.Position;
-					//GhostTile.GridPosition = tile.GridPosition;
-					//GhostTile.TileType = SelectedTileType;
-					//Log.Info( GhostTile.TileType );
-					//GhostTile.UpdateModel();
-					//GhostTile.CheckModel();
 					GenericTile.UpdateModel( GhostTile, SelectedTileType );
+					GenericTile.CheckModel( tile, GhostTile );
 					GhostTile.RenderColor = new Color( 0, 1, 0, 0.75f );
 				}
 				else

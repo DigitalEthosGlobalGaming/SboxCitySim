@@ -63,6 +63,11 @@ namespace GridSystem
 			var positionToGet = new Vector2(x,y) + GridPosition;
 			return (T)Map.GetSpace( positionToGet );
 		}
+		// Grabs immediate neighbours.
+		// Note:
+		// Up, Right, Down, Left in a clock-wise pattern to grab the neighbours.
+		// If a neighbour does not exist, we will place the element as null;
+		//	do check if the element in the array is null when using this in a for-loop.
 		public T[] GetNeighbours<T>() where T : GridSpace
 		{
 			var up = GetNeighbour<T>( 0, -1 );

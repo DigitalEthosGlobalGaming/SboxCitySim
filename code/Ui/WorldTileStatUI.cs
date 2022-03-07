@@ -35,6 +35,9 @@ namespace CitySim.UI
 		{
 			Style.FontColor = Color.White;
 			Style.FontSize = Length.Pixels(64);
+
+
+
 			nameLabel = Add.Label( "Unknown Name" );
 			pointsLabel = Add.Label( "0" );
 		}

@@ -64,6 +64,65 @@ namespace CitySim
 			neighbours[3]?.CheckModel();
 		}
 
+		public static bool IsCombination( GenericTile aTile, GenericTile bTile, GenericTile.TileTypeEnum a, GenericTile.TileTypeEnum b, TileTypeEnum? pretenderForA = null )
+		{
+			GenericTile.TileTypeEnum aTileType = pretenderForA ?? aTile.TileType;
+			if ( aTileType == a && bTile.TileType == b )
+			{
+				return true;
+			}
+			if ( bTile.TileType == a && aTileType == b )
+			{
+				return true;
+			}
+
+			return false;
+		}
+
+		public int GetTileScore( GenericTile otherTile, TileTypeEnum? pretender = null )
+		{
+			int score = 0;
+			if ( otherTile != null )
+			{
+				// House House
+				if ( IsCombination( this, otherTile, GenericTile.TileTypeEnum.House, GenericTile.TileTypeEnum.House, pretender ) )
+				{
+					score += 1;
+				}
+				// House Park
+				else if ( IsCombination( this, otherTile, GenericTile.TileTypeEnum.House, GenericTile.TileTypeEnum.Park, pretender ) )
+				{
+					score += 2;
+				}
+				// House Business
+				else if ( IsCombination( this, otherTile, GenericTile.TileTypeEnum.House, GenericTile.TileTypeEnum.Business, pretender ) )
+				{
+					score -= 1;
+				}
+				// Park Park
+				else if ( IsCombination( this, otherTile, GenericTile.TileTypeEnum.Park, GenericTile.TileTypeEnum.Park, pretender ) )
+				{
+					score += 2;
+				}
+				// Park Road
+				else if ( IsCombination( this, otherTile, GenericTile.TileTypeEnum.Park, GenericTile.TileTypeEnum.Road, pretender ) )
+				{
+					score -= 1;
+				}
+				// Park Business
+				else if ( IsCombination( this, otherTile, GenericTile.TileTypeEnum.Park, GenericTile.TileTypeEnum.Business, pretender ) )
+				{
+					score -= 1;
+				}
+				// Business Business
+				else if ( IsCombination( this, otherTile, GenericTile.TileTypeEnum.Business, GenericTile.TileTypeEnum.Business, pretender ) )
+				{
+					score += 2;
+				}
+			}
+			return score;
+		}
+
 		public int SetTileType( TileTypeEnum type)
 		{
 			if (IsServer)

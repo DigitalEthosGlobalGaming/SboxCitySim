@@ -21,19 +21,6 @@ namespace CitySim
 			CheckGameEnd();
 		}
 
-		public static bool IsCombination(GenericTile aTile, GenericTile bTile, GenericTile.TileTypeEnum a, GenericTile.TileTypeEnum b)
-		{
-			if (aTile.TileType == a && bTile.TileType == b)
-			{
-				return true;
-			}
-			if ( bTile.TileType == a && aTile.TileType == b )
-			{
-				return true;
-			}
-
-			return false;
-		}
 
 
 		public int CalculateTileScore(GenericTile tile)
@@ -45,43 +32,7 @@ namespace CitySim
 
 			foreach ( var b in neighbours )
 			{
-				if ( b != null )
-				{
-					// House House
-					if ( IsCombination( a, b, GenericTile.TileTypeEnum.House, GenericTile.TileTypeEnum.House ) )
-					{
-						score = score + 1;
-					// House Park
-					} else if ( IsCombination( a, b, GenericTile.TileTypeEnum.House, GenericTile.TileTypeEnum.Park ) )
-					{
-						score = score + 2;
-					}
-					// House Business
-					else if ( IsCombination( a, b, GenericTile.TileTypeEnum.House, GenericTile.TileTypeEnum.Business ) )
-					{
-						score = score - 1;
-					}
-					// Park Park
-					else if ( IsCombination( a, b, GenericTile.TileTypeEnum.Park, GenericTile.TileTypeEnum.Park ) )
-					{
-						score = score + 2;
-					}
-					// Park Road
-					else if ( IsCombination( a, b, GenericTile.TileTypeEnum.Park, GenericTile.TileTypeEnum.Road ) )
-					{
-						score = score - 1;
-					}
-					// Park Business
-					else if ( IsCombination( a, b, GenericTile.TileTypeEnum.Park, GenericTile.TileTypeEnum.Business ) )
-					{
-						score = score - 1;
-					}					
-					// Business Business
-					else if ( IsCombination( a, b, GenericTile.TileTypeEnum.Business, GenericTile.TileTypeEnum.Business ) )
-					{
-						score = score + 2;
-					}
-				}
+				score += a.GetTileScore( b );
 			}
 
 			if ( score  < 0)

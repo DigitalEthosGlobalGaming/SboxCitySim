@@ -62,17 +62,17 @@ namespace CitySim
 			RoadType = ( RoadTypeEnum.StreetEmpty );
 			SetupPhysicsFromModel( PhysicsMotionType.Static, false );
 			UpdateName();
-
-			// Spawn the UI 
-			SpawnUI();
 		}
 
 		[ClientRpc]
 		public void SpawnUI()
 		{
-			// Create a World UI Per Tile, so we can modify it at realtime. This helps with pooling, and removes the issues with GC.
+			// Prevent Double Spawn.
+			if ( WorldUI != null )
+				return;
+
 			WorldUI = new WorldTileStatUI();
-			WorldUI.Transform = this.Transform;
+			WorldUI.Position = this.Position + Vector3.Up * 200.0f;
 		}
 		[ClientRpc]
 		public void UpdateWorldUI(string _name, int _points = 0)
@@ -82,6 +82,15 @@ namespace CitySim
 
 			WorldUI.Name = _name;
 			WorldUI.Points = _points > 0 ? "+" + _points : "" + _points;
+		}
+		[ClientRpc]
+		public void DestroyWorldUI()
+		{
+			if ( WorldUI == null )
+				return;
+
+			WorldUI.Delete();
+			WorldUI = null;
 		}
 
 		public void UpdateName()
@@ -341,6 +350,7 @@ namespace CitySim
 
 			
 		}
+
 
 		public override void Spawn()
 		{

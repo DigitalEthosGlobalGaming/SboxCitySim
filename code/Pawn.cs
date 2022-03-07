@@ -223,6 +223,11 @@ namespace CitySim
 			try
 			{
 				tile.UpdateModel();
+				tile.DestroyWorldUI();
+				foreach (var nextTile in tile.GetNeighbours<GenericTile>())
+				{
+					nextTile.DestroyWorldUI();
+				}
 			}
 			catch ( Exception e )
 			{
@@ -244,10 +249,31 @@ namespace CitySim
 				if ( tile.CanSetType( SelectedTileType ) )
 				{
 					tile.RenderColor = Color.Green;
+					
+					foreach ( var neighbourTile in tile.GetNeighbours<GenericTile>() )
+					{
+						if (neighbourTile != null)
+						{
+							int score = tile.GetTileScore( neighbourTile, SelectedTileType );
+							
+							neighbourTile.SpawnUI();
+							neighbourTile.UpdateWorldUI( Enum.GetName( typeof( GenericTile.TileTypeEnum ), neighbourTile.TileType ), score);
+						}
+					}
 				}
 				else
 				{
 					tile.RenderColor = Color.Red;
+					tile.SpawnUI();
+					tile.UpdateWorldUI( "Unable to place object here." );
+
+					foreach ( var nextTile in tile.GetNeighbours<GenericTile>() )
+					{
+						if ( nextTile != null )
+						{
+							nextTile.DestroyWorldUI();
+						}
+					}
 				}
 			}
 		}

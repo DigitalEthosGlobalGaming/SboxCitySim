@@ -20,6 +20,8 @@ namespace CitySim
 	/// </summary>
 	public partial class MyGame : Sandbox.Game
 	{
+
+		public const bool IsDevelopment = false;
 		public static MyGame GameObject { get; set; }
 		public static GameUi Ui { get; set; } = null;
 

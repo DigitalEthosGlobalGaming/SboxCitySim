@@ -141,32 +141,36 @@ namespace CitySim
 					}
 
 #if DEBUG && !RELEASE
-					// Debug controls for developers to test tiles.
-					if ( Input.Pressed( InputButton.Slot0 ) )
-					{
-						Log.Info( "1" );
-						SelectedTileType = GenericTile.TileTypeEnum.Base;
-					}
-					if ( Input.Pressed( InputButton.Slot1 ) )
-					{
-						Log.Info( "2" );
-						SelectedTileType = GenericTile.TileTypeEnum.Business;
-					}
-					if ( Input.Pressed( InputButton.Slot2 ) )
-					{
-						Log.Info( "3" );
-						SelectedTileType = GenericTile.TileTypeEnum.Park;
-					}
-					if ( Input.Pressed( InputButton.Slot3 ) )
-					{
-						Log.Info( "4" );
-						SelectedTileType = GenericTile.TileTypeEnum.House;
-					}
 
-					if ( Input.Pressed( InputButton.Slot4 ) )
+					if ( MyGame.IsDevelopment )
 					{
-						Log.Info( "5" );
-						SelectedTileType = GenericTile.TileTypeEnum.Road;
+						// Debug controls for developers to test tiles.
+						if ( Input.Pressed( InputButton.Slot0 ) )
+						{
+							Log.Info( "1" );
+							SelectedTileType = GenericTile.TileTypeEnum.Base;
+						}
+						if ( Input.Pressed( InputButton.Slot1 ) )
+						{
+							Log.Info( "2" );
+							SelectedTileType = GenericTile.TileTypeEnum.Business;
+						}
+						if ( Input.Pressed( InputButton.Slot2 ) )
+						{
+							Log.Info( "3" );
+							SelectedTileType = GenericTile.TileTypeEnum.Park;
+						}
+						if ( Input.Pressed( InputButton.Slot3 ) )
+						{
+							Log.Info( "4" );
+							SelectedTileType = GenericTile.TileTypeEnum.House;
+						}
+
+						if ( Input.Pressed( InputButton.Slot4 ) )
+						{
+							Log.Info( "5" );
+							SelectedTileType = GenericTile.TileTypeEnum.Road;
+						}
 					}
 				}
 #endif

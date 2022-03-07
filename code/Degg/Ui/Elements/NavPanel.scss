@@ -1,0 +1,16 @@
+﻿@import "./Styles/base.scss";
+
+.nav-items {
+    display: flex;
+    border-bottom-style: solid;
+    border-bottom-color: rgba(255,255,255,0.1);
+    border-bottom-width: 1px;
+}
+
+.nav-panel {
+    display: flex;
+}
+
+.current-page {
+
+}

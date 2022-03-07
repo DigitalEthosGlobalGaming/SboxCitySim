@@ -3,12 +3,12 @@ using Sandbox;
 using CitySim;
 using System;
 using System.Collections.Generic;
+using Degg.Ui.Elements;
 
 namespace GridSystem.Ui
 {
 	public partial class GameMenu : Panel
 	{
-
 		public Panel Base { get; set; }
 
 		public bool Opened { get; set; }
@@ -17,6 +17,7 @@ namespace GridSystem.Ui
 		public float LastTick { get; set; }
 
 		public List<Panel> Pages {get;set;}
+		public Panel NavBar { get; set; }
 		public FormattableString IsClient { get; private set; }
 
 		public GameMenu()
@@ -25,51 +26,19 @@ namespace GridSystem.Ui
 			StyleSheet.Load( "Ui/GameMenu.scss" );
 			AddClass( "game-menu" );
 			Pages = new List<Panel>();
-			Pages.Add( AddChild<HowToPlay>() );
-			Pages.Add( AddChild<TestPage>() );
+
+			Opened = true;
+
+			var nav = NavBar.AddChild<NavPanel>();
+			nav.AddPage<HowToPlay>("Welcome");
+			nav.AddPage<TestPage>("Test");
 		}
+
 
 
 		public void OpenMenu()
 		{
 			Pawn.SetControlsDisabledCmd( true );
-		}
-
-		public void NextPage()
-		{
-			SetPage( Page + 1 );
-		}
-		public void PreviousPage()
-		{
-			SetPage( Page - 1 );
-		}
-		public void SetPage(int pageNumber)
-		{
-			if ( pageNumber >= Pages.Count)
-			{
-				pageNumber = 0;
-			} else if ( pageNumber < 0)
-			{
-				pageNumber = Pages.Count - 1;
-			}
-
-			Page = pageNumber;
-
-
-			for ( int i = 0; i < Pages.Count; i++ )
-			{
-				var page = Pages[i];
-				if (page != null)
-				{
-					if ( i == pageNumber )
-					{
-						page.RemoveClass( "hidden" );
-					} else {
-						page.AddClass( "hidden" );
-					}
-				}
-			}
-
 		}
 
 		public void CloseMenu()
@@ -94,14 +63,6 @@ namespace GridSystem.Ui
 				{
 					CloseMenu();
 				}
-			}
-
-			if (Input.Pressed(InputButton.SlotNext))
-			{
-				NextPage();
-			} else if ( Input.Pressed( InputButton.SlotPrev ) )
-			{
-				PreviousPage();
 			}
 
 			SetClass( "open", Opened );

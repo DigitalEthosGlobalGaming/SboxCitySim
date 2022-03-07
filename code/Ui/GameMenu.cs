@@ -21,11 +21,11 @@ namespace GridSystem.Ui
 			SetTemplate( "Ui/GameMenu.html" );
 			StyleSheet.Load( "Ui/GameMenu.scss" );
 			AddClass( "game-menu" );
-			Opened = false;
+			OpenMenu();
 
 			var nav = NavBar.AddChild<NavPanel>();
 			nav.AddPage<HowToPlay>("Welcome");
-			nav.AddPage<TestPage>("Test");
+			nav.AddPage<CreditsPage>("Credits");
 		}
 
 
@@ -33,11 +33,13 @@ namespace GridSystem.Ui
 		public void OpenMenu()
 		{
 			Pawn.SetControlsDisabledCmd( true );
+			Opened = true;
 		}
 
 		public void CloseMenu()
 		{
 			Pawn.SetControlsDisabledCmd(false);
+			Opened = false;
 		}
 		public override void Tick()
 		{
@@ -49,6 +51,7 @@ namespace GridSystem.Ui
 			if ( Input.Pressed( (InputButton.Menu) ) )
 			{
 				Opened = !Opened;
+
 				if ( Opened )
 				{
 					OpenMenu();

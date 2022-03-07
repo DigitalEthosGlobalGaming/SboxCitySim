@@ -8,9 +8,6 @@ namespace GridSystem.Ui
 {
 	public partial class HowToPlay : Panel
 	{
-
-		public Panel Base { get; set; }
-
 		public bool Opened { get; set; }
 
 		public bool IsOpening { get; set; }
@@ -26,7 +23,6 @@ namespace GridSystem.Ui
 			StyleSheet.Load( "Ui/GameMenuPages/HowToPlay.scss" );
 			AddClass( "how-to-play" );
 		}
-
 
 
 	}

@@ -33,7 +33,10 @@ namespace CitySim
 		public GenericTile.TileTypeEnum SelectedTileType { get; set; } = GenericTile.TileTypeEnum.Base;
 		public GenericTile.TileTypeEnum LastSelectedTileType { get; set; } = GenericTile.TileTypeEnum.Base;
 		[Net]
-		public int TileBodyIndex { get; set; } = 0; 
+		public int TileBodyIndex { get; set; } = 0;
+
+		[Net]
+		public int TileMaterialIndex { get; set; } = 0;
 
 		public override void Spawn()
 		{
@@ -306,18 +309,21 @@ namespace CitySim
 			}
 		}
 
-		public void SelectNextTile( TileTypeEnum type, int? nextBodyIndex = null )
+		public void SelectNextTile( TileTypeEnum type, int? nextBodyIndex = null, int? nextMaterialIndex = null )
 		{
 			switch ( type )
 			{
 				case TileTypeEnum.Business:
 					TileBodyIndex = nextBodyIndex % 2 ?? Rand.Int( 0, 2 );
+					TileMaterialIndex = nextMaterialIndex % 6 ?? Rand.Int( 0, 6 );
 					break;
 				case TileTypeEnum.House:
 					TileBodyIndex = nextBodyIndex % 4 ?? Rand.Int( 0, 4 );
+					TileMaterialIndex = nextMaterialIndex % 6 ?? Rand.Int( 0, 6 );
 					break;
 				default:
 					TileBodyIndex = 0;
+					TileMaterialIndex = 0;
 					break;
 			}
 			SelectedTileType = type;
@@ -325,7 +331,7 @@ namespace CitySim
 
 		public void PlaceOnTile( GenericTile tile )
 		{
-			var score = tile.SetTileType( SelectedTileType, TileBodyIndex );
+			var score = tile.SetTileType( SelectedTileType, TileBodyIndex, TileMaterialIndex );
 			SelectedTileType = GenericTile.TileTypeEnum.Base;
 			var clientScore = Client.GetInt( "score", 0 );
 			clientScore = clientScore + score;
@@ -376,7 +382,7 @@ namespace CitySim
 					}
 
 					GhostTile.Transform = tile.Transform;
-					GenericTile.UpdateModel( GhostTile, SelectedTileType, TileBodyIndex );
+					GenericTile.UpdateModel( GhostTile, SelectedTileType, TileBodyIndex, TileMaterialIndex );
 					GenericTile.CheckModel( tile, GhostTile, SelectedTileType );
 					GhostTile.RenderColor = new Color( 0, 1, 0, 0.75f );
 				}

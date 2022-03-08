@@ -38,7 +38,7 @@
 						[
 							{
 								from = "texture.vmat"
-								to = "materials/buildings/house_3.vmat"
+								to = "materials/lighthouse_concrete_floor.vmat"
 							},
 						]
 					},

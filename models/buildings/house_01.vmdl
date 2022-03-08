@@ -75,6 +75,7 @@
 				[
 					{
 						_class = "DefaultMaterialGroup"
+						name = "house1"
 						remaps = 
 						[
 							{
@@ -88,6 +89,61 @@
 						]
 						use_global_default = false
 						global_default_material = ""
+					},
+					{
+						_class = "MaterialGroup"
+						name = "house2"
+						remaps = 
+						[
+							{
+								from = "materials/buildings/house_1.vmat"
+								to = "materials/buildings/house_2.vmat"
+							},
+						]
+					},
+					{
+						_class = "MaterialGroup"
+						name = "house3"
+						remaps = 
+						[
+							{
+								from = "materials/buildings/house_1.vmat"
+								to = "materials/buildings/house_3.vmat"
+							},
+						]
+					},
+					{
+						_class = "MaterialGroup"
+						name = "house4"
+						remaps = 
+						[
+							{
+								from = "materials/buildings/house_1.vmat"
+								to = "materials/buildings/house_4.vmat"
+							},
+						]
+					},
+					{
+						_class = "MaterialGroup"
+						name = "house5"
+						remaps = 
+						[
+							{
+								from = "materials/buildings/house_1.vmat"
+								to = "materials/buildings/house_5.vmat"
+							},
+						]
+					},
+					{
+						_class = "MaterialGroup"
+						name = "house6"
+						remaps = 
+						[
+							{
+								from = "materials/buildings/house_1.vmat"
+								to = "materials/buildings/house_6.vmat"
+							},
+						]
 					},
 				]
 			},

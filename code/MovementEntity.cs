@@ -41,6 +41,7 @@ namespace CitySim
 		{
 			base.Spawn();
 			SetModel( "models/cars/normalcar1.vmdl" );
+			SetBodyGroup( "base", Rand.Int( 0, 4 ) );
 			TickableCollection.Global.Add( this );
 		}
 
@@ -49,6 +50,7 @@ namespace CitySim
 			ShouldReverse = shouldReverse;
 			IsReverse = false;
 			CurrentIndex = -1;
+			Scale = 0.05f;
 			NavPath = path;
 			MoveToNext();
 			Position = TargetPosition;

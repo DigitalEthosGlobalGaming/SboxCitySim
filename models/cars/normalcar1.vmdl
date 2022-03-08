@@ -19,7 +19,7 @@
 							},
 							{
 								from = "blue.vmat"
-								to = "materials/hotspots/metal_painted_blue_a_hs.vmat"
+								to = "materials/simple/simple_blue.vmat"
 							},
 							{
 								from = "grey.vmat"
@@ -36,6 +36,26 @@
 							{
 								from = "taillights.vmat"
 								to = "materials/dev/gray_75.vmat"
+							},
+							{
+								from = "darkorange.vmat"
+								to = "materials/simple/simple_dark_orange.vmat"
+							},
+							{
+								from = "lightblue.vmat"
+								to = "materials/simple/simple_light_blue.vmat"
+							},
+							{
+								from = "orange.vmat"
+								to = "materials/simple/simple_orange.vmat"
+							},
+							{
+								from = "white.vmat"
+								to = "materials/default/white.vmat"
+							},
+							{
+								from = ""
+								to = "materials/black_matte.vmat"
 							},
 						]
 						use_global_default = false
@@ -66,10 +86,11 @@
 				[
 					{
 						_class = "RenderMeshFile"
+						name = "car_1"
 						filename = "raw/models/cars/NormalCar1.fbx"
 						import_translation = [ 0.0, 0.0, 0.0 ]
 						import_rotation = [ 0.0, 0.0, 0.0 ]
-						import_scale = 0.15
+						import_scale = 1.0
 						align_origin_x_type = "None"
 						align_origin_y_type = "None"
 						align_origin_z_type = "None"
@@ -85,6 +106,123 @@
 								"Cube_008",
 							]
 						}
+					},
+					{
+						_class = "RenderMeshFile"
+						name = "car_2"
+						filename = "raw/models/cars/NormalCar2.fbx"
+						import_translation = [ 0.0, 0.0, 0.0 ]
+						import_rotation = [ 0.0, 0.0, 0.0 ]
+						import_scale = 1.0
+						align_origin_x_type = "None"
+						align_origin_y_type = "None"
+						align_origin_z_type = "None"
+						parent_bone = ""
+						import_filter = 
+						{
+							exclude_by_default = false
+							exception_list = [  ]
+						}
+					},
+					{
+						_class = "RenderMeshFile"
+						name = "car_3"
+						filename = "raw/models/cars/SportsCar.fbx"
+						import_translation = [ 0.0, 0.0, 0.0 ]
+						import_rotation = [ 0.0, 0.0, 0.0 ]
+						import_scale = 1.0
+						align_origin_x_type = "None"
+						align_origin_y_type = "None"
+						align_origin_z_type = "None"
+						parent_bone = ""
+						import_filter = 
+						{
+							exclude_by_default = false
+							exception_list = [  ]
+						}
+					},
+					{
+						_class = "RenderMeshFile"
+						name = "car_4"
+						filename = "raw/models/cars/SportsCar2.fbx"
+						import_translation = [ 0.0, 0.0, 0.0 ]
+						import_rotation = [ 0.0, 0.0, 0.0 ]
+						import_scale = 1.0
+						align_origin_x_type = "None"
+						align_origin_y_type = "None"
+						align_origin_z_type = "None"
+						parent_bone = ""
+						import_filter = 
+						{
+							exclude_by_default = false
+							exception_list = [  ]
+						}
+					},
+					{
+						_class = "RenderMeshFile"
+						name = "car_5"
+						filename = "raw/models/cars/SUV.fbx"
+						import_translation = [ 0.0, 0.0, 0.0 ]
+						import_rotation = [ 0.0, 0.0, 0.0 ]
+						import_scale = 1.0
+						align_origin_x_type = "None"
+						align_origin_y_type = "None"
+						align_origin_z_type = "None"
+						parent_bone = ""
+						import_filter = 
+						{
+							exclude_by_default = false
+							exception_list = [  ]
+						}
+					},
+				]
+			},
+			{
+				_class = "BodyGroupList"
+				children = 
+				[
+					{
+						_class = "BodyGroup"
+						name = "base"
+						children = 
+						[
+							{
+								_class = "BodyGroupChoice"
+								meshes = 
+								[
+									"car_1",
+								]
+							},
+							{
+								_class = "BodyGroupChoice"
+								meshes = 
+								[
+									"car_2",
+								]
+							},
+							{
+								_class = "BodyGroupChoice"
+								meshes = 
+								[
+									"car_3",
+								]
+							},
+							{
+								_class = "BodyGroupChoice"
+								meshes = 
+								[
+									"car_4",
+								]
+							},
+							{
+								_class = "BodyGroupChoice"
+								meshes = 
+								[
+									"car_5",
+								]
+							},
+						]
+						hidden_in_tools = false
 					},
 				]
 			},

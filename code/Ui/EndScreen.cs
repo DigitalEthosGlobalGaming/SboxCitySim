@@ -12,7 +12,6 @@ namespace GridSystem.Ui
 
 		public EndScreen()
 		{
-
 			SetTemplate( "Ui/EndScreen.html" );
 			StyleSheet.Load( "Ui/EndScreen.scss" );
 		}

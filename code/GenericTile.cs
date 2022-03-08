@@ -72,7 +72,7 @@ namespace CitySim
 				return;
 
 			WorldUI = new WorldTileStatUI();
-			WorldUI.Position = this.Position + Vector3.Up * 200.0f;
+			WorldUI.Position = this.Position + Vector3.Up * 100.0f;
 		}
 		[ClientRpc]
 		public void UpdateWorldUI( string _name, int _points = 0 )
@@ -134,13 +134,13 @@ namespace CitySim
 
 		public void SetHasRoad(bool hasRoad)
 		{
-			SetTileType( TileTypeEnum.Road, 0 );
+			SetTileType( TileTypeEnum.Road, 0, 0 );
 
 			if ( hasRoad != HasRoad() )
 			{
 				var transitionAmount = 10f;
 				Position = GetWorldPosition() + new Vector3( Rand.Float( -transitionAmount, transitionAmount ), Rand.Float( -transitionAmount, transitionAmount ), Rand.Float( 100f, 150f ) );
-				SetTileType( TileTypeEnum.Road, 0 );
+				SetTileType( TileTypeEnum.Road, 0, 0 );
 				CheckModel();
 				GenericTile[] neighbours = GetNeighbours<GenericTile>();
 				foreach ( GenericTile neighbor in neighbours )

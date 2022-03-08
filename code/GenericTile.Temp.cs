@@ -33,16 +33,24 @@ namespace CitySim
 		[Net]
 		public int bodyIndex { get; set; } = 0;
 
-		public void UpdateModel(int? bodyIndex = null)
+		[Net]
+		public int materialIndex { get; set; } = 0;
+
+		public void UpdateModel(int? bodyIndex = null, int? materialIndex = null)
 		{
 			if (bodyIndex != null)
 			{
 				this.bodyIndex = bodyIndex.Value;
 			}
 
-			GenericTile.UpdateModel( this, TileType, bodyIndex ?? this.bodyIndex );
+			if ( materialIndex  != null)
+			{
+				this.materialIndex = materialIndex.Value;
+			}
+
+			GenericTile.UpdateModel( this, TileType, bodyIndex ?? this.bodyIndex, materialIndex ?? this.materialIndex );
 		}
-		public static void UpdateModel( ModelEntity entity, TileTypeEnum type, int bodyIndex )
+		public static void UpdateModel( ModelEntity entity, TileTypeEnum type, int bodyIndex, int materialIndex )
 		{
 			var model = GetModelForTileType( type );
 			if (model != "")
@@ -52,6 +60,7 @@ namespace CitySim
 					entity.SetModel( model );
 					entity.SetupPhysicsFromModel( PhysicsMotionType.Static, false );
 					entity.SetBodyGroup( "base", bodyIndex );
+					entity.SetMaterialGroup( materialIndex );
 				}
 			}
 			entity.RenderColor = Color.White;
@@ -128,7 +137,7 @@ namespace CitySim
 			return score;
 		}
 
-		public int SetTileType( TileTypeEnum type, int bodyIndex )
+		public int SetTileType( TileTypeEnum type, int bodyIndex, int materialIndex )
 		{
 			if (IsServer)
 			{
@@ -151,7 +160,7 @@ namespace CitySim
 				}
 				else
 				{
-					UpdateModel( bodyIndex );
+					UpdateModel( bodyIndex, materialIndex );
 				}
 
 				IsDirty = true;

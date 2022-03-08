@@ -10,7 +10,8 @@ namespace GridSystem.Ui
 
 		public Panel Base { get; set; }
 
-		public Button StartButton { get; set; }
+		public Button StartNormalButton { get; set; }
+		public Button StartChaosButton { get; set; }
 
 		public StartScreen()
 		{
@@ -18,28 +19,28 @@ namespace GridSystem.Ui
 			StyleSheet.Load( "Ui/StartScreen.scss" );
 			StyleSheet.Load( "Ui/Styles/button.scss" );
 			AddClass("start-screen");
-			StartButton.Text =  "Press [Jump (Space)] To Start" ;
-			StartButton.AddClass( "button" );
-			StartButton.AddEventListener( "onclick", () => { VoteToStart(); } );
+			StartNormalButton.Text =  "Play" ;
+			StartNormalButton.AddClass( "button" );
+			StartNormalButton.AddEventListener( "onclick", () => { VoteToStart(MyGame.GameModes.Normal); } );
+
+			StartChaosButton.Text = "Play Chaos Mode";
+			StartChaosButton.AddClass( "button" );
+			StartChaosButton.AddEventListener( "onclick", () => { VoteToStart( MyGame.GameModes.Chaos); } );
 		}
 
 		public override void Tick()
 		{
 
 			SetClass( "open", Input.Down( InputButton.Score ) );
-			if ( Input.Pressed( InputButton.Jump ) )
-			{
-				VoteToStart();
-			}
 		}
 
-		public void VoteToStart()
+		public void VoteToStart(MyGame.GameModes mode)
 		{
 			var pawn = (Pawn)Local.Client.Pawn;
 			var opened = pawn.DisabledControls;
 			if ( !opened )
 			{
-				MyGame.VoteToStart();
+				MyGame.VoteToStart( mode );
 			}
 			
 		}

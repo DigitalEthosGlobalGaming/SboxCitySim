@@ -16,4 +16,7 @@
     opacity: 1;
     background-color: $c-primary-dark;
     pointer-events: all;
+    .button {
+        margin: 8px;
+    }
 }

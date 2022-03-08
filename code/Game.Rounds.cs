@@ -12,13 +12,23 @@ namespace CitySim
 	{
 		public int XSize { get; set; }
 		public int YSize { get; set; }
+
+		public MyGame.GameModes Mode { get; set; }
 	}
+
 	public partial class MyGame : Sandbox.Game
 	{
 
 		public static GameOptions CurrentGameOptions { get; set; }
 
 		public static GameStateEnum GameState { get; set; }
+
+
+		public enum GameModes
+		{
+			Normal = 0,
+			Chaos = 1,
+		}
 
 		public enum GameStateEnum
 		{
@@ -35,14 +45,22 @@ namespace CitySim
 		}
 
 		[ServerCmd( "cs.game.start" )]
-		public static void StartGameCmd()
+		public static void StartGameCmd( GameModes? mode = GameModes.Normal)
 		{
 			// Delete all Cars; if we are resetting.
 			CleanupEntitiesCmd();
 
 			var options = new GameOptions();
-			options.XSize = Rand.Int(10, 20);
-			options.YSize = Rand.Int(10, 20);
+			options.Mode = mode ?? GameModes.Normal;
+			var minAmount = 10;
+			var maxAmount = 20;
+			if (mode == GameModes.Chaos)
+			{
+				minAmount = minAmount * 2;
+				maxAmount = maxAmount * 2;
+			}
+			options.XSize = Rand.Int( minAmount, maxAmount );
+			options.YSize = Rand.Int( minAmount, maxAmount );
 			GameObject.StartGame( options );
 		}
 		[ServerCmd( "cs.game.restart" )]
@@ -85,9 +103,9 @@ namespace CitySim
 		}
 
 		[ServerCmd]
-		public static void VoteToStart()
+		public static void VoteToStart(MyGame.GameModes mode = MyGame.GameModes.Normal)
 		{
-			StartGameCmd();
+			StartGameCmd( mode );
 		}
 
 		public void StartGame(GameOptions options)
@@ -110,6 +128,12 @@ namespace CitySim
 					{
 						Map = new RoadMap();
 						Map.Init( options.XSize, options.YSize );
+
+						if (options.Mode == GameModes.Chaos)
+						{
+							Map.TimeBetweenPieces = 1f;
+							Map.TimeBetweenPiecesModifier = 0f;
+						}
 					}
 
 					foreach ( var client in Client.All )

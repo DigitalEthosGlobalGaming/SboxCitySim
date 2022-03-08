@@ -12,6 +12,7 @@ namespace CitySim
 		public bool IsEnd { get; set; }
 
 		public float TimeBetweenPieces { get; set; } = 3;
+		public float TimeBetweenPiecesModifier { get; set; } = 1;
 
 		[Net]
 		public float TimeForNewPiece { get; set; }
@@ -147,7 +148,7 @@ namespace CitySim
 			{
 				if ( TimeForNewPiece < Time.Now )
 				{
-					TimeForNewPiece = Time.Now + TimeBetweenPieces + Client.All.Count;
+					TimeForNewPiece = Time.Now + TimeBetweenPieces + (Client.All.Count * TimeBetweenPiecesModifier);
 					GivePlayersNewPiece();
 				}
 			}

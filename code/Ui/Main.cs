@@ -11,7 +11,6 @@ namespace GridSystem.Ui
 		public Panel Base { get; set; }
 		public Label CurrentItem { get; set; }
 		public Label CurrentScore { get; set; }
-		public Label TimeToNewPiece { get; set; }
 		public Label GameOverTime { get; set; }
 		public Main()
 		{
@@ -40,13 +39,6 @@ namespace GridSystem.Ui
 				var score = Local.Client.GetInt( "score", 0 );
 
 				CurrentScore.Text = (score) + " Points";
-
-				var timeToPeice = Math.Round(map.TimeForNewPiece - Time.Now);
-				if ( timeToPeice  <= 0)
-				{
-					timeToPeice = 0;
-				}
-				TimeToNewPiece.Text = timeToPeice.ToString();
 			}
 		}
 

@@ -11,12 +11,45 @@
 				[
 					{
 						_class = "MaterialGroup"
-						name = "Base"
+						name = "house1"
 						remaps = 
 						[
 							{
 								from = "texture.vmat"
 								to = "materials/buildings/house_1.vmat"
+							},
+						]
+					},
+					{
+						_class = "MaterialGroup"
+						name = "house2"
+						remaps = 
+						[
+							{
+								from = "texture.vmat"
+								to = "materials/buildings/house_2.vmat"
+							},
+						]
+					},
+					{
+						_class = "MaterialGroup"
+						name = "house3"
+						remaps = 
+						[
+							{
+								from = "texture.vmat"
+								to = "materials/buildings/house_3.vmat"
+							},
+						]
+					},
+					{
+						_class = "MaterialGroup"
+						name = "house4"
+						remaps = 
+						[
+							{
+								from = "texture.vmat"
+								to = "materials/buildings/house_4.vmat"
 							},
 						]
 					},
@@ -43,6 +76,18 @@
 						}
 					},
 				]
+			},
+			{
+				_class = "SpawnConfig"
+				children = 
+				[
+					{
+						_class = "ConfigSetMaterialGroup"
+						material_group = ""
+					},
+				]
+				hide_materialgroup_in_tools = false
+				hide_rendercolor_in_tools = false
 			},
 		]
 		model_archetype = ""

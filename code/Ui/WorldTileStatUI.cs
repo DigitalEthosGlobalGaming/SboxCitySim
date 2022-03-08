@@ -39,7 +39,7 @@ namespace CitySim.UI
 		{
 			All.Add( this );
 
-			var size = 2000;
+			var size = 1000;
 			PanelBounds = new Rect( -size, -size, size, size );
 			SetTemplate( "Ui/WorldTileStatUi.html" );
 			StyleSheet.Load( "Ui/WorldTileStatUi.scss" );

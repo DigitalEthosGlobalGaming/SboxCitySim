@@ -37,7 +37,7 @@ namespace CitySim
 		public bool IsReverse { get; set; }
 		public bool ShouldReverse { get; set; }
 
-		public float CarHeight { get; set; } = 10f;
+		public float CarHeight { get; set; } = 5f;
 
 
 		public override void Spawn()
@@ -174,7 +174,7 @@ namespace CitySim
 					if ( isTurning )
 					{
 						// Deccelerate
-						MovementSpeed /= 2;
+						MovementSpeed /= 3;
 					}
 					else
 					{

@@ -21,7 +21,11 @@ namespace GridSystem.Ui
 			SetTemplate( "Ui/GameMenu.html" );
 			StyleSheet.Load( "Ui/GameMenu.scss" );
 			AddClass( "game-menu" );
-			OpenMenu();
+			if ( Pawn.GetClientPawn()?.HasReadWelcome != true)
+			{
+				OpenMenu();
+			}
+			
 
 			var nav = NavBar.AddChild<NavPanel>();
 			nav.AddPage<HowToPlay>("Welcome");
@@ -38,6 +42,7 @@ namespace GridSystem.Ui
 
 		public void CloseMenu()
 		{
+			Pawn.GetClientPawn().HasReadWelcome = true;
 			Pawn.SetControlsDisabledCmd(false);
 			Opened = false;
 		}

@@ -1,45 +1,30 @@
-﻿.gamecontrolinfoui_root {
-	position: absolute;
-	bottom: 0px;
-	right: 0;
-	z-index: 100;
-	flex-direction: column;
-	width: 700px;
-	font-family: Poppins;
-	font-size: 13px;
+﻿.container {
+    display: flex;
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    background-color: rgba(0,0,0,0.75);
+    border-top-left-radius: 32;
+}
 
-    image
-    {
-        max-width: 100%;
-        flex: 1 1 auto;
+.button-prompt {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px;
+}
 
-        padding: 10px;
-        margin: 10px;
+.button-prompt-label {
+    padding: 16px;
+    color: white;
+    text-align: center;
+    font-size: 32px;
+    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+}
 
-        //background-color: green;
-        //border: 1px solid red;
-        text-align: center;
-    }
-
-    label
-    {
-        color: white;
-        text-align: center;
-        font-size: 32px;
-        font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
-    }
-
-    .gamecontrolinfoui_panel
-    {
-        display: flex;
-        flex-direction: row;
-        justify-content: center;
-        align-items: center;
-
-        //background-color: blue;
-
-        background-color: rgba(32, 32, 32, 0.5);
-        border-radius: 25px;
-        padding: 20px;
-    }
+.button-prompt {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-direction: row;
 }

@@ -47,7 +47,7 @@ namespace CitySim
 
 		public void Init(int xAmount, int yAmount)
 		{
-			Init<GenericTile>( new Vector3( 0, 0, 1000 ), new Vector2( TileScale * 200.0f, TileScale * 200.0f ), xAmount, yAmount );
+			Init<GenericTile>( new Vector3( 0, 0, 250 ), new Vector2( TileScale * 200.0f, TileScale * 200.0f ), xAmount, yAmount );
 		}
 
 		public override void OnSpaceSetup(GridSpace space)
@@ -146,7 +146,7 @@ namespace CitySim
 
 			if (MyGame.GameState == MyGame.GameStateEnum.Playing)
 			{
-				if ( TimeForNewPiece < Time.Now )
+				if (TimeBetweenPieces > 0 && TimeForNewPiece < Time.Now )
 				{
 					TimeForNewPiece = Time.Now + TimeBetweenPieces + (Client.All.Count * TimeBetweenPiecesModifier);
 					GivePlayersNewPiece();

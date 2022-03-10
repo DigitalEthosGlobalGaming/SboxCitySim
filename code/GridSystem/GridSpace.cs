@@ -37,11 +37,11 @@ namespace GridSystem
 
 		}
 
-		public virtual void ClientTick( float delta )
+		public virtual void ClientTick( float delta, float currentTick )
 		{
 
 		}
-		public virtual void ServerTick( float delta )
+		public virtual void ServerTick( float delta, float currentTick )
 		{
 
 		}

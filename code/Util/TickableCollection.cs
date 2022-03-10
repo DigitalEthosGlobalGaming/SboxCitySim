@@ -41,7 +41,7 @@ namespace CitySim
 				{
 					if ( item != null )
 					{
-						item.OnServerTick( Time.Delta, Time.Tick );
+						item.OnClientTick( Time.Delta, Time.Tick );
 					}
 				}
 			}

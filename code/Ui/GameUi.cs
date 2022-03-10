@@ -1,4 +1,5 @@
 ﻿using CitySim;
+using CitySim.UI;
 using Sandbox;
 using Sandbox.UI;
 
@@ -20,6 +21,11 @@ namespace GridSystem.Ui
 			RootPanel.AddChild<ChatBox>();
 			RootPanel.AddChild<CustomScoreboard>();
 			RootPanel.AddChild<GameMenu>();
+		}
+
+		public WorldTileStatUI CreateWorldUi()
+		{
+			return RootPanel.AddChild<WorldTileStatUI>();
 		}
 
 

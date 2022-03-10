@@ -1,11 +1,12 @@
-﻿using Sandbox;
+﻿using Degg.Ui.Elements;
+using Sandbox;
 using Sandbox.UI;
 using Sandbox.UI.Construct;
 using System.Collections.Generic;
 
 namespace CitySim.UI
 {
-	public class WorldTileStatUI : WorldPanel
+	public class WorldTileStatUI : Billboard
 	{
 		public static List<WorldTileStatUI> All { get; private set; } = new List<WorldTileStatUI>();
 
@@ -36,16 +37,9 @@ namespace CitySim.UI
 		public Label pointsLabel;
 
 		public WorldTileStatUI()
-		{
-			All.Add( this );
-
-			var size = 1000;
-			PanelBounds = new Rect( -size, -size, size, size );
+		{	
 			SetTemplate( "Ui/WorldTileStatUi.html" );
 			StyleSheet.Load( "Ui/WorldTileStatUi.scss" );
-			AddClass( "stat-ui" );
-			AddClass( "open" );
-
 
 			pointsLabel = Base.Add.Label( "0" );
 		}
@@ -56,8 +50,6 @@ namespace CitySim.UI
 
 			SetClass( "bad", points < 0 );
 			SetClass( "good", points > 0 );
-			// Closest calculation for now.... there's a bug here.
-			Rotation = Rotation.LookAt( (Local.Pawn.Position - Transform.Position).Normal );
 		}
 	}
 }

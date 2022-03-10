@@ -1,14 +1,12 @@
 ﻿using Sandbox.UI;
 using Sandbox;
 using CitySim;
-using System;
 using CitySim.UI;
 
 namespace GridSystem.Ui
 {
 	public partial class Main: Panel
 	{
-
 		public Panel Base { get; set; }
 		public Label CurrentItem { get; set; }
 		public Label CurrentScore { get; set; }
@@ -18,7 +16,6 @@ namespace GridSystem.Ui
 		{
 			SetTemplate( "Ui/Main.html" );
 			StyleSheet.Load( "Ui/main.scss" );
-
 			gameControlInfoUI = AddChild<GameControlInfoUI>( "gamecontrolinfoui_root" );
 		}
 
@@ -42,7 +39,7 @@ namespace GridSystem.Ui
 				var map = MyGame.GetMap();
 				var score = Local.Client.GetInt( "score", 0 );
 
-				CurrentScore.Text = (score) + " Points";
+				CurrentScore.Text = (score).ToString();
 			}
 		}
 

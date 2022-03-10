@@ -12,6 +12,7 @@ namespace GridSystem.Ui
 
 		public Button StartNormalButton { get; set; }
 		public Button StartChaosButton { get; set; }
+		public Button StartSandboxButton { get; set; }
 
 		public StartScreen()
 		{
@@ -26,6 +27,10 @@ namespace GridSystem.Ui
 			StartChaosButton.Text = "Play Chaos Mode";
 			StartChaosButton.AddClass( "button" );
 			StartChaosButton.AddEventListener( "onclick", () => { VoteToStart( MyGame.GameModes.Chaos); } );
+
+			StartSandboxButton.Text = "Play Sandbox Mode";
+			StartSandboxButton.AddClass( "button" );
+			StartSandboxButton.AddEventListener( "onclick", () => { VoteToStart( MyGame.GameModes.Sandbox ); } );
 		}
 
 		public override void Tick()

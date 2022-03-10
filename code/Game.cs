@@ -20,8 +20,6 @@ namespace CitySim
 	/// </summary>
 	public partial class MyGame : Sandbox.Game
 	{
-
-		public const bool IsDevelopment = false;
 		public static MyGame GameObject { get; set; }
 		public static GameUi Ui { get; set; } = null;
 
@@ -90,16 +88,6 @@ namespace CitySim
 		{
 			((MyGame)Current).RefreshMap();
 		}
-		[ClientCmd( "cs.test.worldUI" )]
-		public static void TestWorldUICmd()
-		{
-			// Test the WorldTileStateUI here.
-			WorldTileStatUI WorldUI = new WorldTileStatUI();
-			Assert.NotNull( WorldUI );
-			WorldUI.Name = "Test World UI";
-			WorldUI.Points = 500;
-			WorldUI.Position = Local.Pawn.Position;
-		}
 #endif
 
 
@@ -107,7 +95,7 @@ namespace CitySim
 		{
 			if ( IsClient )
 			{
-					if (Ui != null)
+				if (Ui != null)
 				{
 					Ui.Delete();
 				}
@@ -157,6 +145,7 @@ namespace CitySim
 			{
 				TickableCollection.Global.ClientTick();
 			}
+
 			if ( Map != null )
 			{
 				Map.ClientTick();
@@ -169,6 +158,7 @@ namespace CitySim
 			{
 				TickableCollection.Global.ServerTick();
 			}
+
 			if ( Map != null )
 			{
 				Map.ServerTick();

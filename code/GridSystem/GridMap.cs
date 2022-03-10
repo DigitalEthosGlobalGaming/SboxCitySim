@@ -29,7 +29,7 @@ namespace GridSystem
 		public Vector2 GridSize { get; set; }
 
 		[Net]
-		public bool IsSetup { get; set; } = false;
+		public bool IsSetup { get; set; }
 
 		public GridMap( )
 		{
@@ -237,7 +237,7 @@ namespace GridSystem
 				{
 					if ( item != null )
 					{
-						item.ClientTick( Time.Delta );
+						item.ClientTick( Time.Delta, Time.Tick );
 					}
 				}
 			}

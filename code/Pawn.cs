@@ -14,7 +14,16 @@ namespace CitySim
 		/// </summary>
 		/// 
 
+		public static Pawn GetClientPawn()
+		{
+			
+			return (Pawn)Local.Client?.Pawn;
+		}
+
 		public GenericTile LastHighlighted { get; set; }
+
+		public bool HasReadWelcome { get; set; }
+
 
 		[Net, Local]
 		public bool DisabledControls { get; set; }
@@ -151,29 +160,34 @@ namespace CitySim
 					}
 
 #if DEBUG && !RELEASE
-					if ( MyGame.IsDevelopment )
+					if ( MyGame.CurrentGameOptions.Mode == MyGame.GameModes.Sandbox )
 					{
+						GenericTile.TileTypeEnum? tileToSelect = null;
 						// Debug controls for developers to test tiles.
 						if ( Input.Pressed( InputButton.Slot0 ) )
 						{
-							SelectNextTile( GenericTile.TileTypeEnum.Base );
+							tileToSelect = GenericTile.TileTypeEnum.Base;
 						}
 						if ( Input.Pressed( InputButton.Slot1 ) )
 						{
-							SelectNextTile( GenericTile.TileTypeEnum.Business );
+							tileToSelect = GenericTile.TileTypeEnum.Business;
 						}
 						if ( Input.Pressed( InputButton.Slot2 ) )
 						{
-							SelectNextTile( GenericTile.TileTypeEnum.Park );
+							tileToSelect = GenericTile.TileTypeEnum.Park;
 						}
 						if ( Input.Pressed( InputButton.Slot3 ) )
 						{
-							SelectNextTile( GenericTile.TileTypeEnum.House );
+							tileToSelect = GenericTile.TileTypeEnum.House;
 						}
 
 						if ( Input.Pressed( InputButton.Slot4 ) )
 						{
-							SelectNextTile( GenericTile.TileTypeEnum.Road );
+							tileToSelect = GenericTile.TileTypeEnum.Road;
+						}
+						if (tileToSelect != null)
+						{
+							SelectNextTile( tileToSelect.Value );
 						}
 					}
 				}
@@ -332,7 +346,13 @@ namespace CitySim
 		public void PlaceOnTile( GenericTile tile )
 		{
 			var score = tile.SetTileType( SelectedTileType, TileBodyIndex, TileMaterialIndex );
-			SelectedTileType = GenericTile.TileTypeEnum.Base;
+			if ( MyGame.CurrentGameOptions.Mode != MyGame.GameModes.Sandbox )
+			{
+				SelectedTileType = GenericTile.TileTypeEnum.Base;
+			} else
+			{
+				SelectNextTile( SelectedTileType );
+			}
 			var clientScore = Client.GetInt( "score", 0 );
 			clientScore = clientScore + score;
 			Client.SetInt( "score", clientScore );

@@ -19,6 +19,7 @@ namespace CitySim.UI
 		public GameControlInfoUI()
 		{
 			StyleSheet.Load( "Ui/GameControlInfoUI.scss" );
+			this.AddClass( "container" );
 
 			// Give the layout a separate panel to work on, while the parent of this will manage position.
 			bgPanel = AddChild<Panel>( "gamecontrolinfoui_panel" );
@@ -34,21 +35,15 @@ namespace CitySim.UI
 		{
 			var texture = Input.GetGlyph( _inputBtn, inputGlyphSize, glyphStyle );
 
-			/*
-			 * Full hierarchy to the Button Glyph.
-			GameUI
-				Main
-					GameControlInfoUI - Root
-						Panel
-							ButtonPanel
-								ButtonImage
-								ButtonLabel
-			*/
-
 			var placeBtnPanel = bgPanel.AddChild<Panel>();
+			placeBtnPanel.AddClass( "button-prompt" );
+
 			_element = placeBtnPanel.AddChild<Image>();
+			_element.AddClass( "button-prompt-image" );
 			_element.Texture = texture;
+
 			var placeBtnLabel = placeBtnPanel.AddChild<Label>();
+			placeBtnLabel.AddClass( "button-prompt-label" );
 			placeBtnLabel.Text = _label;
 		}
 	}

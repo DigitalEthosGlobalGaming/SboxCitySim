@@ -28,6 +28,7 @@ namespace CitySim
 		{
 			Normal = 0,
 			Chaos = 1,
+			Sandbox = 2,
 		}
 
 		public enum GameStateEnum
@@ -58,6 +59,10 @@ namespace CitySim
 			{
 				minAmount = minAmount * 2;
 				maxAmount = maxAmount * 2;
+			} else if ( mode == GameModes.Sandbox )
+			{
+				minAmount = minAmount * 3;
+				maxAmount = maxAmount * 3;
 			}
 			options.XSize = Rand.Int( minAmount, maxAmount );
 			options.YSize = Rand.Int( minAmount, maxAmount );
@@ -133,6 +138,9 @@ namespace CitySim
 						{
 							Map.TimeBetweenPieces = 1f;
 							Map.TimeBetweenPiecesModifier = 0f;
+						} else if (options.Mode == GameModes.Sandbox)
+						{
+							Map.TimeBetweenPieces = -1f;
 						}
 					}
 

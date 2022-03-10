@@ -71,8 +71,7 @@ namespace CitySim
 			if ( WorldUI != null )
 				return;
 
-			WorldUI = new WorldTileStatUI();
-			WorldUI.Position = this.Position + Vector3.Up * 100.0f;
+			WorldUI = MyGame.Ui.CreateWorldUi();
 		}
 		[ClientRpc]
 		public void UpdateWorldUI( string _name, int _points = 0 )
@@ -352,6 +351,12 @@ namespace CitySim
 			TickableCollection.Global.Add( this );
 		}
 
+		public override void ClientSpawn()
+		{
+			base.ClientSpawn();
+			TickableCollection.Global.Add( this );
+		}
+
 		protected override void OnDestroy()
 		{
 			base.OnDestroy();
@@ -364,7 +369,11 @@ namespace CitySim
 
 		public void OnClientTick( float delta, float currentTick )
 		{
-
+			if (WorldUI != null)
+			{
+				var position = GetWorldPosition();
+				WorldUI.SetPosition( position + (Vector3.Up * 10f) );
+			}
 		}
 
 		public void OnSharedTick( float delta, float currentTick )

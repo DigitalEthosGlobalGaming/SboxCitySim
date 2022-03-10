@@ -2,6 +2,7 @@
 using Sandbox;
 using CitySim;
 using System;
+using CitySim.UI;
 
 namespace GridSystem.Ui
 {
@@ -12,10 +13,13 @@ namespace GridSystem.Ui
 		public Label CurrentItem { get; set; }
 		public Label CurrentScore { get; set; }
 		public Label GameOverTime { get; set; }
+		public GameControlInfoUI gameControlInfoUI { get; set; }
 		public Main()
 		{
 			SetTemplate( "Ui/Main.html" );
 			StyleSheet.Load( "Ui/main.scss" );
+
+			gameControlInfoUI = AddChild<GameControlInfoUI>( "gamecontrolinfoui_root" );
 		}
 
 		public override void Tick()

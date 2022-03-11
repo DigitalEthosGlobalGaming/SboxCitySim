@@ -14,10 +14,6 @@
 						remaps = 
 						[
 							{
-								from = "shop.vmat"
-								to = "materials/buildings/house_1.vmat"
-							},
-							{
 								from = "grey.vmat"
 								to = "materials/grass/floor_grass_a.vmat"
 							},
@@ -62,6 +58,7 @@
 				[
 					{
 						_class = "RenderMeshFile"
+						name = "floor"
 						filename = "raw/models/road/Street_Empty.fbx"
 						import_translation = [ 0.0, 0.0, 0.0 ]
 						import_rotation = [ 0.0, 0.0, 0.0 ]
@@ -78,6 +75,7 @@
 					},
 					{
 						_class = "RenderMeshFile"
+						name = "bush1"
 						filename = "raw/models/nature/Bush1.fbx"
 						import_translation = [ -41.0, -46.0, 0.0 ]
 						import_rotation = [ 0.0, 0.0, 0.0 ]
@@ -94,6 +92,7 @@
 					},
 					{
 						_class = "RenderMeshFile"
+						name = "bush2"
 						filename = "raw/models/nature/Bush2.fbx"
 						import_translation = [ 64.0, -53.0, 0.0 ]
 						import_rotation = [ 0.0, 0.0, 0.0 ]
@@ -110,6 +109,7 @@
 					},
 					{
 						_class = "RenderMeshFile"
+						name = "bush3"
 						filename = "raw/models/nature/Bush3.fbx"
 						import_translation = [ -47.0, 53.0, 0.0 ]
 						import_rotation = [ 0.0, 0.0, 0.0 ]
@@ -126,6 +126,7 @@
 					},
 					{
 						_class = "RenderMeshFile"
+						name = "rock1"
 						filename = "raw/models/nature/Rock1.fbx"
 						import_translation = [ 119.0, 46.0, 0.0 ]
 						import_rotation = [ 0.0, 0.0, 0.0 ]
@@ -142,6 +143,7 @@
 					},
 					{
 						_class = "RenderMeshFile"
+						name = "rock2"
 						filename = "raw/models/nature/Rock2.fbx"
 						import_translation = [ 100.0, -150.0, 0.0 ]
 						import_rotation = [ 0.0, 0.0, 0.0 ]
@@ -158,6 +160,7 @@
 					},
 					{
 						_class = "RenderMeshFile"
+						name = "rock3"
 						filename = "raw/models/nature/Rock3.fbx"
 						import_translation = [ -275.0, -100.0, 0.0 ]
 						import_rotation = [ 0.0, 0.0, 0.0 ]
@@ -171,6 +174,154 @@
 							exclude_by_default = false
 							exception_list = [  ]
 						}
+					},
+				]
+			},
+			{
+				_class = "Skeleton"
+				children = 
+				[
+					{
+						_class = "Bone"
+						name = "rock1"
+						origin = [ 0.0, 0.0, 0.0 ]
+						angles = [ 0.0, 0.0, 0.0 ]
+						do_not_discard = true
+					},
+				]
+			},
+			{
+				_class = "BodyGroupList"
+				children = 
+				[
+					{
+						_class = "BodyGroup"
+						name = "bush1"
+						children = 
+						[
+							{
+								_class = "BodyGroupChoice"
+								meshes = 
+								[
+									"bush1",
+								]
+							},
+							{
+								_class = "BodyGroupChoice"
+								meshes = [  ]
+							},
+						]
+						hidden_in_tools = false
+					},
+					{
+						_class = "BodyGroup"
+						name = "floor2"
+						children = 
+						[
+							{
+								_class = "BodyGroupChoice"
+								meshes = 
+								[
+									"floor",
+								]
+							},
+						]
+						hidden_in_tools = false
+					},
+					{
+						_class = "BodyGroup"
+						name = "bush2"
+						children = 
+						[
+							{
+								_class = "BodyGroupChoice"
+								meshes = 
+								[
+									"bush2",
+								]
+							},
+							{
+								_class = "BodyGroupChoice"
+								meshes = [  ]
+							},
+						]
+						hidden_in_tools = false
+					},
+					{
+						_class = "BodyGroup"
+						name = "bush3"
+						children = 
+						[
+							{
+								_class = "BodyGroupChoice"
+								meshes = 
+								[
+									"bush3",
+								]
+							},
+							{
+								_class = "BodyGroupChoice"
+								meshes = [  ]
+							},
+						]
+						hidden_in_tools = false
+					},
+					{
+						_class = "BodyGroup"
+						name = "rock1"
+						children = 
+						[
+							{
+								_class = "BodyGroupChoice"
+								meshes = 
+								[
+									"rock1",
+								]
+							},
+							{
+								_class = "BodyGroupChoice"
+								meshes = [  ]
+							},
+						]
+						hidden_in_tools = false
+					},
+					{
+						_class = "BodyGroup"
+						name = "rock2"
+						children = 
+						[
+							{
+								_class = "BodyGroupChoice"
+								meshes = 
+								[
+									"rock2",
+								]
+							},
+							{
+								_class = "BodyGroupChoice"
+								meshes = [  ]
+							},
+						]
+						hidden_in_tools = false
+					},
+					{
+						_class = "BodyGroup"
+						name = "rock3"
+						children = 
+						[
+							{
+								_class = "BodyGroupChoice"
+								meshes = 
+								[
+									"rock3",
+								]
+							},
+							{
+								_class = "BodyGroupChoice"
+								meshes = [  ]
+							},
+						]
+						hidden_in_tools = false
 					},
 				]
 			},

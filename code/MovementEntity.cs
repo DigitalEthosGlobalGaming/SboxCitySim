@@ -37,7 +37,9 @@ namespace CitySim
 		public bool IsReverse { get; set; }
 		public bool ShouldReverse { get; set; }
 
-		public float CarHeight { get; set; } = 5f;
+		public float CarHeight { get; set; } = 3f;
+
+		public bool IsLastSpot { get; set; } = false;
 
 
 		public override void Spawn()
@@ -53,11 +55,14 @@ namespace CitySim
 			ShouldReverse = shouldReverse;
 			IsReverse = false;
 			CurrentIndex = -1;
-			Scale = 0.05f;
+			Scale = 0.025f;
+			MovementAcceleration = Rand.Float( 0.5f, 1f );
+			MaxMovementSpeed = Rand.Float( 5f, 8f );
 			NavPath = path;
 			MoveToNext();
 			Position = TargetPosition;
 			Moving = true;
+
 		}
 
 		protected override void OnDestroy()
@@ -103,9 +108,8 @@ namespace CitySim
 						if ( entity is Pawn player )
 						{
 							var eDist = entity.Position.Distance( TargetPosition );
-							if ( eDist < 150.0f )
+							if ( eDist < 50.0f )
 							{
-								//Log.Info( "Car detected police! " + eDist );
 								foundEmergency = true;
 							}
 							break;
@@ -115,9 +119,8 @@ namespace CitySim
 				}
 				
 				MaxMovementSpeed = 10f;
-				MovementAcceleration = 1f;
 
-				if ( MovementPercentage > 1 )
+				if ( MovementPercentage > 1f )
 				{
 					MovementPercentage = 0;
 
@@ -187,18 +190,20 @@ namespace CitySim
 
 				var position = ((TargetPosition - StartPosition) * MovementPercentage) + StartPosition;
 				Position = position;
+				if ( IsLastSpot )
+				{
+					RenderColor = RenderColor.WithAlpha( MovementPercentage );
+				}
 			}
 		}
 
 
 		public Vector3 NextPathPosition(float _rightOffset = 1.0f)
 		{
+			var offset = Rand.Float( _rightOffset * 0.5f, _rightOffset );
 			var nextPosition = TargetSpace.Position + (Vector3.Up * CarHeight);
 			Rotation perdictedRotation = Rotation.LookAt( nextPosition - Position, Vector3.Up );
-			nextPosition += (perdictedRotation.Right * _rightOffset);
-
-			//DebugOverlay.Line( StartPosition, Transform.Position, Color.Magenta, 1, false );
-			//DebugOverlay.Line( Transform.Position, nextPosition, Color.Blue, 1, false );
+			nextPosition += (perdictedRotation.Right * offset);
 			return nextPosition;
 		}
 
@@ -210,6 +215,21 @@ namespace CitySim
 			} else
 			{
 				CurrentIndex = CurrentIndex + 1;
+			}
+
+			IsLastSpot = false;
+			if (ShouldReverse)
+			{
+				if ( CurrentIndex <= 0 )
+				{
+					IsLastSpot = true;
+				}
+			} else
+			{
+				if ( CurrentIndex >= NavPath.Count )
+				{
+					IsLastSpot = true;
+				}
 			}
 
 			if ( CurrentIndex >= 0 && CurrentIndex < NavPath.Count )

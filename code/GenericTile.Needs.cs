@@ -1,7 +1,5 @@
 ﻿using GridSystem;
 using Sandbox;
-using System.Collections;
-using System.Collections.Generic;
 
 namespace CitySim
 {
@@ -25,8 +23,8 @@ namespace CitySim
 		public bool HasNeeds { get; set; }
 		int FoodNeeds { get; set; } = 0;
 		int FoodNeedAmount { get; set; }
-		int FoodNeedMax { get; set; } = 30;
-		int FoodNeedMin { get; set; } = 10;
+		int FoodNeedMax { get; set; } = 20;
+		int FoodNeedMin { get; set; } = 5;
 		public MovementEntity FoodNeedEntity { get; set; }
 		float NeedsNextTick = 0;
 		float NeedsInterval = 5f;

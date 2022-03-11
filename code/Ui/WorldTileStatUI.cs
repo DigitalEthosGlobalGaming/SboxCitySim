@@ -47,6 +47,12 @@ namespace CitySim.UI
 		public override void Tick()
 		{
 			base.Tick();
+			var scale = MathX.Clamp( Scale, 0.5f, 4f ) * 10;
+			scale = MathX.CeilToInt( scale ) / 10f;
+
+			pointsLabel.Style.Set( "font-size", $"{ 0.5f * scale}vw" );
+			Style.Set( "border-width", $"{4*scale}px" );
+			Style.Set( "padding", $"{6*scale}px" );
 
 			SetClass( "bad", points < 0 );
 			SetClass( "good", points > 0 );

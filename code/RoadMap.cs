@@ -6,7 +6,7 @@ namespace CitySim
 {
 	public partial class RoadMap : GridMap
 	{
-		public const float TileScale = 0.5f;
+		public const float TileScale = 0.25f;
 
 		[Net]
 		public bool IsEnd { get; set; }

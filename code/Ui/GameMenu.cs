@@ -67,19 +67,7 @@ namespace GridSystem.Ui
 				}
 			}
 
-			SetClass( "open", Opened );
-
-			/*
-			var values = Enum.GetValues( typeof(InputButton) );
-			foreach(var i in values)
-			{
-				if (Input.Pressed( (InputButton)i) )
-				{
-					Log.Info( i );
-				}
-			}
-			*/
-			
+			SetClass( "open", Opened );			
 		}
 
 	}

@@ -1,18 +1,23 @@
 ﻿using Sandbox;
 using Sandbox.UI;
 
-
 namespace Degg.Ui.Elements
 {
 	public class Billboard :  Panel
 	{
 		public Vector3 Position { get; set; }
 
+		public float Scale { get; set; } = 0;
+
 		public Billboard()
 		{
 
 		}
 
+		public void SetScale(float scale)
+		{
+			this.Scale = scale;
+		}
 		public void SetPosition(Vector3 position)
 		{
 			var panelPos = position.ToScreen();

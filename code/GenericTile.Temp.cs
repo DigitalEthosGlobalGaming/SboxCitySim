@@ -48,6 +48,7 @@ namespace CitySim
 				this.materialIndex = materialIndex.Value;
 			}
 
+
 			GenericTile.UpdateModel( this, TileType, bodyIndex ?? this.bodyIndex, materialIndex ?? this.materialIndex );
 		}
 		public static void UpdateModel( ModelEntity entity, TileTypeEnum type, int bodyIndex, int materialIndex )
@@ -61,6 +62,16 @@ namespace CitySim
 					entity.SetupPhysicsFromModel( PhysicsMotionType.Static, false );
 					entity.SetBodyGroup( "base", bodyIndex );
 					entity.SetMaterialGroup( materialIndex );
+				}
+
+				if (type == TileTypeEnum.Park)
+				{
+					entity.SetBodyGroup( "rock1", (int)MathX.Clamp( Rand.Int(0,2), 0,1));
+					entity.SetBodyGroup( "rock2", (int)MathX.Clamp( Rand.Int( 0, 2 ), 0, 1 ) );
+					entity.SetBodyGroup( "rock3", (int)MathX.Clamp( Rand.Int( 0, 2 ), 0, 1 ) );
+					entity.SetBodyGroup( "bush1", (int)MathX.Clamp( Rand.Int( 0, 2 ), 0, 1 ) );
+					entity.SetBodyGroup( "bush2", (int)MathX.Clamp( Rand.Int( 0, 2 ), 0, 1 ) );
+					entity.SetBodyGroup( "bush3", (int)MathX.Clamp( Rand.Int(0,2),0,1) );
 				}
 			}
 			entity.RenderColor = Color.White;

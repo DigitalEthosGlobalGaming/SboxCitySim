@@ -1,7 +1,6 @@
 ﻿using CitySim.UI;
 using GridSystem;
 using Sandbox;
-using System;
 
 namespace CitySim
 {
@@ -372,6 +371,13 @@ namespace CitySim
 			if (WorldUI != null)
 			{
 				var position = GetWorldPosition();
+				var distance = position.Distance( Pawn.GetClientPawn().EyePosition );
+				if (distance == 0)
+				{
+					distance = 1;
+				}
+				float scale =  500 / distance;
+				WorldUI.SetScale( scale);
 				WorldUI.SetPosition( position + (Vector3.Up * 10f) );
 			}
 		}

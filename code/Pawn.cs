@@ -71,7 +71,6 @@ namespace CitySim
 		{
 			Pawn pawn = (Pawn)ConsoleSystem.Caller.Pawn;
 			pawn.DisabledControls = value;
-			Log.Info( pawn );
 		}
 
 		public GenericTile GetRoadTileLookedAt()

@@ -324,7 +324,7 @@ namespace CitySim
 		public void SelectNextRandomTile()
 		{
 			var start = 1;
-			var end = 6;
+			var end = 5;
 			var rndInt = Rand.Int( start, end );
 			if ( rndInt > 4 )
 			{

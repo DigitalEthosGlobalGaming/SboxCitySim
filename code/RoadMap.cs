@@ -117,7 +117,6 @@ namespace CitySim
 			var tilesToEnd = totalTiles - (totalTiles * 0.9);
 
 			var blank = GetBlankTiles();
-			Log.Info( tilesToEnd );
 			if ( blank <= tilesToEnd )
 			{
 				MyGame.GameObject.SetGameState( MyGame.GameStateEnum.End );

@@ -73,8 +73,8 @@ namespace CitySim
 		[ServerCmd( "cs.game.restart" )]
 		public static void TestRestartCmd()
 		{
-			MyGame.EndGameCmd();
-			MyGame.StartGameCmd();
+			GameObject.SetGameState( GameStateEnum.End );
+			GameObject.SetGameState( GameStateEnum.Start );
 		}
 
 		[ServerCmd( "cs.game.end" )]

@@ -63,7 +63,7 @@
 							},
 							{
 								from = "yellow.vmat"
-								to = "materials/simple/simple_light_blue.vmat"
+								to = "materials/simple/simple_green_01.vmat"
 							},
 							{
 								from = "details.vmat"

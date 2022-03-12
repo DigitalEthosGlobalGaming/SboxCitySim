@@ -19,6 +19,8 @@ namespace CitySim
 	public partial class MyGame : Sandbox.Game
 	{
 
+		[Net]
+		public float StartGameTimer { get; set; } = 0;
 		public static GameOptions CurrentGameOptions { get; set; }
 
 		public static GameStateEnum GameState { get; set; }
@@ -61,8 +63,8 @@ namespace CitySim
 				maxAmount = maxAmount * 2;
 			} else if ( mode == GameModes.Sandbox )
 			{
-				minAmount = minAmount * 3;
-				maxAmount = maxAmount * 3;
+				minAmount = (int)(minAmount * 2.5);
+				maxAmount = (int)(maxAmount * 2.5);
 			}
 			options.XSize = Rand.Int( minAmount, maxAmount );
 			options.YSize = Rand.Int( minAmount, maxAmount );
@@ -84,7 +86,7 @@ namespace CitySim
 		public void EndGame()
 		{
 			if (GameState == GameStateEnum.Playing)
-			{
+			{				
 				SetGameState( GameStateEnum.End );				
 			}
 		}
@@ -94,6 +96,7 @@ namespace CitySim
 		{
 			if (IsServer)
 			{
+				StartGameTimer = Time.Now + 10;
 				GameState = state;
 				Event.Run( "citysim.gamestate" );
 				UpdateClientGameState(state);
@@ -112,6 +115,7 @@ namespace CitySim
 		{
 			StartGameCmd( mode );
 		}
+
 
 		public void StartGame(GameOptions options)
 		{
@@ -147,9 +151,11 @@ namespace CitySim
 					foreach ( var client in Client.All )
 					{
 						var player = client.Pawn;
-						if ( player is Pawn )
+						if ( player is Pawn p )
 						{
-							player.Position = Map.Position + (Vector3.Up * 250f);
+							p.Score = 0;
+
+							p.Position = Map.Position + (Vector3.Up * 250f);
 						}
 					}
 				}

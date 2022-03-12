@@ -168,6 +168,10 @@ namespace CitySim
 			{
 				Map.ServerTick();
 			}
+			if ( GameState == GameStateEnum.End && StartGameTimer < Time.Now)
+			{
+				SetGameState( GameStateEnum.Start );
+			}
 		}
 
 		[Event.Tick]

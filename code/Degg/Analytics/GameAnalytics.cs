@@ -37,13 +37,7 @@ namespace Degg.Degg.Analytics
 			data.os_version = os_version;
 			data.build = GameAnalytics.Build;
 
-			var url = $"{DevPublicEndpoint}/remote_configs/v1/init?game_key={Key}";
-
-
-
-
-
-		
+			var url = $"{DevPublicEndpoint}/remote_configs/v1/init?game_key={Key}";		
 		}
 
 		public static void ConfigureBuild(string build)

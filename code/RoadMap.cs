@@ -113,9 +113,14 @@ namespace CitySim
 
 		public void CheckGameEnd()
 		{
-			if ( GetBlankTiles() == 0)
+			var totalTiles = Grid.Count;
+			var tilesToEnd = totalTiles - (totalTiles * 0.9);
+
+			var blank = GetBlankTiles();
+			Log.Info( tilesToEnd );
+			if ( blank <= tilesToEnd )
 			{
-				IsEnd = true;
+				MyGame.GameObject.SetGameState( MyGame.GameStateEnum.End );
 			}
 		}
 

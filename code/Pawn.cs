@@ -20,6 +20,14 @@ namespace CitySim
 			return (Pawn)Local.Client?.Pawn;
 		}
 
+		public int Score {
+			get { return Client.GetInt("score", 0); }
+			set
+			{
+				Client.SetInt( "score", value );
+			}
+		}
+
 		public GenericTile LastHighlighted { get; set; }
 
 		public bool HasReadWelcome { get; set; }
@@ -142,7 +150,7 @@ namespace CitySim
 						var tile = GetRoadTileLookedAt();
 						if ( tile != null )
 						{
-							if ( tile.CanSetType( SelectedTileType ) )
+							if (  tile.CanSetType( SelectedTileType ) && CanPlaceTyle( tile ) )
 							{
 								PlaceOnTile( tile );
 							}
@@ -398,6 +406,7 @@ namespace CitySim
 					{
 						// Spawn's the Ghost Local Model
 						GhostTile = new ModelEntity();
+						GhostTile.EnableDrawOverWorld = true;
 						GhostTile.Name = "Ghost Tile";
 						GhostTile.PhysicsEnabled = false;
 						GhostTile.Transmit = TransmitType.Never;

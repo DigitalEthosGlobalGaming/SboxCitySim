@@ -46,7 +46,7 @@ namespace CitySim
 		{
 			base.Spawn();
 			SetModel( "models/cars/normalcar1.vmdl" );
-			SetBodyGroup( "base", Rand.Int( 0, 4 ) );
+			SetBodyGroup( "base", Rand.Int( 0, 6 ) );
 			TickableCollection.Global.Add( this );
 		}
 

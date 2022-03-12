@@ -57,6 +57,34 @@
 								from = ""
 								to = "materials/black_matte.vmat"
 							},
+							{
+								from = "red.vmat"
+								to = "materials/simple/simple_red.vmat"
+							},
+							{
+								from = "yellow.vmat"
+								to = "materials/simple/simple_light_blue.vmat"
+							},
+							{
+								from = "details.vmat"
+								to = "materials/generic/concrete_simple.vmat"
+							},
+							{
+								from = "lights.vmat"
+								to = "materials/simple/simple_grey_25.vmat"
+							},
+							{
+								from = "wheel.vmat"
+								to = "materials/black_matte.vmat"
+							},
+							{
+								from = "material.vmat"
+								to = "materials/black_matte.vmat"
+							},
+							{
+								from = "bumper.vmat"
+								to = "materials/models/solids/black.vmat"
+							},
 						]
 						use_global_default = false
 						global_default_material = ""
@@ -175,6 +203,40 @@
 							exception_list = [  ]
 						}
 					},
+					{
+						_class = "RenderMeshFile"
+						name = "car_6"
+						filename = "raw/models/cars/Ambulance.fbx"
+						import_translation = [ 0.0, 0.0, 45.0 ]
+						import_rotation = [ 0.0, 0.0, 0.0 ]
+						import_scale = 1.0
+						align_origin_x_type = "None"
+						align_origin_y_type = "None"
+						align_origin_z_type = "None"
+						parent_bone = ""
+						import_filter = 
+						{
+							exclude_by_default = false
+							exception_list = [  ]
+						}
+					},
+					{
+						_class = "RenderMeshFile"
+						name = "car_7"
+						filename = "raw/models/cars/SchoolBus.fbx"
+						import_translation = [ 161.0, 0.0, 111.0 ]
+						import_rotation = [ 0.0, 90.0, 0.0 ]
+						import_scale = 1.0
+						align_origin_x_type = "None"
+						align_origin_y_type = "None"
+						align_origin_z_type = "None"
+						parent_bone = ""
+						import_filter = 
+						{
+							exclude_by_default = false
+							exception_list = [  ]
+						}
+					},
 				]
 			},
 			{
@@ -219,6 +281,20 @@
 								meshes = 
 								[
 									"car_5",
+								]
+							},
+							{
+								_class = "BodyGroupChoice"
+								meshes = 
+								[
+									"car_6",
+								]
+							},
+							{
+								_class = "BodyGroupChoice"
+								meshes = 
+								[
+									"car_7",
 								]
 							},
 						]

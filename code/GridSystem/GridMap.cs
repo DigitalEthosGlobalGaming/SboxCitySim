@@ -152,7 +152,7 @@ namespace GridSystem
 			if ( (x < XSize && x >= 0) && (y < YSize && y >= 0) )
 			{
 				var amount = TransformGridPosition( x, y );
-				if (amount > 0 && amount < Grid.Count)
+				if (amount >= 0 && amount < Grid.Count)
 				{
 					return Grid[amount];
 				}
@@ -181,6 +181,23 @@ namespace GridSystem
 			var y = rnd.Next( 0, YSize-1 );
 
 			return GetSpace( (int)x, (int)y );
+		}
+
+		public List<GridSpace> GetTilesAtEdgeOfMap()
+		{
+			List<GridSpace> tiles = new();
+			for ( int i = 0; i < XSize -1; i++ )
+			{
+				tiles.Add(GetSpace( i, 0 ) );
+				tiles.Add( GetSpace( i, YSize -1 ) );
+			}
+			for ( int i = 0; i < YSize -1; i++ )
+			{
+				tiles.Add( GetSpace( 0, i ) );
+				tiles.Add( GetSpace( XSize - 1, i ) );
+			}
+
+			return tiles;
 		}
 
 		public bool MoveItem( GridItem item, Vector2 newPosition )

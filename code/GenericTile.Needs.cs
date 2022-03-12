@@ -38,6 +38,11 @@ namespace CitySim
 				HasNeeds = true;
 				FoodNeedAmount = Rand.Int( 1, 3 );
 				FoodNeeds =  Rand.Int( FoodNeedMin, FoodNeedMax );
+			} else if (TileType == TileTypeEnum.Business)
+			{
+				HasNeeds = true;
+				FoodNeedAmount = Rand.Int( 1, 3 );
+				FoodNeeds = Rand.Int( FoodNeedMin, FoodNeedMax );
 			}
 			IsNeedsSetup = true;
 		}
@@ -55,33 +60,80 @@ namespace CitySim
 
 		public void FixFoodNeed()
 		{
-			if ( FoodNeedEntity == null )
+			if ( TileType == TileTypeEnum.House )
 			{
-				var start = GetRoadNeighbour();
-				if (start == null)
+				if ( FoodNeedEntity == null )
 				{
-					return;
-				}
-				var businessTile = start.GetRandomConnectedTile( TileTypeEnum.Business );
-				if ( businessTile != null )
-				{	
-					// Building isn't connected to a road.
-					if (start == null)
+					var start = GetRoadNeighbour();
+					if ( start == null )
 					{
 						return;
 					}
-					var map = ((MyGame)Game.Current).Map;
-					var path = map.CreatePath( start.GridPosition, businessTile.GridPosition );
-					var ent = new MovementEntity();
-					ent.Init( path, true );
+					var businessTile = start.GetRandomConnectedTile( TileTypeEnum.Business );
+					if ( businessTile != null )
+					{
+						// Building isn't connected to a road.
+						if ( start == null )
+						{
+							return;
+						}
+						var map = ((MyGame)Game.Current).Map;
+						var path = map.CreatePath( start.GridPosition, businessTile.GridPosition );
+						var ent = new MovementEntity();
+						ent.Init( path, true );
 
-					ent.OnFinishEvents.Enqueue(() => {
-						FoodNeedEntity = null;
-						FoodNeeds = Rand.Int( FoodNeedMin, FoodNeedMax );
-						return true; 
-					});
-					FoodNeedEntity = ent;
+						ent.OnFinishEvents.Enqueue( () =>
+						{
+							FoodNeedEntity = null;
+							FoodNeeds = Rand.Int( FoodNeedMin, FoodNeedMax );
+							return true;
+						} );
+						FoodNeedEntity = ent;
+					}
 				}
+			} else if (TileType == TileTypeEnum.Business)
+			{
+				var tiles = Map.GetTilesAtEdgeOfMap();
+				tiles = tiles.FindAll( ( tile ) => { return ((GenericTile)tile).TileType == TileTypeEnum.Road; } );
+
+				var myPosition = this.GridPosition;
+				var road = this.GetRoadNeighbour();
+				tiles = tiles.FindAll( ( tile ) =>
+				{
+					var canMove = Map.IsPath( tile.GridPosition, myPosition  );
+					return canMove;
+				} );
+
+				var start = (GenericTile) Rand.FromList<GridSpace>( tiles );
+
+
+				if ( start == null )
+				{
+					return;
+				}
+
+				var end = GridPosition;
+
+				// Building isn't connected to a road.
+				if ( start == null )
+				{
+					return;
+				}
+				var map = ((MyGame)Game.Current).Map;
+				var path = map.CreatePath( start.GridPosition, GridPosition );
+				var ent = new MovementEntity();
+				ent.SetBodyGroup( "base", 6 );
+
+				ent.Init( path, true );
+
+				ent.OnFinishEvents.Enqueue( () =>
+				{
+					FoodNeedEntity = null;
+					FoodNeeds = Rand.Int( FoodNeedMin, FoodNeedMax );
+					return true;
+				} );
+
+				FoodNeedEntity = ent;
 			}
 		}
 

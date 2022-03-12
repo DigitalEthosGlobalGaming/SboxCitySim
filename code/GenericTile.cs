@@ -70,7 +70,10 @@ namespace CitySim
 			if ( WorldUI != null )
 				return;
 
-			WorldUI = MyGame.Ui.CreateWorldUi();
+			if ( TileType != TileTypeEnum.Base && TileType != TileTypeEnum.Road )
+			{
+				WorldUI = MyGame.Ui.CreateWorldUi();
+			}
 		}
 		[ClientRpc]
 		public void UpdateWorldUI( string _name, int _points = 0 )

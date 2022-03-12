@@ -142,20 +142,26 @@ namespace CitySim
 						var tile = GetRoadTileLookedAt();
 						if ( tile != null )
 						{
-							if ( CanPlaceTyle( tile ) )
+							if ( tile.CanSetType( SelectedTileType ) )
 							{
 								PlaceOnTile( tile );
 							}
 							else
 							{
-								PlaySound( "sounds/kenney/ui/error_001" );
+								PlaySoundClientSide( "ui.navigate.deny" );
 							}
 						}
 					}
 					// Right Click or LT
 					else if ( Input.Pressed( InputButton.Attack2 ) )
 					{
-						SelectedTileType = GenericTile.TileTypeEnum.Base;
+
+						if ( SelectedTileType != TileTypeEnum.Base )
+						{
+							PlaySoundClientSide( "ui.navigate.back" );
+						}
+
+						SelectedTileType = TileTypeEnum.Base;
 					}
 
 #if DEBUG && !RELEASE
@@ -357,7 +363,7 @@ namespace CitySim
 			Client.SetInt( "score", clientScore );
 
 			// Place!
-			PlaySound( "sounds/kenney/ui/click1" );
+			PlaySoundClientSide( "physics.wood.impact" );
 		}
 
 
@@ -369,6 +375,13 @@ namespace CitySim
 			base.FrameSimulate( cl );
 
 
+		}
+
+		[ClientRpc]
+		public void PlaySoundClientSide( string name )
+		{
+			var player = GetClientPawn();
+			player.PlaySound( name );
 		}
 
 

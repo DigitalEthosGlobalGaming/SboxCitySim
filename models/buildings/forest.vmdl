@@ -15,11 +15,11 @@
 						[
 							{
 								from = "grey.vmat"
-								to = "materials/grass/floor_grass_a.vmat"
+								to = "materials/simple/simple_green_01.vmat"
 							},
 							{
 								from = "leaves.vmat"
-								to = "models/citizen_props/balloons04.vmat"
+								to = "materials/simple/simple_green_02.vmat"
 							},
 							{
 								from = "rock.vmat"

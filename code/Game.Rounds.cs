@@ -149,7 +149,7 @@ namespace CitySim
 						var player = client.Pawn;
 						if ( player is Pawn )
 						{
-							player.Position = Map.Position + (Vector3.Up * 1000f);
+							player.Position = Map.Position + (Vector3.Up * 250f);
 						}
 					}
 				}

@@ -2,7 +2,7 @@
 using Sandbox;
 using System.Collections.Generic;
 
-namespace GridSystem
+namespace Degg.GridSystem
 {
 
     public partial class GridSpace: ModelEntity

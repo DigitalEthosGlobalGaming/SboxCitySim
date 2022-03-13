@@ -1,7 +1,7 @@
 ﻿using Sandbox;
 
 
-namespace Degg.Degg.Analytics
+namespace Degg.Analytics
 {
 	public class InitialiseBody
 	{

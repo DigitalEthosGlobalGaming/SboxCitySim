@@ -1,6 +1,6 @@
 using Sandbox;
 
-namespace GridSystem
+namespace Degg.GridSystem
 {
 
     // A grid item is an individual item on a grid.

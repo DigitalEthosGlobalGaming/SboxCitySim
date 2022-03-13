@@ -1,10 +1,7 @@
 ﻿using Sandbox.UI;
-using Sandbox;
-using CitySim;
-using System;
 using System.Collections.Generic;
 
-namespace GridSystem.Ui
+namespace CitySim.UI
 {
 	public partial class CreditsPage : Panel
 	{

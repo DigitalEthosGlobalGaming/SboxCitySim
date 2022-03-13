@@ -1,8 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using GridSystem;
+using Degg.GridSystem;
 using Sandbox;
-using Sandbox.UI;
 using static CitySim.GenericTile;
 
 namespace CitySim

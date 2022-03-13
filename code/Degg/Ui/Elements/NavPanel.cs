@@ -2,7 +2,7 @@
 using Sandbox;
 using System.Collections.Generic;
 
-namespace Degg.Ui.Elements
+namespace Degg.UI.Elements
 {
 	public partial class NavPanel : Panel
 	{

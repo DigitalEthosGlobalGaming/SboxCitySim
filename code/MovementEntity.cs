@@ -1,4 +1,4 @@
-﻿using GridSystem;
+﻿using Degg.GridSystem;
 using Sandbox;
 using System;
 using System.Collections.Generic;

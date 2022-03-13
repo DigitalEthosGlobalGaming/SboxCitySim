@@ -1,6 +1,4 @@
-﻿
-using GridSystem.Ui;
-using Sandbox;
+﻿using Sandbox;
 
 //
 // You don't need to put things in a namespace, but it doesn't hurt.

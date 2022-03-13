@@ -4,7 +4,7 @@ using Sandbox;
 using System.Collections.Generic;
 using CitySim;
 
-namespace GridSystem
+namespace Degg.GridSystem
 {
 
 

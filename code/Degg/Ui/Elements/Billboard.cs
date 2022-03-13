@@ -1,7 +1,7 @@
 ﻿using Sandbox;
 using Sandbox.UI;
 
-namespace Degg.Ui.Elements
+namespace Degg.UI.Elements
 {
 	public class Billboard :  Panel
 	{

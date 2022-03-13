@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using Sandbox;
 
-namespace CitySim
+namespace CitySim.Utils
 {
 
 	public interface ITickable

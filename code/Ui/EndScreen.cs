@@ -1,11 +1,9 @@
 ﻿using Sandbox.UI;
 using Sandbox;
-using CitySim;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace GridSystem.Ui
+namespace CitySim.UI
 {
 	public partial class EndScreen: Panel
 	{

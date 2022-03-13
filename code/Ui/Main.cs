@@ -1,9 +1,7 @@
 ﻿using Sandbox.UI;
 using Sandbox;
-using CitySim;
-using CitySim.UI;
 
-namespace GridSystem.Ui
+namespace CitySim.UI
 {
 	public partial class Main: Panel
 	{

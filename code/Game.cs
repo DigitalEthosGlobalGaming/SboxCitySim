@@ -1,8 +1,5 @@
-﻿#define TEST
-
-using CitySim.UI;
+﻿using CitySim.UI;
 using Degg.Degg.Analytics;
-using GridSystem.Ui;
 using Sandbox;
 
 

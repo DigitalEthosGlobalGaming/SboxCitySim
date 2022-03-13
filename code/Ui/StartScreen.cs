@@ -1,9 +1,7 @@
 ﻿using Sandbox.UI;
 using Sandbox;
-using CitySim;
-using System;
 
-namespace GridSystem.Ui
+namespace CitySim.UI
 {
 	public partial class StartScreen: Panel
 	{

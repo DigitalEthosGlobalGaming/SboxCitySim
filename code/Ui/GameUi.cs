@@ -1,10 +1,8 @@
-﻿using CitySim;
-using CitySim.UI;
-using Sandbox;
+﻿using Sandbox;
 using Sandbox.UI;
 
 
-namespace GridSystem.Ui
+namespace CitySim.UI
 {
 	public partial class GameUi : HudEntity<RootPanel>
 	{

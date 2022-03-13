@@ -2,7 +2,7 @@
 using Sandbox;
 using Sandbox.UI.Construct;
 
-namespace GridSystem.Ui
+namespace CitySim.UI
 {
 	public partial class ScoreboardRow : ScoreboardEntry
 	{

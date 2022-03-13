@@ -1,6 +1,5 @@
-﻿using GridSystem;
+﻿using Degg.GridSystem;
 using Sandbox;
-using System;
 
 namespace CitySim
 {

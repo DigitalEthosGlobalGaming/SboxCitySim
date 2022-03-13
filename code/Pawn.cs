@@ -81,6 +81,9 @@ namespace CitySim
 
 			// We need to make sure there is some data inside the for the next tile.
 			SelectNextRandomTile();
+
+			// We need to ensure we move the camera pivot point at the same height/location that the map is located at.
+			PivotPoint = MyGame.GameObject.Map.Position;
 		}
 
 		[Event.Hotload]

@@ -1,10 +1,27 @@
 ﻿using Sandbox;
-using System.Text.Json.Serialization;
+using System.Text.Json;
 
 
 
 namespace Degg.Backend
 {
+
+	class EventPayload
+	{
+		public string Name { get; set; }
+		public object? Type { get; set; }
+		public string CallbackId { get; set; }
+
+		public EventPayload( string name, object? data )
+		{
+			Name = name;
+			Type = data;
+			CallbackId = System.Guid.NewGuid().ToString();
+		}
+
+
+	}
+
 	public partial class DeggBackend
 	{
 		public const string SocketUrl  =  "wss://localhost:8080";
@@ -15,11 +32,14 @@ namespace Degg.Backend
 			var socket = new WebSocket();
 			socket.Connect( SocketUrl );
 			Socket = socket;
+			SendEvent( "test", null );
 		}
 
-		public void SendEvent(string name, JsonSerialisable data)
+		public static void SendEvent(string name, object? raw)
 		{
-			Seriali
+			EventPayload ePayload = new EventPayload( name, raw);
+			var data = JsonSerializer.Serialize( ePayload );
+			Socket.Send( data );
 		}
 
 

@@ -27,10 +27,7 @@ namespace Degg.Analytics
 		{
 			Key = key;
 			Secret = secret;
-			var socket = new WebSocket();
-			socket.Connect( "ws://localhost:8080" );
-			Socket = socket;
-			Socket.Send( "Test" );
+			DeggBackend.Initialise(key, secret);
 		}
 
 		public static async void InitialisePlayer( string userId, string platform = "default", string os_version = "default" )

@@ -162,7 +162,8 @@ namespace CitySim
 				var transitionAmount = 10f;
 				Position = GetWorldPosition() + new Vector3( Rand.Float( -transitionAmount, transitionAmount ), Rand.Float( -transitionAmount, transitionAmount ), Rand.Float( 100f, 150f ) );
 
-				IsNeedsSetup = false;
+
+				SetupNeeds();
 
 				CheckNeighbours();
 				if ( type == TileTypeEnum.Road )

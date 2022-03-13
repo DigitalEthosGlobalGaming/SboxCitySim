@@ -32,7 +32,8 @@ namespace CitySim
 
 		public GridSpace NextTurnGridSpace { get; set; }
 
-		public bool ShouldPullOver { get; set; }
+		public bool IsEmergencyVehicle { get; set; }
+		public bool ShouldPullOver { get; set; } = true;
 		public bool NearbyEmergencyVehicle { get; set; }
 
 		public bool IsReverse { get; set; }
@@ -42,10 +43,12 @@ namespace CitySim
 
 		public bool IsLastSpot { get; set; } = false;
 
+		private Sound VehicleRevSound;
 
 		public override void Spawn()
 		{
 			base.Spawn();
+			VehicleRevSound = PlaySound( "vehicle.rev" );
 			SetModel( "models/cars/normalcar1.vmdl" );
 			SetBodyGroup( "base", Rand.Int( 0, 4 ) );
 			TickableCollection.Global.Add( this );
@@ -70,6 +73,9 @@ namespace CitySim
 		{
 			base.OnDestroy();
 			OnFinish();
+
+			VehicleRevSound.Stop();
+
 			if ( ParentCollection != null )
 			{
 				ParentCollection.Remove( this );
@@ -106,14 +112,17 @@ namespace CitySim
 
 					foreach ( var entity in Entity.All )
 					{
-						if ( entity is Pawn player )
+						if ( entity is MovementEntity vehicle )
 						{
-							var eDist = entity.Position.Distance( TargetPosition );
-							if ( eDist < 50.0f )
+							if ( vehicle.IsEmergencyVehicle )
 							{
-								foundEmergency = true;
+								var eDist = entity.Position.Distance( TargetPosition );
+								if ( eDist < 50.0f )
+								{
+									foundEmergency = true;
+								}
+								break;
 							}
-							break;
 						}
 					}
 					NearbyEmergencyVehicle = foundEmergency;
@@ -169,12 +178,6 @@ namespace CitySim
 				}
 				else
 				{
-					if ( NearbyEmergencyVehicle )
-					{
-						// Slow way down!
-						MovementSpeed -= MovementSpeed * 0.15f;
-					}
-
 					if ( isTurning )
 					{
 						// Deccelerate
@@ -184,6 +187,13 @@ namespace CitySim
 					{
 						// Accellerate
 						MovementSpeed += (accelleration * delta);
+					}
+
+
+					if ( NearbyEmergencyVehicle )
+					{
+						// Slow way down!
+						MovementSpeed *= 0.05f;
 					}
 				}
 
@@ -241,7 +251,7 @@ namespace CitySim
 				StartPosition = TargetPosition;
 
 				// Get the Next Path Position, with the offset.	
-				TargetPosition = NextPathPosition( 6.0f * (NearbyEmergencyVehicle ? 2.0f : 1.0f) );
+				TargetPosition = NextPathPosition( (IsEmergencyVehicle) ? 1.0f : 6.0f * (NearbyEmergencyVehicle ? 2.0f : 1.0f) );
 			
 				return true;
 			} 

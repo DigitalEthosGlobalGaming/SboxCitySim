@@ -1,6 +1,7 @@
 ﻿using CitySim.Utils;
 using Degg.GridSystem;
 using Sandbox;
+using System.Collections.Generic;
 
 namespace CitySim
 {
@@ -22,39 +23,42 @@ namespace CitySim
 		}
 
 		public bool HasNeeds { get; set; }
-		int FoodNeeds { get; set; } = 0;
-		int FoodNeedAmount { get; set; }
-		int FoodNeedMax { get; set; } = 20;
-		int FoodNeedMin { get; set; } = 5;
-		public MovementEntity FoodNeedEntity { get; set; }
-		float NeedsNextTick = 0;
-		float NeedsInterval = 5f;
-
-
-		public bool IsNeedsSetup { get; set; } = false;
+		public int FoodSupply { get; set; } = 0;
+		public int FoodDemand { get; set; }
+		public int FoodNeedMax { get; set; } = 20;
+		public int FoodNeedMin { get; set; } = 5;
+		public List<MovementEntity> DeliveryEntities { get; set; } = new List<MovementEntity>();
+		/*
+				float NeedsNextTick = 0;
+				float NeedsInterval = 5f;
+		*/
+		//public bool IsNeedsSetup { get; set; } = false;
 		public void SetupNeeds()
 		{
 			if ( TileType == TileTypeEnum.House )
 			{
 				HasNeeds = true;
-				FoodNeedAmount = Rand.Int( 1, 3 );
-				FoodNeeds =  Rand.Int( FoodNeedMin, FoodNeedMax );
-			} else if (TileType == TileTypeEnum.Business)
+				FoodDemand = Rand.Int( 1, 3 );
+				FoodSupply = Rand.Int( FoodNeedMin, FoodNeedMax );
+			}
+			else if ( TileType == TileTypeEnum.Business )
 			{
 				HasNeeds = true;
-				FoodNeedAmount = Rand.Int( 1, 3 );
-				FoodNeeds = Rand.Int( FoodNeedMin, FoodNeedMax );
+				FoodDemand = Rand.Int( 1, 3 );
+				FoodSupply = Rand.Int( FoodNeedMin, FoodNeedMax );
 			}
-			IsNeedsSetup = true;
 		}
+
+		/*
+		
 
 
 		public void UpdateFoodNeed()
 		{
-			FoodNeeds = FoodNeeds - FoodNeedAmount;
-			if ( FoodNeeds <= 0 )
+			FoodSupply = FoodSupply - FoodDemand;
+			if ( FoodSupply <= 0 )
 			{
-				FoodNeeds = 0;
+				FoodSupply = 0;
 				FixFoodNeed();
 			}
 		}
@@ -63,7 +67,7 @@ namespace CitySim
 		{
 			if ( TileType == TileTypeEnum.House )
 			{
-				if ( FoodNeedEntity == null )
+				if ( DeliveryEntity == null )
 				{
 					var start = GetRoadNeighbour();
 					if ( start == null )
@@ -85,17 +89,18 @@ namespace CitySim
 
 						ent.OnFinishEvents.Enqueue( () =>
 						{
-							FoodNeedEntity = null;
-							FoodNeeds = Rand.Int( FoodNeedMin, FoodNeedMax );
+							DeliveryEntity = null;
+							FoodSupply = Rand.Int( FoodNeedMin, FoodNeedMax );
 							return true;
 						} );
-						FoodNeedEntity = ent;
+						DeliveryEntity = ent;
 					}
 				}
-			} else if (TileType == TileTypeEnum.Business)
+			} 
+			else if (TileType == TileTypeEnum.Business)
 			{
-				var tiles = Map.GetTilesAtEdgeOfMap();
-				tiles = tiles.FindAll( ( tile ) => { return ((GenericTile)tile).TileType == TileTypeEnum.Road; } );
+				var tiles = Map.GetTilesAtEdgeOfMap<GenericTile>();
+				tiles = tiles.FindAll( ( tile ) => { return ((GenericTile)tile).TileType == TileTypeEnum.Road && ((GenericTile)tile).RoadType == RoadTypeEnum.DeadEnd; } );
 
 				var myPosition = this.GridPosition;
 				var road = this.GetRoadNeighbour();
@@ -105,7 +110,7 @@ namespace CitySim
 					return canMove;
 				} );
 
-				var start = (GenericTile) Rand.FromList<GridSpace>( tiles );
+				var start = (GenericTile) Rand.FromList<GenericTile>( tiles );
 
 
 				if ( start == null )
@@ -129,12 +134,12 @@ namespace CitySim
 
 				ent.OnFinishEvents.Enqueue( () =>
 				{
-					FoodNeedEntity = null;
-					FoodNeeds = Rand.Int( FoodNeedMin, FoodNeedMax );
+					DeliveryEntity = null;
+					FoodSupply = Rand.Int( FoodNeedMin, FoodNeedMax );
 					return true;
 				} );
 
-				FoodNeedEntity = ent;
+				DeliveryEntity = ent;
 			}
 		}
 
@@ -156,5 +161,6 @@ namespace CitySim
 				SetupNeeds();
 			}
 		}
+		*/
 	}
 }

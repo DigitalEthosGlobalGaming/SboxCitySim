@@ -183,18 +183,18 @@ namespace Degg.GridSystem
 			return GetSpace( (int)x, (int)y );
 		}
 
-		public List<GridSpace> GetTilesAtEdgeOfMap()
+		public List<T> GetTilesAtEdgeOfMap<T>() where T : GridSpace
 		{
-			List<GridSpace> tiles = new();
+			List<T> tiles = new();
 			for ( int i = 0; i < XSize -1; i++ )
 			{
-				tiles.Add(GetSpace( i, 0 ) );
-				tiles.Add( GetSpace( i, YSize -1 ) );
+				tiles.Add( (T)GetSpace( i, 0 ) );
+				tiles.Add( (T)GetSpace( i, YSize -1 ) );
 			}
 			for ( int i = 0; i < YSize -1; i++ )
 			{
-				tiles.Add( GetSpace( 0, i ) );
-				tiles.Add( GetSpace( XSize - 1, i ) );
+				tiles.Add( (T)GetSpace( 0, i ) );
+				tiles.Add( (T)GetSpace( XSize - 1, i ) );
 			}
 
 			return tiles;

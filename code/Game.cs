@@ -21,15 +21,13 @@ namespace CitySim
 		public static MyGame GameObject { get; set; }
 		public static GameUi Ui { get; set; } = null;
 
-		public static RoadMap GetMap()
-		{
-			return GameObject.Map;
-		}
-
 		[Net]
 		public RoadMap Map { get; set; }
+
+		public CityAmbianceSystem CityAmbianceSystem { get; set; }
+
 		public MyGame()
-		{			
+		{
 			SetupAnalytics();
 
 			GameObject = this;
@@ -38,6 +36,11 @@ namespace CitySim
 				GameAnalytics.TriggerEvent( null, "game_start" );
 			}
 			CreateUi();
+		}
+
+		public static RoadMap GetMap()
+		{
+			return GameObject.Map;
 		}
 
 		/// <summary>
@@ -171,6 +174,11 @@ namespace CitySim
 			if ( TickableCollection.Global != null)
 			{
 				TickableCollection.Global.ServerTick();
+			}
+
+			if (CityAmbianceSystem != null)
+			{
+				CityAmbianceSystem.Update();
 			}
 
 			if ( Map != null )

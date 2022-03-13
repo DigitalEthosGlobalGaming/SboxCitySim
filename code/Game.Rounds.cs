@@ -124,6 +124,11 @@ namespace CitySim
 
 					SetGameState( GameStateEnum.WarmingUp );
 					CurrentGameOptions = options;
+					if ( CityAmbianceSystem != null )
+					{
+						CityAmbianceSystem = null;
+					}
+
 					if ( Map != null )
 					{
 						Map.Delete();
@@ -135,6 +140,8 @@ namespace CitySim
 					{
 						Map = new RoadMap();
 						Map.Init( options.XSize, options.YSize );
+
+						CityAmbianceSystem = new CityAmbianceSystem(Map);
 
 						if (options.Mode == GameModes.Chaos)
 						{

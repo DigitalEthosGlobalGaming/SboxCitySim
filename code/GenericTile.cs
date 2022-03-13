@@ -399,11 +399,11 @@ namespace CitySim
 			if ( TransitionPercentage < 1)
 			{
 				TransitionPercentage = TransitionPercentage + (10f * delta);
-			} else
+			} 
+			else
 			{
 				TransitionPercentage = 1;
 			}
-			UpdateNeeds();
 		}
 
 

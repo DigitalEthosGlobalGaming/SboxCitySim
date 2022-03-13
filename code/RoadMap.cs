@@ -1,5 +1,6 @@
 ﻿using Degg.GridSystem;
 using Sandbox;
+using System.Collections.Generic;
 
 namespace CitySim
 {
@@ -155,6 +156,17 @@ namespace CitySim
 					GivePlayersNewPiece();
 				}
 			}
+		}
+
+		public List<GenericTile> GetGenericTiles()
+		{
+			// Conversion is expensive...
+			List<GenericTile> tiles = new List<GenericTile>( this.Grid.Count );
+			for (int i = 0; i < this.Grid.Count; i++)
+			{
+				tiles.Add( (GenericTile)this.Grid[i] );
+			}
+			return tiles;
 		}
 
 	}

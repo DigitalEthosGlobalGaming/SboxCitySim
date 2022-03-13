@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Degg.Analytics;
 using Degg.GridSystem;
 using Sandbox;
 using static CitySim.GenericTile;
@@ -152,10 +153,12 @@ namespace CitySim
 							if (  tile.CanSetType( SelectedTileType ) && CanPlaceTyle( tile ) )
 							{
 								PlaceOnTile( tile );
+								GameAnalytics.TriggerEvent(Client.PlayerId.ToString(), "tile_place", (int) tile.TileType);
 							}
 							else
 							{
 								PlaySoundClientSide( "ui.navigate.deny" );
+								GameAnalytics.TriggerEvent( Client.PlayerId.ToString(), "tile_place", -1 );
 							}
 						}
 					}
@@ -166,6 +169,7 @@ namespace CitySim
 						if ( SelectedTileType != TileTypeEnum.Base )
 						{
 							PlaySoundClientSide( "ui.navigate.back" );
+							GameAnalytics.TriggerEvent( Client.PlayerId.ToString(), "tile_place", -2 );
 						}
 
 						SelectedTileType = TileTypeEnum.Base;

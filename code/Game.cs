@@ -29,11 +29,14 @@ namespace CitySim
 		[Net]
 		public RoadMap Map { get; set; }
 		public MyGame()
-		{
-
+		{			
 			SetupAnalytics();
 
 			GameObject = this;
+			if ( IsServer )
+			{
+				GameAnalytics.TriggerEvent( null, "game_start" );
+			}
 			CreateUi();
 		}
 
@@ -48,11 +51,22 @@ namespace CitySim
 			var pawn = new Pawn();
 			client.Pawn = pawn;
 
+			if ( IsServer )
+			{
+				GameAnalytics.TriggerEvent( client.PlayerId.ToString(), "game_join" );
+			}
+
 			if (Map != null)
 			{
 				pawn.Position = Map.Position + (Vector3.Up * 100f);
 			}
 			UpdateClientGameState( GameState );
+		}
+
+		public override void ClientDisconnect( Client cl, NetworkDisconnectionReason reason )
+		{
+			base.ClientDisconnect( cl, reason );
+			GameAnalytics.TriggerEvent( cl.PlayerId.ToString(), "game_disconnect", (int)reason  );
 		}
 
 		[ServerCmd( "cs.debug.cleanupEntities" )]
@@ -100,7 +114,6 @@ namespace CitySim
 				{
 					Ui.Delete();
 				}
-
 			
 				Ui = new GameUi();
 			}

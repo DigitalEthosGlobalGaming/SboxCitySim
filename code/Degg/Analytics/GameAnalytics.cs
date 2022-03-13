@@ -1,5 +1,5 @@
 ﻿using Sandbox;
-
+using System;
 
 namespace Degg.Analytics
 {
@@ -11,7 +11,16 @@ namespace Degg.Analytics
 		public string sdk_version = "rest api v2";
 		public string random_salt { get; set; }
 		public string build { get; set; }
-	} 
+	}
+
+	public class AnlyticsEvent {
+		public string Event { get; set; }
+		public string UserId { get; set; }
+		public float Time { get; set; }
+
+		public float? Metric { get; set; }
+		public string Tags { get; set; }
+	}
 
 	public partial class GameAnalytics
 	{
@@ -39,6 +48,18 @@ namespace Degg.Analytics
 			data.build = GameAnalytics.Build;
 
 			var url = $"{DevPublicEndpoint}/remote_configs/v1/init?game_key={Key}";		
+		}
+
+		public static void TriggerEvent(string userId, string e, float? metric = null, string tags = null, float? time = null)
+		{
+			var aEvent = new AnlyticsEvent();
+			aEvent.UserId = userId;
+			aEvent.Event = e;
+			aEvent.Metric = metric;
+			aEvent.Time = time.GetValueOrDefault( DateTime.UtcNow.GetEpoch() );
+			aEvent.Tags = tags;
+
+			Backend.DeggBackend.SendEvent( "analytics", aEvent );
 		}
 
 		public static void ConfigureBuild(string build)

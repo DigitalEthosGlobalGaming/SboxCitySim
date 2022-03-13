@@ -18,7 +18,14 @@ namespace CitySim
 				GameAnalytics.Initialise( "5c6bcb5402204249437fb5a7a80a4959", "16813a12f718bc5c620f56944e1abc3ea13ccbac" );
 
 			}
-		} 
-		
+		}
+
+		[ServerCmd( "degg.backend.send_events" )]
+		public static void UpdateDeggBackendEvents()
+		{
+			Log.Info( "Test" );
+			Degg.Backend.DeggBackend.SendEvents();
+		}
+
 	}
 }

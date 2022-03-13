@@ -25,7 +25,7 @@ namespace Degg.Backend
 
 	public partial class DeggBackend
 	{
-		public const string SocketUrl  =  "ws://localhost:8080";
+		public const string SocketUrl  = "ws://degg-sbox-01.hmvqhod896k22.ap-southeast-2.cs.amazonlightsail.com:8080/";
 
 		public static Queue<EventPayload> EventQueue { get; set; } = new Queue<EventPayload>();
 

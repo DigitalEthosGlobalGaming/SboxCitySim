@@ -1,7 +1,7 @@
 ﻿using Sandbox.UI;
 using Sandbox;
 using System;
-using Degg.Ui.Elements;
+using Degg.UI.Elements;
 
 namespace CitySim.UI
 {

@@ -1,7 +1,7 @@
 ﻿using CitySim.UI;
-using Degg.Degg.Analytics;
+using CitySim.Utils;
+using Degg.Analytics;
 using Sandbox;
-
 
 //
 // You don't need to put things in a namespace, but it doesn't hurt.

@@ -33,8 +33,9 @@ namespace CitySim
 		public RoadMap Map { get; set; }
 		public MyGame()
 		{
-			GameAnalytics.ConfigureBuild( "1.0.0" );
-			GameAnalytics.Initialise( "5c6bcb5402204249437fb5a7a80a4959", "16813a12f718bc5c620f56944e1abc3ea13ccbac" );
+			DeggBackend.ConfigureBuild( "1.0.0" );
+			SetupAnalytics();
+
 			GameObject = this;
 			CreateUi();
 		}
@@ -46,7 +47,7 @@ namespace CitySim
 		{
 			base.ClientJoined( client );
 
-			GameAnalytics.InitialisePlayer( client.PlayerId.ToString() );
+			DeggBackend.InitialisePlayer( client.PlayerId.ToString() );
 
 			// Create a pawn for this client to play with
 			var pawn = new Pawn();
@@ -116,7 +117,7 @@ namespace CitySim
 		{
 			if ( IsServer )
 			{
-				//this.RefreshMap();
+				SetupAnalytics();
 			}
 
 			CreateUi();

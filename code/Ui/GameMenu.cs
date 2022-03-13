@@ -51,7 +51,7 @@ namespace CitySim.UI
 			}
 			LastTick = Time.Tick;
 
-			if ( Input.Pressed( (InputButton.Menu) ) )
+			if ( Input.Pressed( InputButton.Walk ) )
 			{
 				Opened = !Opened;
 

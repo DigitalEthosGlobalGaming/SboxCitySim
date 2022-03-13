@@ -55,6 +55,17 @@ namespace CitySim
 		[Net]
 		public int TileMaterialIndex { get; set; } = 0;
 
+		private Vector3 PivotPoint { get; set; }
+
+		private const float CameraFollowSmoothing = 10.0f;
+
+		private const float distanceSensitivity = 5.0f;
+		private float upDistance = 0.0f;
+		private float forwardDistance = 0.0f;
+
+		private const float rotationSensitivity = 0.15f;
+		private float yaw = 0.0f;
+
 		public override void Spawn()
 		{
 			base.Spawn();
@@ -75,6 +86,7 @@ namespace CitySim
 		[Event.Hotload]
 		public void OnLoad()
 		{
+			PivotPoint = MyGame.GameObject.Map.Position;
 		}
 
 
@@ -112,39 +124,66 @@ namespace CitySim
 				return;
 			}
 
-			base.Simulate( cl );
+			// Handle the Controls
+			if (Input.UsingController)
+			{
+				yaw += Input.Rotation.x;
+				upDistance += Input.Rotation.y;
+				forwardDistance -= Input.Rotation.y;
+			}
+			else
+			{
+				// Q
+				if (Input.Down(InputButton.Menu))
+				{
+					yaw += 1 * rotationSensitivity;
+				}
+				// E
+				else if (Input.Down(InputButton.Use))
+				{
+					yaw -= 1 * rotationSensitivity;
+				}
 
+				upDistance += Input.MouseWheel;
+				forwardDistance -= Input.MouseWheel;
+			}
 
+			upDistance = MathX.Clamp( upDistance, 0, 50 );
+			forwardDistance = MathX.Clamp( forwardDistance, 0, 10 );
 
-			Rotation = Input.Rotation;
+			// Handle the Camera looking at the pivot point
+			Rotation = Rotation.LookAt( (PivotPoint - Position).Normal );
 			EyeRotation = Rotation;
+
+			// Ensure we have a 2D Rotation Forward
+			Vector3 flatForward = Rotation.Forward;
+			flatForward.z = 0;
+			flatForward = flatForward.Normal;
 
 			// build movement from the input values
 			var movement = new Vector3( Input.Forward, Input.Left, 0 ).Normal;
 
-			// rotate it to the direction we're facing
-			Velocity = Rotation * movement;
+			// move it towards the direction we're facing
+			Velocity = Rotation.LookAt( flatForward ) * movement;
 
 			// apply some speed to it
-			Velocity *= Input.Down( InputButton.Run ) ? 1000 : 200;
+			Velocity *= Input.Down( InputButton.Run ) ? 400 : 200;
 
-			var endPost = EyePosition + (EyeRotation.Forward * 4000);
+			// Modify the pivot point position.
+			PivotPoint += Velocity * Time.Delta;
 
-			// apply it to our position using MoveHelper, which handles collision
-			// detection and sliding across surfaces for us
+			// Offset the Camera from the Pivot Point.
+			Vector3 desiredPosition = PivotPoint																											// Place the Center
+				+ (Vector3.Up * (100.0f + (upDistance * distanceSensitivity)))																				// Raise the Position up from the pivot
+				+ ( ((Vector3.Right * MathF.Cos( yaw )) + (Vector3.Forward * MathF.Sin( yaw ))).Normal * (100.0f + (forwardDistance * 5.0f)) )				// Rotate and Push back the camera in the inverse rotation that the camera will be facing.
+				;
 
-			MoveHelper helper = new MoveHelper( Position, Velocity );
+			// Animate towards the desired position.
+			Position = Vector3.Lerp( Position, desiredPosition, Time.Delta * CameraFollowSmoothing );
 
-
-			helper.Trace = helper.Trace.Size( 16 );
-			if ( helper.TryMove( Time.Delta ) > 0 )
-			{
-				Position = helper.Position;
-			}
-
+			// Gameplay Controls
 			if ( MyGame.GameState == MyGame.GameStateEnum.Playing )
 			{
-
 				// Input Actions 
 				if ( IsServer )
 				{
@@ -183,11 +222,8 @@ namespace CitySim
 					if ( MyGame.CurrentGameOptions.Mode == MyGame.GameModes.Sandbox )
 					{
 						GenericTile.TileTypeEnum? tileToSelect = null;
+
 						// Debug controls for developers to test tiles.
-						if ( Input.Pressed( InputButton.Slot0 ) )
-						{
-							tileToSelect = GenericTile.TileTypeEnum.Base;
-						}
 						if ( Input.Pressed( InputButton.Slot1 ) )
 						{
 							tileToSelect = GenericTile.TileTypeEnum.Business;
@@ -200,13 +236,14 @@ namespace CitySim
 						{
 							tileToSelect = GenericTile.TileTypeEnum.House;
 						}
-
 						if ( Input.Pressed( InputButton.Slot4 ) )
 						{
 							tileToSelect = GenericTile.TileTypeEnum.Road;
 						}
+
 						if (tileToSelect != null)
 						{
+							PlaySoundClientSide( "ui.button.press" );
 							SelectNextTile( tileToSelect.Value );
 						}
 					}

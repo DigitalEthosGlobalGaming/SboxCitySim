@@ -28,7 +28,7 @@ namespace CitySim.UI
 			CreateButtonGlyph( InputButton.Attack1, ref PlaceBtn, "Place");
 			CreateButtonGlyph( InputButton.Attack2, ref DiscardBtn, "Discard" );
 			CreateButtonGlyph( InputButton.Score, ref ScoreBtn, "Score" );
-			CreateButtonGlyph( InputButton.Menu, ref MenuBtn, "Menu" );
+			CreateButtonGlyph( InputButton.Walk, ref MenuBtn, "Menu" );
 		}
 
 		private void CreateButtonGlyph( InputButton _inputBtn, ref Image _element, string _label )

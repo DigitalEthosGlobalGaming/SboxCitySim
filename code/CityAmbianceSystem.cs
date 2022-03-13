@@ -159,9 +159,11 @@ namespace CitySim
 			}
 
 			// Spawn Random Ambulances
-			var hospitalTiles = roadMap.GetGenericTiles().FindAll( ( tile ) => { 
-				return tile.TileType == GenericTile.TileTypeEnum.Business && 
-				tile.bodyIndex == 2; 
+			var hospitalTiles = roadMap.GetGenericTiles().FindAll( ( tile ) => {
+				tile.BodyGroups.TryGetValue( "base", out int tileBaseIndex );
+
+				return tile.TileType == GenericTile.TileTypeEnum.Business &&
+						tileBaseIndex == 2; 
 			} );
 			int ambulanceCount = 0;
 			foreach ( var hospitalTile in hospitalTiles )
@@ -169,7 +171,7 @@ namespace CitySim
 				if (ambulanceCount < MAX_VEHICLE_SPAWN_RATE/2)
 				{
 					int randNum = Rand.Int( 100 );
-					if ( randNum <= 25 )
+					if ( randNum <= 5 )
 					{
 						SpawnVehicle<AmbulanceEntityMovement>( new CityAmbianceVehicleBehaviour()
 						{
@@ -247,7 +249,6 @@ namespace CitySim
 			// Verify that we have possible places to spawn.
 			if (possibleTiles.Count == 0)
 			{
-				Log.Info( "No Possible Spawn Position!" );
 				return;
 			}
 
@@ -263,7 +264,6 @@ namespace CitySim
 			// Verify that we have places to deliver.
 			if (deliveryTiles.Count == 0)
 			{
-				Log.Info( "No Possible Delivery Position!" );
 				return;
 			}
 
@@ -278,7 +278,6 @@ namespace CitySim
 			// Verify that we still have places to spawn.
 			if (possibleTiles.Count == 0)
 			{
-				Log.Info( "No Possible Spawn Position After Path Check!" );
 				return;
 			}
 

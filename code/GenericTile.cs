@@ -136,13 +136,13 @@ namespace CitySim
 
 		public void SetHasRoad(bool hasRoad)
 		{
-			SetTileType( TileTypeEnum.Road, 0, 0 );
+			SetTileType( TileTypeEnum.Road, null, 0 );
 
 			if ( hasRoad != HasRoad() )
 			{
 				var transitionAmount = 10f;
 				Position = GetWorldPosition() + new Vector3( Rand.Float( -transitionAmount, transitionAmount ), Rand.Float( -transitionAmount, transitionAmount ), Rand.Float( 100f, 150f ) );
-				SetTileType( TileTypeEnum.Road, 0, 0 );
+				SetTileType( TileTypeEnum.Road, null, 0 );
 				CheckModel();
 				GenericTile[] neighbours = GetNeighbours<GenericTile>();
 				foreach ( GenericTile neighbor in neighbours )

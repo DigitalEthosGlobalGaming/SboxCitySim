@@ -31,16 +31,16 @@ namespace CitySim
 		[Net]
 		public TileTypeEnum TileType { get; set; }
 		[Net]
-		public int bodyIndex { get; set; } = 0;
+		public IDictionary<string, int> BodyGroups { get; set; } = new Dictionary<string, int>();
 
 		[Net]
 		public int materialIndex { get; set; } = 0;
 
-		public void UpdateModel(int? bodyIndex = null, int? materialIndex = null)
+		public void UpdateModel( IDictionary<string, int> BodyGroups = null, int? materialIndex = null )
 		{
-			if (bodyIndex != null)
+			if ( BodyGroups != null)
 			{
-				this.bodyIndex = bodyIndex.Value;
+				this.BodyGroups = BodyGroups;
 			}
 
 			if ( materialIndex  != null)
@@ -49,9 +49,9 @@ namespace CitySim
 			}
 
 
-			GenericTile.UpdateModel( this, TileType, bodyIndex ?? this.bodyIndex, materialIndex ?? this.materialIndex );
+			GenericTile.UpdateModel( this, TileType, BodyGroups, materialIndex ?? this.materialIndex );
 		}
-		public static void UpdateModel( ModelEntity entity, TileTypeEnum type, int bodyIndex, int materialIndex )
+		public static void UpdateModel( ModelEntity entity, TileTypeEnum type, IDictionary<string, int> bodyGroups, int materialIndex )
 		{
 			var model = GetModelForTileType( type );
 			if (model != "")
@@ -60,18 +60,15 @@ namespace CitySim
 				{
 					entity.SetModel( model );
 					entity.SetupPhysicsFromModel( PhysicsMotionType.Static, false );
-					entity.SetBodyGroup( "base", bodyIndex );
 					entity.SetMaterialGroup( materialIndex );
 				}
 
-				if (type == TileTypeEnum.Park)
+				if (bodyGroups != null)
 				{
-					entity.SetBodyGroup( "rock1", (int)MathX.Clamp( Rand.Int(0,2), 0,1));
-					entity.SetBodyGroup( "rock2", (int)MathX.Clamp( Rand.Int( 0, 2 ), 0, 1 ) );
-					entity.SetBodyGroup( "rock3", (int)MathX.Clamp( Rand.Int( 0, 2 ), 0, 1 ) );
-					entity.SetBodyGroup( "bush1", (int)MathX.Clamp( Rand.Int( 0, 2 ), 0, 1 ) );
-					entity.SetBodyGroup( "bush2", (int)MathX.Clamp( Rand.Int( 0, 2 ), 0, 1 ) );
-					entity.SetBodyGroup( "bush3", (int)MathX.Clamp( Rand.Int(0,2),0,1) );
+					foreach (var key in bodyGroups.Keys)
+					{
+						entity.SetBodyGroup( key, bodyGroups[key] );
+					}
 				}
 			}
 			entity.RenderColor = Color.White;
@@ -148,7 +145,7 @@ namespace CitySim
 			return score;
 		}
 
-		public int SetTileType( TileTypeEnum type, int bodyIndex, int materialIndex )
+		public int SetTileType( TileTypeEnum type, IDictionary<string, int> bodyGroups, int materialIndex )
 		{
 			if (IsServer)
 			{
@@ -172,7 +169,7 @@ namespace CitySim
 				}
 				else
 				{
-					UpdateModel( bodyIndex, materialIndex );
+					UpdateModel( bodyGroups, materialIndex );
 				}
 
 				IsDirty = true;

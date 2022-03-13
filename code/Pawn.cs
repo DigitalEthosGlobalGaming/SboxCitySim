@@ -50,7 +50,7 @@ namespace CitySim
 		public GenericTile.TileTypeEnum SelectedTileType { get; set; } = GenericTile.TileTypeEnum.Base;
 		public GenericTile.TileTypeEnum LastSelectedTileType { get; set; } = GenericTile.TileTypeEnum.Base;
 		[Net]
-		public int TileBodyIndex { get; set; } = 0;
+		public IDictionary<string, int> NextTileBodyGroups { get; set; }
 
 		[Net]
 		public int TileMaterialIndex { get; set; } = 0;
@@ -65,12 +65,16 @@ namespace CitySim
 			EnableDrawing = true;
 			EnableHideInFirstPerson = true;
 			EnableShadowInFirstPerson = true;
+			EnableShadowCasting = false;
+			EnableShadowInFirstPerson = false;
+
+			// We need to make sure there is some data inside the for the next tile.
+			SelectNextRandomTile();
 		}
 
 		[Event.Hotload]
 		public void OnLoad()
 		{
-
 		}
 
 
@@ -341,31 +345,50 @@ namespace CitySim
 
 		public void SelectNextTile( TileTypeEnum type, int? nextBodyIndex = null, int? nextMaterialIndex = null )
 		{
+			NextTileBodyGroups = new Dictionary<string, int>();
 			switch ( type )
 			{
 				case TileTypeEnum.Business:
-					TileBodyIndex = nextBodyIndex % 2 ?? Rand.Int( 0, 2 );
-					TileMaterialIndex = nextMaterialIndex % 6 ?? Rand.Int( 0, 6 );
-					break;
+					{
+						NextTileBodyGroups.Add( "base", Rand.Int( 0, 2 ) );
+						TileMaterialIndex = nextMaterialIndex % 6 ?? Rand.Int( 0, 6 );
+						break;
+					}
 				case TileTypeEnum.House:
-					TileBodyIndex = nextBodyIndex % 4 ?? Rand.Int( 0, 4 );
-					TileMaterialIndex = nextMaterialIndex % 6 ?? Rand.Int( 0, 6 );
+					{
+						NextTileBodyGroups.Add( "base", Rand.Int( 0, 4 ) );
+						TileMaterialIndex = nextMaterialIndex % 6 ?? Rand.Int( 0, 6 );
+						break;
+					}
+				case TileTypeEnum.Park:
+					{
+						NextTileBodyGroups.Add( "rock1", Rand.Int( 0, 2 ) );
+						NextTileBodyGroups.Add( "rock2", Rand.Int( 0, 2 ) );
+						NextTileBodyGroups.Add( "rock3", Rand.Int( 0, 2 ) );
+						NextTileBodyGroups.Add( "bush1", Rand.Int( 0, 2 ) );
+						NextTileBodyGroups.Add( "bush2", Rand.Int( 0, 2 ) );
+						NextTileBodyGroups.Add( "bush3", Rand.Int( 0, 2 ) );
+						TileMaterialIndex = nextMaterialIndex % 6 ?? Rand.Int( 0, 6 );
+					}
 					break;
 				default:
-					TileBodyIndex = 0;
-					TileMaterialIndex = 0;
-					break;
+					{
+						NextTileBodyGroups.Add( "base", 0 );
+						TileMaterialIndex = 0;
+						break;
+					}
 			}
 			SelectedTileType = type;
 		}
 
 		public void PlaceOnTile( GenericTile tile )
 		{
-			var score = tile.SetTileType( SelectedTileType, TileBodyIndex, TileMaterialIndex );
+			var score = tile.SetTileType( SelectedTileType, NextTileBodyGroups, TileMaterialIndex );
 			if ( MyGame.CurrentGameOptions.Mode != MyGame.GameModes.Sandbox )
 			{
 				SelectedTileType = GenericTile.TileTypeEnum.Base;
-			} else
+			} 
+			else
 			{
 				SelectNextTile( SelectedTileType );
 			}
@@ -408,16 +431,18 @@ namespace CitySim
 					if ( GhostTile == null )
 					{
 						// Spawn's the Ghost Local Model
-						GhostTile = new ModelEntity();
-						GhostTile.EnableDrawOverWorld = true;
-						GhostTile.Name = "Ghost Tile";
-						GhostTile.PhysicsEnabled = false;
-						GhostTile.Transmit = TransmitType.Never;
-						GhostTile.EnableHitboxes = false;
-						GhostTile.EnableAllCollisions = false;
-						GhostTile.EnableSelfCollisions = false;
-						GhostTile.EnableSolidCollisions = false;
-						GhostTile.EnableTouch = false;
+						GhostTile = new ModelEntity
+						{
+							EnableDrawOverWorld = true,
+							Name = "Ghost Tile",
+							PhysicsEnabled = false,
+							Transmit = TransmitType.Never,
+							EnableHitboxes = false,
+							EnableAllCollisions = false,
+							EnableSelfCollisions = false,
+							EnableSolidCollisions = false,
+							EnableTouch = false
+						};
 					}
 					else
 					{
@@ -426,7 +451,7 @@ namespace CitySim
 					}
 
 					GhostTile.Transform = tile.Transform;
-					GenericTile.UpdateModel( GhostTile, SelectedTileType, TileBodyIndex, TileMaterialIndex );
+					GenericTile.UpdateModel( GhostTile, SelectedTileType, NextTileBodyGroups, TileMaterialIndex );
 					GenericTile.CheckModel( tile, GhostTile, SelectedTileType );
 					GhostTile.RenderColor = new Color( 0, 1, 0, 0.75f );
 				}

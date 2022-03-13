@@ -39,7 +39,7 @@ namespace Degg.Analytics
 			Backend.DeggBackend.Initialise( key, secret );
 		}
 
-		public static async void InitialisePlayer( string userId, string platform = "default", string os_version = "default" )
+		public static void InitialisePlayer( string userId, string platform = "default", string os_version = "default" )
 		{
 			InitialiseBody data = new InitialiseBody();
 			data.user_id = userId;

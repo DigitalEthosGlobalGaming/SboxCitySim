@@ -13,7 +13,7 @@ namespace Degg.Backend
 		public object Type { get; set; }
 		public string CallbackId { get; set; }
 
-		public EventPayload( string name, object? data )
+		public EventPayload( string name, object data )
 		{
 			Name = name;
 			Type = data;
@@ -32,28 +32,37 @@ namespace Degg.Backend
 		public static WebSocket Socket { get; set; }
 		public static void Initialise(string key, string secret)
 		{
-			CheckConnection();
 			SendEvent( "test", null );
 		}
 
-		public static void CheckConnection()
+		public static bool CheckConnection()
 		{
+			return false; // This is extremely broken for me.
+			/*
 			if ( Socket == null )
 			{
-				var socket = new WebSocket();
-				Socket = socket;
+				Socket = new WebSocket();
 			}
+
+			Assert.False( ThreadSafe.IsMainThread );
+
 			if ( !Socket.IsConnected )
 			{
 				Socket.Connect( SocketUrl );
 			}
+
+			return Socket.IsConnected;
+			*/
 		}
 
 		public static void SendEvents()
 		{
-			CheckConnection();
-			if ( Socket.IsConnected )
+			return; // This is extremely broken for me.
+			/*
+			if ( CheckConnection() )
 			{
+				Assert.False( ThreadSafe.IsMainThread );
+
 				while ( EventQueue.Count > 0 )
 				{
 					var e = EventQueue.Dequeue();
@@ -61,17 +70,19 @@ namespace Degg.Backend
 					Socket.Send( data );
 				}
 			}
+			*/
 		}
 		public static void SendEvent(string name, object raw)
 		{
+			return; // This is extremely broken for me.
+			/*
+			Assert.False( ThreadSafe.IsMainThread );
+
 			EventPayload ePayload = new EventPayload( name, raw );
 
 			EventQueue.Enqueue( ePayload );
 			SendEvents();
+			*/
 		}
-
-
-
-
 	}
 }

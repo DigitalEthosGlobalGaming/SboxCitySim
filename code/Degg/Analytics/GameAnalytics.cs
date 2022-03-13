@@ -13,7 +13,7 @@ namespace Degg.Analytics
 		public string build { get; set; }
 	} 
 
-	public partial class DeggBackend
+	public partial class GameAnalytics
 	{
 		public const string PublicEndpoint = "api.gameanalytics.com";
 		public const string DevPublicEndpoint = "sandbox-api.gameanalytics.com";
@@ -27,7 +27,7 @@ namespace Degg.Analytics
 		{
 			Key = key;
 			Secret = secret;
-			DeggBackend.Initialise(key, secret);
+			Backend.DeggBackend.Initialise( key, secret );
 		}
 
 		public static async void InitialisePlayer( string userId, string platform = "default", string os_version = "default" )
@@ -36,7 +36,7 @@ namespace Degg.Analytics
 			data.user_id = userId;
 			data.platform = platform;
 			data.os_version = os_version;
-			data.build = DeggBackend.Build;
+			data.build = GameAnalytics.Build;
 
 			var url = $"{DevPublicEndpoint}/remote_configs/v1/init?game_key={Key}";		
 		}

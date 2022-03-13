@@ -30,7 +30,7 @@ namespace CitySim
 		public RoadMap Map { get; set; }
 		public MyGame()
 		{
-			DeggBackend.ConfigureBuild( "1.0.0" );
+
 			SetupAnalytics();
 
 			GameObject = this;
@@ -43,8 +43,6 @@ namespace CitySim
 		public override void ClientJoined( Client client )
 		{
 			base.ClientJoined( client );
-
-			DeggBackend.InitialisePlayer( client.PlayerId.ToString() );
 
 			// Create a pawn for this client to play with
 			var pawn = new Pawn();

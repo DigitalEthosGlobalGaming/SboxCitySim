@@ -272,7 +272,7 @@ namespace CitySim
 			// Finally we know a list of places we are allowed to spawn, we need to determine if we want to spawn there.
 			possibleTiles = possibleTiles.FindAll( ( tile ) =>
 			{
-				return tile.IsNextToRoad() && roadMap.IsPath( tile.GetRoadNeighbour().GridPosition, deliveryTile.GridPosition );
+				return tile.IsNextToRoad() && roadMap.IsPath( tile.GridPosition, deliveryTile.GridPosition );
 			} );
 
 			// Verify that we still have places to spawn.
@@ -283,7 +283,7 @@ namespace CitySim
 
 			GenericTile spawnTile = Rand.FromList( possibleTiles );
 
-			var path = roadMap.CreatePath( spawnTile.GetRoadNeighbour().GridPosition, deliveryTile.GridPosition );
+			var path = roadMap.CreatePath( spawnTile.GridPosition, deliveryTile.GridPosition );
 
 			MovementEntity ent = new T();
 			ent.SetBodyGroup( "base", (int)behaviour.bodyIndex );

@@ -61,7 +61,8 @@ namespace CitySim
 
 			if (Map != null)
 			{
-				pawn.Position = Map.Position + (Vector3.Up * 100f);
+				pawn.Position = Map.Position;
+				pawn.PivotPoint = Map.Position;
 			}
 			UpdateClientGameState( GameState );
 		}

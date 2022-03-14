@@ -12,12 +12,12 @@ namespace CitySim
 
 		public enum RoadTypeEnum
 		{
+			StreetEmpty = 14,
 			Straight = 0,
 			Curve = 1,
 			ThreeWay = 2,
 			FourWay = 4,
 			DeadEnd = 11,
-			StreetEmpty = 14,
 			WaterEmpty = 15,
 		}
 
@@ -48,7 +48,7 @@ namespace CitySim
 		[Net]
 		public Rotation TargetRotation { get; set; }
 		public Vector3 TargetPosition { get; set; }
-		[Net, Change]
+		[Net]
 		public RoadTypeEnum RoadType { get; set; }
 		/// <summary>
 		/// Called when the entity is first created 
@@ -58,10 +58,9 @@ namespace CitySim
 			base.OnAddToMap();
 			Position = GetWorldPosition();
 			TargetPosition = Position;
-			SetModel( "models/roads/street_4way.vmdl" );
 			RoadType = (RoadTypeEnum.StreetEmpty);
-			SetupPhysicsFromModel( PhysicsMotionType.Static, false );
 			UpdateName();
+			UpdateModel();
 		}
 
 		[ClientRpc]
@@ -114,14 +113,20 @@ namespace CitySim
 			return TileType == TileTypeEnum.Road;
 		}
 
-		public void OnRoadTypeChanged( RoadTypeEnum oldValue, RoadTypeEnum newValue )
+
+		[Event( "citysim.gamestate" )]
+		public void OnGameStateChange()
 		{
-			SetBodyGroup( "base", (int)newValue );
 		}
 
 
-		public override float GetMovementWeight( GridSpace a )
+
+		public override float GetMovementWeight( GridSpace a, NavPoint n )
 		{
+			if (n.Parent == null)
+			{
+				return 10f;
+			}
 			if (a is GenericTile )
 			{
 				if ( HasRoad() )
@@ -167,14 +172,10 @@ namespace CitySim
 			
 		}
 
-		public void Test()
-		{
-			CheckModel();
-		}
-
 		public void CheckModel()
 		{
 			GenericTile.CheckModel( this );
+			UpdateModel();
 		}
 		public static void CheckModel( GenericTile influencer, ModelEntity ghostViewModel = null, TileTypeEnum? ghostTileType = null)
 		{
@@ -344,13 +345,13 @@ namespace CitySim
 				ghostViewModel.Position = influencer.GetWorldPosition();
 				ghostViewModel.Rotation = Rotation.FromAxis( Vector3.Up, rotation );
 			}
-
 		}
 
 
 		public override void Spawn()
 		{
 			base.Spawn();
+			this.Transmit = TransmitType.Always;
 			TickableCollection.Global.Add( this );
 		}
 

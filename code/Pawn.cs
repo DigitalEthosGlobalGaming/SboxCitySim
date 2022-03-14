@@ -55,9 +55,10 @@ namespace CitySim
 		[Net]
 		public int TileMaterialIndex { get; set; } = 0;
 
-		private Vector3 PivotPoint { get; set; }
+		[Net]
+		public Vector3 PivotPoint { get; set; }
 
-		private const float CameraFollowSmoothing = 10.0f;
+		private const float CameraFollowSmoothing = 30.0f;
 
 		private const float distanceSensitivity = 5.0f;
 		private float upDistance = 0.0f;
@@ -83,13 +84,13 @@ namespace CitySim
 			SelectNextRandomTile();
 
 			// We need to ensure we move the camera pivot point at the same height/location that the map is located at.
-			PivotPoint = MyGame.GameObject.Map.Position;
+			ResetPivotPoint();
 		}
 
 		[Event.Hotload]
 		public void OnLoad()
 		{
-			PivotPoint = MyGame.GameObject.Map.Position;
+			ResetPivotPoint();
 		}
 
 
@@ -98,6 +99,13 @@ namespace CitySim
 		{
 			Pawn pawn = (Pawn)ConsoleSystem.Caller.Pawn;
 			pawn.DisabledControls = value;
+		}
+
+
+		public void ResetPivotPoint()
+		{
+			Log.Info( "Reset Pivot" );
+			PivotPoint = MyGame.GameObject.Map.Position;
 		}
 
 		public GenericTile GetRoadTileLookedAt()
@@ -174,6 +182,10 @@ namespace CitySim
 
 			// Modify the pivot point position.
 			PivotPoint += Velocity * Time.Delta;
+			if (PivotPoint.z < MyGame.GetMap()?.Position.z)
+			{
+				ResetPivotPoint();
+			}
 
 			// Offset the Camera from the Pivot Point.
 			Vector3 desiredPosition = PivotPoint																											// Place the Center
@@ -190,6 +202,9 @@ namespace CitySim
 				// Input Actions 
 				if ( IsServer )
 				{
+					GenericTile test = GetRoadTileLookedAt();
+					Log.Info( test );
+
 					// Left Click or RT
 					if ( Input.Pressed( InputButton.Attack1 ) )
 					{

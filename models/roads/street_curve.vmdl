@@ -11,9 +11,53 @@
 				[
 					{
 						_class = "DefaultMaterialGroup"
-						remaps = [  ]
+						remaps = 
+						[
+							{
+								from = "white.vmat"
+								to = "materials/default/white.vmat"
+							},
+							{
+								from = "grey.vmat"
+								to = "materials/generic/concrete_simple.vmat"
+							},
+							{
+								from = "black.vmat"
+								to = "materials/tarmac.vmat"
+							},
+							{
+								from = "stone.vmat"
+								to = "materials/6_stones.vmat"
+							},
+							{
+								from = "water.vmat"
+								to = "materials/shadertest/test_water.vmat"
+							},
+							{
+								from = ""
+								to = "materials/default/white.vmat"
+							},
+						]
 						use_global_default = false
 						global_default_material = ""
+					},
+				]
+			},
+			{
+				_class = "PhysicsShapeList"
+				children = 
+				[
+					{
+						_class = "PhysicsShapeBox"
+						parent_bone = ""
+						surface_prop = "default"
+						collision_group = ""
+						collision_interact_as = ""
+						collision_interact_with = ""
+						collision_interact_exclude = ""
+						origin = [ 0.0, 0.0, 2.267314 ]
+						angles = [ 0.0, 0.0, 0.0 ]
+						dimensions = [ 200.0, 200.0, 25.0 ]
 					},
 				]
 			},
@@ -23,21 +67,19 @@
 				[
 					{
 						_class = "RenderMeshFile"
-						filename = "raw/models/road/Street_Curve.fbx"
+						name = "01_curve"
+						filename = "raw/models/road/street_curve.fbx"
 						import_translation = [ 0.0, 0.0, 0.0 ]
 						import_rotation = [ 0.0, 0.0, 0.0 ]
 						import_scale = 1.0
 						align_origin_x_type = "None"
 						align_origin_y_type = "None"
 						align_origin_z_type = "None"
-						parent_bone = ""
+						parent_bone = "curve"
 						import_filter = 
 						{
-							exclude_by_default = true
-							exception_list = 
-							[
-								"Cube_001",
-							]
+							exclude_by_default = false
+							exception_list = [  ]
 						}
 					},
 				]

@@ -20,11 +20,47 @@ namespace CitySim
 		public string CurrentModel { get; set; }
 
 		public static string[] TileTypeModels;
+		public static string[] RoadTypeModels;
 
-		public static string GetModelForTileType( TileTypeEnum type )
+
+		public static string GetModelForTileType( TileTypeEnum type, RoadTypeEnum roadType = RoadTypeEnum.StreetEmpty )
 		{
-			TileTypeModels = new string[]{ "models/roads/street_4way.vmdl", "models/buildings/forest.vmdl", "models/buildings/shop.vmdl", "models/buildings/house_01.vmdl", "models/roads/street_4way.vmdl" };
-			return TileTypeModels[(int)type] ?? "models/roads/street_4way.vmdl";
+			switch ( type )
+			{
+				case TileTypeEnum.Base:
+					return "models/roads/street_empty.vmdl";
+				case TileTypeEnum.Park:
+					return "models/buildings/forest.vmdl";
+				case TileTypeEnum.Business:
+					return "models/buildings/shop.vmdl";
+				case TileTypeEnum.House:
+					return "models/buildings/house_01.vmdl";
+				case TileTypeEnum.Road:
+					{
+						switch ( roadType )
+						{
+							case RoadTypeEnum.StreetEmpty:
+								return "models/roads/street_empty.vmdl";
+							case RoadTypeEnum.Straight:
+								return "models/roads/street_straight.vmdl";
+							case RoadTypeEnum.Curve:
+								return "models/roads/street_curve.vmdl";
+							case RoadTypeEnum.ThreeWay:
+								return "models/roads/street_3way.vmdl";
+							case RoadTypeEnum.FourWay:
+								return "models/roads/street_4way.vmdl";
+							case RoadTypeEnum.DeadEnd:
+								return "models/roads/street_deadend.vmdl";
+							case RoadTypeEnum.WaterEmpty:
+								return "models/roads/street_water.vmdl";
+							default:
+								Log.Warning( $"No valid road type for {roadType}" );
+								return "models/roads/street_empty.vmdl";
+						}
+					}
+				default:
+					return "models/roads/street_empty.vmdl";
+			}
 		}
 
 
@@ -36,6 +72,10 @@ namespace CitySim
 		[Net]
 		public int materialIndex { get; set; } = 0;
 
+		public void UpdateModel()
+		{
+			GenericTile.UpdateModel( this, this.TileType, this.BodyGroups, this.materialIndex );
+		}
 		public void UpdateModel( IDictionary<string, int> BodyGroups = null, int? materialIndex = null )
 		{
 			if ( BodyGroups != null)
@@ -51,27 +91,40 @@ namespace CitySim
 
 			GenericTile.UpdateModel( this, TileType, BodyGroups, materialIndex ?? this.materialIndex );
 		}
+
 		public static void UpdateModel( ModelEntity entity, TileTypeEnum type, IDictionary<string, int> bodyGroups, int materialIndex )
 		{
-			var model = GetModelForTileType( type );
-			if (model != "")
+			var roadType = RoadTypeEnum.StreetEmpty;
+			if (entity is GenericTile g)
 			{
-				if ( model != entity.Model.Name )
-				{
-					entity.SetModel( model );
-					entity.SetupPhysicsFromModel( PhysicsMotionType.Static, false );
-					entity.SetMaterialGroup( materialIndex );
-				}
+				roadType = g.RoadType;
+			}
 
-				if (bodyGroups != null)
+			var model = GetModelForTileType( type, roadType );
+			entity.SetModel( model );
+			entity.SetupPhysicsFromModel( PhysicsMotionType.Static, false );
+			entity.SetMaterialGroup( materialIndex );
+
+			if ( bodyGroups != null )
+			{
+				foreach ( var key in bodyGroups.Keys )
 				{
-					foreach (var key in bodyGroups.Keys)
-					{
-						entity.SetBodyGroup( key, bodyGroups[key] );
-					}
+					entity.SetBodyGroup( key, bodyGroups[key] );
 				}
 			}
+
 			entity.RenderColor = Color.White;
+		}
+
+		public void SetModelBodyGroup(string key, int value)
+		{
+			if ( BodyGroups  == null)
+			{
+				BodyGroups = new Dictionary<string,int>();
+			}
+
+			BodyGroups[key] = value;
+			UpdateModel(this.BodyGroups);
 		}
 
 
@@ -162,7 +215,7 @@ namespace CitySim
 
 				SetupNeeds();
 
-				CheckNeighbours();
+				
 				if ( type == TileTypeEnum.Road )
 				{
 					CheckModel();
@@ -171,6 +224,7 @@ namespace CitySim
 				{
 					UpdateModel( bodyGroups, materialIndex );
 				}
+				CheckNeighbours();
 
 				IsDirty = true;
 

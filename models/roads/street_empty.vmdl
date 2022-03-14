@@ -67,8 +67,8 @@
 				[
 					{
 						_class = "RenderMeshFile"
-						name = "05_4way2"
-						filename = "raw/models/road/Street_4Way_2.fbx"
+						name = "14_street_empty"
+						filename = "raw/models/road/Street_Empty.fbx"
 						import_translation = [ 0.0, 0.0, 0.0 ]
 						import_rotation = [ 0.0, 0.0, 0.0 ]
 						import_scale = 1.0

@@ -54,15 +54,15 @@ namespace CitySim
 			var options = new GameOptions();
 			options.Mode = mode ?? GameModes.Normal;
 			var minAmount = 10;
-			var maxAmount = 20;
+			var maxAmount = 15;
 			if (mode == GameModes.Chaos)
 			{
-				minAmount = minAmount * 2;
-				maxAmount = maxAmount * 2;
+				minAmount = (int) (minAmount * 2f);
+				maxAmount = (int)(maxAmount * 2f);
 			} else if ( mode == GameModes.Sandbox )
 			{
-				minAmount = (int)(minAmount * 2.5);
-				maxAmount = (int)(maxAmount * 2.5);
+				minAmount = (int)(minAmount * 2f);
+				maxAmount = (int)(maxAmount * 2f);
 			}
 			options.XSize = Rand.Int( minAmount, maxAmount );
 			options.YSize = Rand.Int( minAmount, maxAmount );
@@ -73,6 +73,14 @@ namespace CitySim
 		{
 			GameObject.SetGameState( GameStateEnum.End );
 			GameObject.SetGameState( GameStateEnum.Start );
+		}
+
+		[ServerCmd( "cs.game.restart_same_settings" )]
+		public static void TestRestartSameSettingsCmd()
+		{
+			var options = CurrentGameOptions;
+			GameObject.EndGame();
+			StartGameCmd( options.Mode );
 		}
 
 		[ServerCmd( "cs.game.end" )]
@@ -158,9 +166,9 @@ namespace CitySim
 						var player = client.Pawn;
 						if ( player is Pawn p )
 						{
+							
 							p.Score = 0;
-
-							p.Position = Map.Position + (Vector3.Up * 250f);
+							p.PivotPoint = Map.Position;
 						}
 					}
 				}

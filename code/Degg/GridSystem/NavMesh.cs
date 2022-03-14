@@ -5,7 +5,7 @@ using System.Collections.Generic;
 namespace Degg.GridSystem
 {
 
-	class NavPoint
+	public class NavPoint
 	{
 		public float G;
 		public float H;
@@ -34,7 +34,7 @@ namespace Degg.GridSystem
 
 		public float GetMovementWeight(NavPoint b)
 		{
-			return Space.GetMovementWeight( b.Space );
+			return Space.GetMovementWeight( b.Space, this );
 		}
 
 		public List<GridSpace> BackTrace(List<GridSpace> list)
@@ -115,6 +115,7 @@ namespace Degg.GridSystem
 			var startNode = GetPointAt( startV );
 
 			openList.Enqueue( startNode, startNode );
+
 
 
 			while ( openList.Count > 0 )

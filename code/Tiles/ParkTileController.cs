@@ -6,7 +6,7 @@ using static CitySim.GenericTile;
 
 namespace CitySim
 {
-	public partial class ParkTileController : TileController
+	public partial class ParkTileController : BuildingTileController
 	{
 
 		public override TileTypeEnum GetTileType()
@@ -17,19 +17,18 @@ namespace CitySim
 		public override void AddToTile(GenericTile tile)
 		{
 			base.AddToTile(tile);
+			SetBuildingModel( "models/buildings/forest.vmdl" );
 
-			Parent.SetBodyGroup( "rock1", Rand.Int( 0, 2 ) );
-			Parent.SetBodyGroup( "rock2", Rand.Int( 0, 2 ) );
-			Parent.SetBodyGroup( "rock3", Rand.Int( 0, 2 ) );
-			Parent.SetBodyGroup( "bush1", Rand.Int( 0, 2 ) );
-			Parent.SetBodyGroup( "bush2", Rand.Int( 0, 2 ) );
-			Parent.SetBodyGroup( "bush3", Rand.Int( 0, 2 ) );
+			Building.SetBodyGroup( "rock1", Rand.Int( 0, 2 ) );
+			Building.SetBodyGroup( "rock2", Rand.Int( 0, 2 ) );
+			Building.SetBodyGroup( "rock3", Rand.Int( 0, 2 ) );
+			Building.SetBodyGroup( "bush1", Rand.Int( 0, 2 ) );
+			Building.SetBodyGroup( "bush2", Rand.Int( 0, 2 ) );
+			Building.SetBodyGroup( "bush3", Rand.Int( 0, 2 ) );
 		}
-
-
-		public override void UpdateModel()
+		public override void RemoveFromTile( GenericTile tile )
 		{
-			Parent.SetModel( "models/buildings/forest.vmdl" );
+			base.RemoveFromTile( tile );
 		}
 	}
 }

@@ -1299,7 +1299,7 @@
         </member>
         <member name="P:Sandbox.Entity.Name">
             <summary>
-            The entity target name. This is typically used by map IO and to generally access specific entities from code.
+            The entity target name. This is typically used by Entity IO and to generally access specific entities from code.
             </summary>
         </member>
         <member name="P:Sandbox.Entity.LocalPosition">
@@ -1362,6 +1362,11 @@
         <member name="P:Sandbox.Entity.EngineEntityName">
             <summary>
             The internal class name of this entity. For debug purposes only.
+            </summary>
+        </member>
+        <member name="P:Sandbox.Entity.ClassName">
+            <summary>
+            Returns the actual class name of this entity.
             </summary>
         </member>
         <member name="M:Sandbox.Entity.OnHotloaded">
@@ -1526,7 +1531,23 @@
         </member>
         <member name="M:Sandbox.Entity.FireOutput(System.String,Sandbox.Entity,System.Object,System.Single)">
             <summary>
-            Try to fire this output
+            Try to fire this Entity IO output
+            </summary>
+        </member>
+        <member name="M:Sandbox.Entity.FireInput(System.String,Sandbox.Entity,System.Object)">
+            <summary>
+            Try to fire this Entity IO input
+            </summary>
+            <returns>Whether the input was fired.</returns>
+        </member>
+        <member name="M:Sandbox.Entity.AddConnection(System.String,Sandbox.EntityTarget,System.String,System.String,System.Single,System.Int32)">
+            <summary>
+            Adds an Entity IO connection between this entity and target entity.
+            </summary>
+        </member>
+        <member name="M:Sandbox.Entity.AddOutputEvent(System.String,Sandbox.Entity.StandardOutputDelegate,System.Single)">
+            <summary>
+            Adds a callback to an entity output.
             </summary>
         </member>
         <member name="T:Sandbox.Entity.Output">
@@ -1779,14 +1800,45 @@
             similar to ignorez to draw over world but still having depth info
             </summary>
         </member>
-        <member name="M:Sandbox.EntityIO.Output.BuildTargets(Sandbox.Entity)">
+        <member name="T:Sandbox.EntityTarget">
+            <summary>
+            Describes a target for the Entity IO system. The description finds by name, or class name.
+            You can manually enumerate valid entities using EnumerateTargets
+            </summary>
+        </member>
+        <member name="M:Sandbox.EntityTarget.EnumerateTargets(Sandbox.Entity)">
+            <summary>
+            We don't expose this because of the potential issues with Entity.All being modified while iterating
+            </summary>
+        </member>
+        <member name="M:Sandbox.EntityTarget.TestEntity(Sandbox.Entity)">
+            <summary>
+            Check whether entity passes this target's test
+            </summary>
+        </member>
+        <member name="M:Sandbox.EntityTarget.GetTargets(Sandbox.Entity)">
             <summary>
             Get a list of entities that are appropriate targets for this
             </summary>
         </member>
-        <member name="M:Sandbox.EntityIO.Output.ShouldSendToEntity(Sandbox.Entity)">
+        <member name="M:Sandbox.EntityTarget.FromEngine(System.String,NativeEngine.EntityIOTargetType)">
             <summary>
-            TODO - TargetType
+            Called from the engine, when it passes in a targetType
+            </summary>
+        </member>
+        <member name="M:Sandbox.EntityTarget.Default(System.String)">
+            <summary>
+            Target an entity with a name or class name
+            </summary>
+        </member>
+        <member name="M:Sandbox.EntityTarget.WithEntityName(System.String)">
+            <summary>
+            Target an entity with a specific name
+            </summary>
+        </member>
+        <member name="M:Sandbox.EntityTarget.op_Implicit(System.String)~Sandbox.EntityTarget">
+            <summary>
+            Implicitly convert from a string so any arguments let users pass just a string too
             </summary>
         </member>
         <member name="T:Sandbox.EnvironmentLightEntity">
@@ -2610,6 +2662,14 @@
         <member name="M:Sandbox.GameLoop.NotifyDisconnect(System.Int32,System.String)">
             <summary>
             Called when the local client was disconnected from the current server for any reason.
+            </summary>
+        </member>
+        <member name="M:Sandbox.GameLoop.AddViewsToSceneSystem(NativeEngine.CRenderAttributes)">
+            <summary>
+            Called when building the views for the main game view.
+            Garry: I don't love how this works, but it does work. Ideally we should
+            be passing the scene itself too, and making some kind of attempt to have this
+            work on all scenes. But for now it's fine.
             </summary>
         </member>
         <member name="P:Sandbox.DamageInfo.Attacker">
@@ -5520,6 +5580,11 @@
             Sandbox.GameLoop.OnPhysicsWorld( ... )
             </summary>
         </member>
+        <member name="M:Managed.SourceClient.Exports.Sandbox_GameLoop_AddViewsToSceneSystem(System.IntPtr)">
+            <summary>
+            Sandbox.GameLoop.AddViewsToSceneSystem( ... )
+            </summary>
+        </member>
         <member name="M:Managed.SourceClient.Exports.Sandbox_InputBuilder_Process(System.IntPtr)">
             <summary>
             Sandbox.InputBuilder.Process( ... )
@@ -5573,6 +5638,26 @@
         <member name="M:Managed.SourceClient.Exports.Sandbox_Render_Finish">
             <summary>
             Sandbox.Render.Finish( ... )
+            </summary>
+        </member>
+        <member name="M:Managed.SourceClient.Exports.Sandbox_Render_RenderUI(System.IntPtr,System.IntPtr,System.IntPtr)">
+            <summary>
+            Sandbox.Render.RenderUI( ... )
+            </summary>
+        </member>
+        <member name="M:Managed.SourceClient.Exports.Sandbox_Render_PostProcessPass(System.Int32)">
+            <summary>
+            Sandbox.Render.PostProcessPass( ... )
+            </summary>
+        </member>
+        <member name="M:Managed.SourceClient.Exports.Sandbox_Render_WantsPostProcessPass(System.Int32)">
+            <summary>
+            Sandbox.Render.WantsPostProcessPass( ... )
+            </summary>
+        </member>
+        <member name="M:Managed.SourceClient.Exports.Sandbox_Render_SetupViewAttributes(System.Int32,System.IntPtr)">
+            <summary>
+            Sandbox.Render.SetupViewAttributes( ... )
             </summary>
         </member>
         <member name="M:Managed.SourceClient.Exports.Sandbox_StringTables_Init">
@@ -6110,6 +6195,11 @@
             Sandbox.GameLoop.OnPhysicsWorld( ... )
             </summary>
         </member>
+        <member name="M:Managed.SourceServer.Exports.Sandbox_GameLoop_AddViewsToSceneSystem(System.IntPtr)">
+            <summary>
+            Sandbox.GameLoop.AddViewsToSceneSystem( ... )
+            </summary>
+        </member>
         <member name="M:Managed.SourceServer.Exports.Sandbox_Networking_OnNetMessage(System.IntPtr,System.Int32,System.Int32)">
             <summary>
             Sandbox.Networking.OnNetMessage( ... )
@@ -6148,6 +6238,26 @@
         <member name="M:Managed.SourceServer.Exports.Sandbox_Render_Finish">
             <summary>
             Sandbox.Render.Finish( ... )
+            </summary>
+        </member>
+        <member name="M:Managed.SourceServer.Exports.Sandbox_Render_RenderUI(System.IntPtr,System.IntPtr,System.IntPtr)">
+            <summary>
+            Sandbox.Render.RenderUI( ... )
+            </summary>
+        </member>
+        <member name="M:Managed.SourceServer.Exports.Sandbox_Render_PostProcessPass(System.Int32)">
+            <summary>
+            Sandbox.Render.PostProcessPass( ... )
+            </summary>
+        </member>
+        <member name="M:Managed.SourceServer.Exports.Sandbox_Render_WantsPostProcessPass(System.Int32)">
+            <summary>
+            Sandbox.Render.WantsPostProcessPass( ... )
+            </summary>
+        </member>
+        <member name="M:Managed.SourceServer.Exports.Sandbox_Render_SetupViewAttributes(System.Int32,System.IntPtr)">
+            <summary>
+            Sandbox.Render.SetupViewAttributes( ... )
             </summary>
         </member>
         <member name="M:Managed.SourceServer.Exports.Sandbox_StringTables_Init">

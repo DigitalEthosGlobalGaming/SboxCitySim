@@ -136,7 +136,7 @@ namespace CitySim
 
 						spawnFromType = CityAmbianceVehicleSpawnType.Edge,
 						spawnTileType = GenericTile.TileTypeEnum.Road,
-						userSpawnTileIndex = (int)GenericTile.RoadTypeEnum.DeadEnd
+						userSpawnTileIndex = (int)RoadTileController.RoadTypeEnum.DeadEnd
 					} );
 				}
 				else
@@ -158,13 +158,14 @@ namespace CitySim
 				}
 			}
 
+			var hospitalTiles = roadMap.GetGenericTiles();
 			// Spawn Random Ambulances
-			var hospitalTiles = roadMap.GetGenericTiles().FindAll( ( tile ) => {
-				tile.BodyGroups.TryGetValue( "base", out int tileBaseIndex );
+			// var hospitalTiles = roadMap.GetGenericTiles().FindAll( ( tile ) => {
+			//tile.BodyGroups.TryGetValue( "base", out int tileBaseIndex );
 
-				return tile.TileType == GenericTile.TileTypeEnum.Business &&
-						tileBaseIndex == 2; 
-			} );
+			//return tile.TileType == GenericTile.TileTypeEnum.Business &&
+			//tileBaseIndex == 2; 
+			//} );
 			int ambulanceCount = 0;
 			foreach ( var hospitalTile in hospitalTiles )
 			{
@@ -220,8 +221,7 @@ namespace CitySim
 					{
 						List<GenericTile> tiles = roadMap.GetTilesAtEdgeOfMap<GenericTile>();
 						tiles = tiles.FindAll( ( tile ) => {
-							return tile.TileType == behaviour.spawnTileType &&
-							tile.RoadType == (GenericTile.RoadTypeEnum)behaviour.userSpawnTileIndex;
+							return tile.GetTileType() == behaviour.spawnTileType;
 						} );
 
 						possibleTiles.AddRange( tiles );
@@ -232,7 +232,7 @@ namespace CitySim
 					{
 						List<GenericTile> tiles = roadMap.GetGenericTiles();
 						tiles = tiles.FindAll( ( tile ) => {
-							return tile.TileType == behaviour.spawnTileType;
+							return tile.GetTileType() == behaviour.spawnTileType;
 						} );
 
 						possibleTiles.AddRange( tiles );
@@ -257,7 +257,7 @@ namespace CitySim
 			deliveryTiles = deliveryTiles.FindAll( ( tile ) => {
 				return tile.HasNeeds && 
 				tile.FoodSupply <= 0 && 
-				tile.TileType == behaviour.deliveryTileType && 
+				tile.GetTileType() == behaviour.deliveryTileType && 
 				tile.IsNextToRoad();
 			} );
 

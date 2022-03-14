@@ -142,7 +142,7 @@ namespace CitySim
 			{
 				foreach(var item in Map.Grid)
 				{
-					((GenericTile)item).CheckModel();
+					// ((GenericTile)item).CheckModel();
 				}
 			}
 			else

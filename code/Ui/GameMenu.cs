@@ -19,9 +19,10 @@ namespace CitySim.UI
 			SetTemplate( "Ui/GameMenu.html" );
 			StyleSheet.Load( "Ui/GameMenu.scss" );
 			AddClass( "game-menu" );
+			Opened = false;
 			if ( Pawn.GetClientPawn()?.HasReadWelcome != true)
 			{
-				OpenMenu();
+				//OpenMenu();
 			}
 			
 
@@ -53,6 +54,7 @@ namespace CitySim.UI
 
 			if ( Input.Pressed( InputButton.Walk ) )
 			{
+				return;
 				Opened = !Opened;
 
 				if ( Opened )

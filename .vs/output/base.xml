@@ -359,7 +359,7 @@
             Breaks the glass at its center.
             </summary>
         </member>
-        <member name="M:Sandbox.PlanarReflection.Update(Vector3)">
+        <member name="M:Sandbox.PlanarReflection.Update(Vector3,Vector3,System.Single)">
             <summary>
             Updates the reflection information before the render
             </summary>
@@ -467,6 +467,11 @@
             Could probably be moved to a method inside BBox.cs to check if Vector3 is in bbox
             </summary>
         </member>
+        <member name="F:Sandbox.WaterSceneObject.RippleCompute.RippleCascade.Radius">
+            <summary>
+            How far is the simulation radius of the splash from camera view
+            </summary>
+        </member>
         <member name="F:Sandbox.WaterSceneObject.RippleCompute.Radius">
             <summary>
             How far is the simulation radius of the splash from camera view
@@ -487,7 +492,7 @@
             Renders the splash texture on the compute shader on the GPU
             </summary>
         </member>
-        <member name="M:Sandbox.WaterSceneObject.MakeCube(Vector3,Vector3)">
+        <member name="M:Sandbox.WaterSceneObject.MakeCuboid(Vector3,Vector3)">
             <summary>
             Makes a vertex buffer cube for fog with the given bounds
             </summary>
@@ -1163,6 +1168,51 @@
             Disable motion (gravity, etc) on this entity
             </summary>
         </member>
+        <member name="M:Sandbox.GradientFogEntity.SetFogStartDistance(System.Single)">
+            <summary>
+            Set Fog Start Distance
+            </summary>
+        </member>
+        <member name="M:Sandbox.GradientFogEntity.SetFogEndDistance(System.Single)">
+            <summary>
+            Set Fog End Distance
+            </summary>
+        </member>
+        <member name="M:Sandbox.GradientFogEntity.SetFogStartHeight(System.Single)">
+            <summary>
+            Set Fog Start Height
+            </summary>
+        </member>
+        <member name="M:Sandbox.GradientFogEntity.SetFogEndHeight(System.Single)">
+            <summary>
+            Set Fog End Height
+            </summary>
+        </member>
+        <member name="M:Sandbox.GradientFogEntity.SetFogMaxOpacity(System.Single)">
+            <summary>
+            Set Fog Max Opacity
+            </summary>
+        </member>
+        <member name="M:Sandbox.GradientFogEntity.SetFogFalloffExponent(System.Single)">
+            <summary>
+            Set Fog Falloff Exponent
+            </summary>
+        </member>
+        <member name="M:Sandbox.GradientFogEntity.SetFogVerticalExponent(System.Single)">
+            <summary>
+            Set Fog Vertical Exponent
+            </summary>
+        </member>
+        <member name="M:Sandbox.GradientFogEntity.SetFogColor(Color)">
+            <summary>
+            Set Fog Color
+            </summary>
+        </member>
+        <member name="M:Sandbox.GradientFogEntity.SetFogStrength(System.Single)">
+            <summary>
+            Set Fog Strength
+            </summary>
+        </member>
         <member name="T:Sandbox.KeyframeEntity">
             <summary>
             An entity that is moved programatically. Like an elevator
@@ -1532,7 +1582,7 @@
         </member>
         <member name="T:Sandbox.PlatformEntity">
             <summary>
-            A simple platform that moves between two locations and can be controlled through map IO.
+            A simple platform that moves between two locations and can be controlled through Entity IO.
             </summary>
         </member>
         <member name="P:Sandbox.PlatformEntity.MoveDir">
@@ -2458,7 +2508,7 @@
         </member>
         <member name="M:Sandbox.Game.DefaultCleanupFilter(System.String,Sandbox.Entity)">
             <summary>
-            This is the default map cleanup filter, for use with <see cref="!:EntityManager.CleanUpMap">EntityManager.CleanUpMap</see>
+            This is the default map cleanup filter, for use with <see cref="M:Sandbox.Internal.MapAccessor.Reset(Sandbox.Internal.MapAccessor.CleanupEntityFilter)">Map.Reset</see>
             </summary>
         </member>
         <member name="M:Sandbox.Game.MoveToSpawnpoint(Sandbox.Entity)">

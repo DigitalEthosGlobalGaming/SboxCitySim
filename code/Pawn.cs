@@ -42,7 +42,8 @@ namespace CitySim
 		public RoadTile EndSpace { get; set; }
 		*/
 		public GenericTile LastSelectedTile { get; set; }
-		public List<GridSpace> OldPath { get; set; } = new List<GridSpace>();
+
+		public TileController SelectedController { get; set; }
 
 		public ModelEntity GhostTile { get; private set; }
 
@@ -130,7 +131,7 @@ namespace CitySim
 		/// </summary>
 		public override void Simulate( Client cl )
 		{
-			if ( DisabledControls )
+			if ( DisabledControls && false )
 			{
 				return;
 			}
@@ -202,25 +203,14 @@ namespace CitySim
 				// Input Actions 
 				if ( IsServer )
 				{
-					GenericTile test = GetRoadTileLookedAt();
-					Log.Info( test );
-
 					// Left Click or RT
 					if ( Input.Pressed( InputButton.Attack1 ) )
 					{
 						var tile = GetRoadTileLookedAt();
 						if ( tile != null )
-						{
-							if (  tile.CanSetType( SelectedTileType ) && CanPlaceTyle( tile ) )
-							{
-								PlaceOnTile( tile );
-								GameAnalytics.TriggerEvent(Client.PlayerId.ToString(), "tile_place", (int) tile.TileType);
-							}
-							else
-							{
-								PlaySoundClientSide( "ui.navigate.deny" );
-								GameAnalytics.TriggerEvent( Client.PlayerId.ToString(), "tile_place", -1 );
-							}
+						{		
+							PlaceOnTile( tile );
+							GameAnalytics.TriggerEvent( Client.PlayerId.ToString(), "tile_place", (int)tile.GetTileType()) ;
 						}
 					}
 					// Right Click or LT
@@ -301,20 +291,6 @@ namespace CitySim
 			}
 		}
 
-		public bool CanPlaceTyle( GenericTile tile )
-		{
-			if ( tile.HasRoad() )
-			{
-				return false;
-			}
-
-			if ( tile.TileType == GenericTile.TileTypeEnum.Base )
-			{
-				return true;
-			}
-			return false;
-		}
-
 		public void OnTileHoverOff( GenericTile tile )
 		{
 			if (tile != null && !tile.IsValid)
@@ -323,8 +299,11 @@ namespace CitySim
 				return;
 			}
 
+			tile.RenderColor = Color.White;
+
+			return;
+
 			DestroyGhost( tile );
-			tile.UpdateModel();
 			tile.DestroyWorldUI();
 			foreach (var nextTile in tile.GetNeighbours<GenericTile>())
 			{
@@ -337,17 +316,22 @@ namespace CitySim
 
 		public void OnTileHover( GenericTile tile )
 		{
-			tile.UpdateModel();
+
+			tile.RenderColor = Color.Green;
+
+			return;
+
+			
 			if ( IsClient )
 			{
-				if ( !CanPlaceTyle( tile ) )
-				{
-					return;
-				}
+				tile.RenderColor = Color.Green;
+
+				return; 
+
 
 				SpawnGhost( tile );
 
-				if ( tile.CanSetType( SelectedTileType ) )
+				if ( tile.CanSetType( null ) )
 				{
 					tile.RenderColor = Color.Green;
 					
@@ -357,11 +341,11 @@ namespace CitySim
 						{
 							int score = tile.GetTileScore( neighbourTile, SelectedTileType );
 
-							if ( neighbourTile.TileType != TileTypeEnum.Base )
+							if ( neighbourTile.GetTileType() != TileTypeEnum.Base )
 							{
 								neighbourTile.SpawnUI();
 							
-								neighbourTile.UpdateWorldUI( Enum.GetName( typeof( GenericTile.TileTypeEnum ), neighbourTile.TileType ), score );
+								neighbourTile.UpdateWorldUI( Enum.GetName( typeof( GenericTile.TileTypeEnum ), neighbourTile.GetTileType() ), score );
 							}
 						}
 					}
@@ -438,7 +422,40 @@ namespace CitySim
 
 		public void PlaceOnTile( GenericTile tile )
 		{
-			var score = tile.SetTileType( SelectedTileType, NextTileBodyGroups, TileMaterialIndex );
+			TileController controller = null;
+			switch ( SelectedTileType )
+			{
+				case TileTypeEnum.Base:
+					controller = new TileController();
+					break;
+				case TileTypeEnum.Park:
+					controller = new ParkTileController();
+					break;
+				case TileTypeEnum.Business:
+					controller = new BusinessTileController();
+					break;
+				case TileTypeEnum.House:
+					controller = new HouseTileController();
+					break;
+				case TileTypeEnum.Road:
+					controller = new RoadTileController();
+					break;
+				default:
+					break;
+			}
+
+			if ( controller.CanAddToTile(tile))
+			{
+				tile.AddController(controller);
+				PlaySoundClientSide( "physics.wood.impact" );
+			} else
+			{
+				PlaySoundClientSide( "ui.navigate.deny" );
+			}
+
+
+
+			return;
 			if ( MyGame.CurrentGameOptions.Mode != MyGame.GameModes.Sandbox )
 			{
 				SelectedTileType = GenericTile.TileTypeEnum.Base;
@@ -447,22 +464,12 @@ namespace CitySim
 			{
 				SelectNextTile( SelectedTileType );
 			}
+
 			var clientScore = Client.GetInt( "score", 0 );
-			clientScore = clientScore + score;
+			// clientScore = clientScore + score;
 			Client.SetInt( "score", clientScore );
 
 			// Place!
-			PlaySoundClientSide( "physics.wood.impact" );
-		}
-
-
-		/// <summary>
-		/// Called every frame on the client
-		/// </summary>
-		public override void FrameSimulate( Client cl )
-		{
-			base.FrameSimulate( cl );
-
 
 		}
 
@@ -481,7 +488,7 @@ namespace CitySim
 			{
 				tile.EnableDrawing = false;
 
-				if ( SelectedTileType != GenericTile.TileTypeEnum.Base && tile.CanSetType( SelectedTileType ) )
+				if ( SelectedTileType != GenericTile.TileTypeEnum.Base && tile.CanSetType( null ) )
 				{
 					if ( GhostTile == null )
 					{
@@ -506,8 +513,6 @@ namespace CitySim
 					}
 
 					GhostTile.Transform = tile.Transform;
-					GenericTile.UpdateModel( GhostTile, SelectedTileType, NextTileBodyGroups, TileMaterialIndex );
-					GenericTile.CheckModel( tile, GhostTile, SelectedTileType );
 					GhostTile.RenderColor = new Color( 0, 1, 0, 0.75f );
 				}
 				else

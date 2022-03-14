@@ -2,54 +2,20 @@
 using CitySim.Utils;
 using Degg.GridSystem;
 using Sandbox;
+using System.Collections.Generic;
+using static CitySim.TileController;
 
 namespace CitySim
 {
 	public partial class GenericTile : GridSpace, ITickable
 	{
+
+		public TileController Controller { get; set; }
 		public WorldTileStatUI WorldUI { get; private set; }
 		public TickableCollection ParentCollection { get; set; }
 
-		public enum RoadTypeEnum
-		{
-			StreetEmpty = 14,
-			Straight = 0,
-			Curve = 1,
-			ThreeWay = 2,
-			FourWay = 4,
-			DeadEnd = 11,
-			WaterEmpty = 15,
-		}
-
-		[Net]
-		public bool UpConnected { get; set; } = false;
-		[Net]
-		public bool DownConnected { get; set; } = false;
-		[Net]
-		public bool LeftConnected { get; set; } = false;
-		[Net]
-		public bool RightConnected { get; set; } = false;
-		[Net]
-		public GenericTile UpTile { get; set; }
-		[Net]
-		public GenericTile DownTile { get; set; }
-		[Net]
-		public GenericTile LeftTile { get; set; }
-		[Net]
-		public GenericTile RightTile { get; set; }
-
-		[Net]
-		public float TransitionPercentage { get; set; } = 1f;
-
-		public GenericTile[] Neighbours = { null, null, null, null };
-		[Net]
-		public int TotalConnected { get; set; }
-
-		[Net]
 		public Rotation TargetRotation { get; set; }
 		public Vector3 TargetPosition { get; set; }
-		[Net]
-		public RoadTypeEnum RoadType { get; set; }
 		/// <summary>
 		/// Called when the entity is first created 
 		/// </summary>
@@ -58,9 +24,10 @@ namespace CitySim
 			base.OnAddToMap();
 			Position = GetWorldPosition();
 			TargetPosition = Position;
-			RoadType = (RoadTypeEnum.StreetEmpty);
+
+			var c = new TileController();
+			this.AddController( c );
 			UpdateName();
-			UpdateModel();
 		}
 
 		[ClientRpc]
@@ -70,11 +37,12 @@ namespace CitySim
 			if ( WorldUI != null )
 				return;
 
-			if ( TileType != TileTypeEnum.Base && TileType != TileTypeEnum.Road )
+			if (GetTileType() != TileTypeEnum.Base)
 			{
 				WorldUI = MyGame.Ui.CreateWorldUi();
 			}
 		}
+
 		[ClientRpc]
 		public void UpdateWorldUI( string _name, int _points = 0 )
 		{
@@ -110,7 +78,7 @@ namespace CitySim
 
 		public bool HasRoad()
 		{
-			return TileType == TileTypeEnum.Road;
+			return this?.Controller is RoadTileController;
 		}
 
 
@@ -139,213 +107,29 @@ namespace CitySim
 		}
 
 
+
+
 		public void SetHasRoad(bool hasRoad)
 		{
-			SetTileType( TileTypeEnum.Road, null, 0 );
-
-			if ( hasRoad != HasRoad() )
-			{
-				var transitionAmount = 10f;
-				Position = GetWorldPosition() + new Vector3( Rand.Float( -transitionAmount, transitionAmount ), Rand.Float( -transitionAmount, transitionAmount ), Rand.Float( 100f, 150f ) );
-				SetTileType( TileTypeEnum.Road, null, 0 );
-				CheckModel();
-				GenericTile[] neighbours = GetNeighbours<GenericTile>();
-				foreach ( GenericTile neighbor in neighbours )
-				{
-					neighbor?.CheckModel();
-				}
-			}
-			UpdateName();
+			var c = new RoadTileController();
+			AddController( c );
 		}
 
-		public GenericTile GetRoadNeighbour()
+		public KeyValuePair<Direction, GenericTile>? GetRoadNeighbour()
 		{
 			GenericTile[] neighbours = GetNeighbours<GenericTile>();
-			foreach (GenericTile tile in neighbours)
+			for ( int i = 0; i < neighbours.Length; i++ )
 			{
-				if (tile?.HasRoad() ?? false)
+				var tile = neighbours[i];
+
+				if ( tile?.Controller is RoadTileController )
 				{
-					return tile;
+					return KeyValuePair.Create((Direction)i, tile);
 				}
 			}
 			return null;
-			
 		}
 
-		public void CheckModel()
-		{
-			GenericTile.CheckModel( this );
-			UpdateModel();
-		}
-		public static void CheckModel( GenericTile influencer, ModelEntity ghostViewModel = null, TileTypeEnum? ghostTileType = null)
-		{
-			if ( ghostViewModel == null )
-				ghostViewModel = influencer;
-
-			float rotation = 0;
-
-
-			GenericTile[] neighbours = influencer.GetNeighbours<GenericTile>();
-			influencer.UpTile = neighbours[0];
-			influencer.RightTile = neighbours[1];
-			influencer.DownTile = neighbours[2];
-			influencer.LeftTile = neighbours[3];
-			influencer.Neighbours = neighbours;
-			influencer.UpConnected = influencer.UpTile?.HasRoad() ?? false;
-			influencer.RightConnected = influencer.RightTile?.HasRoad() ?? false;
-			influencer.DownConnected = influencer.DownTile?.HasRoad() ?? false;
-			influencer.LeftConnected = influencer.LeftTile?.HasRoad() ?? false;
-			var up = influencer.UpConnected;
-			var right = influencer.RightConnected;
-			var down = influencer.DownConnected;
-			var left = influencer.LeftConnected;
-
-			if ( influencer.TileType == TileTypeEnum.Road || (ghostTileType != null && ghostTileType == TileTypeEnum.Road) )
-			{
-				// We are a road.
-
-				RoadTypeEnum newRoadType = influencer.RoadType;
-				int totalCount = 0;
-
-				if ( up )
-				{
-					totalCount++;
-				}
-				if ( down )
-				{
-					totalCount++;
-				}
-				if ( left )
-				{
-					totalCount++;
-				}
-				if ( right )
-				{
-					totalCount++;
-				}
-
-				if ( totalCount == 3 ) // THREE WAYS
-				{
-					newRoadType = RoadTypeEnum.ThreeWay;
-					if ( !up )
-					{
-						rotation = 180;
-					}
-					else if ( !right )
-					{
-						rotation = 270;
-					}
-					else if ( !down )
-					{
-						rotation = 0;
-					}
-					else if ( !left )
-					{
-						rotation = 90;
-					}
-				}
-				else if ( totalCount == 2 ) // STRAIGHT OR CURVES
-				{
-					if ( left && right )
-					{
-						newRoadType = RoadTypeEnum.Straight;
-						rotation = 90;
-					}
-					else if ( up && down )
-					{
-						newRoadType = RoadTypeEnum.Straight;
-					}
-					else
-					{
-						newRoadType = RoadTypeEnum.Curve;
-						if ( up )
-						{
-							if ( left )
-							{
-								rotation = 180;
-							}
-							else
-							{
-								rotation = 270;
-							}
-						}
-						if ( down )
-						{
-							if ( left )
-							{
-								rotation = 90;
-							}
-							else
-							{
-								rotation = 0;
-							}
-						}
-					}
-				}
-				else if ( totalCount == 1 ) // DEAD ENDS
-				{
-					if ( up )
-					{
-						rotation = 0;
-					}
-					else if ( right )
-					{
-						rotation = 90;
-					}
-					else if ( down )
-					{
-						rotation = 180;
-					}
-					else if ( left )
-					{
-						rotation = 270;
-					}
-					newRoadType = RoadTypeEnum.DeadEnd;
-				}
-				else
-				{
-					newRoadType = RoadTypeEnum.FourWay;
-				}
-
-				// Update relating data.
-				influencer.TotalConnected = totalCount;
-				influencer.RoadType = newRoadType;
-
-				// We want to override the base.
-				ghostViewModel.SetBodyGroup( "base", (int)newRoadType );
-			}
-			else
-			{
-				// We are a building.
-
-				if ( up )
-				{
-					rotation = 270;
-				}
-				else if ( down )
-				{
-					rotation = 90;
-				}
-				else if ( left )
-				{
-					rotation = 180;
-				}
-				else if ( right )
-				{
-					rotation = 0;
-				}
-			}
-
-			influencer.TargetRotation = Rotation.FromAxis( Vector3.Up, rotation );
-			influencer.TargetPosition = influencer.GetWorldPosition();
-			influencer.TransitionPercentage = 0f;
-
-			if ( ghostViewModel != null )
-			{
-				ghostViewModel.Position = influencer.GetWorldPosition();
-				ghostViewModel.Rotation = Rotation.FromAxis( Vector3.Up, rotation );
-			}
-		}
 
 
 		public override void Spawn()
@@ -397,14 +181,40 @@ namespace CitySim
 			var transitionAmount = 5f;
 			Rotation = Rotation.Slerp( Rotation, TargetRotation, transitionAmount * 2 * delta );
 			Position = Position.LerpTo( TargetPosition, transitionAmount * delta );
-			if ( TransitionPercentage < 1)
+		}
+
+		public void AddController(TileController t)
+		{
+			var controller = t;
+
+			var previous = Controller;
+			if ( Controller != controller && controller != Controller )
 			{
-				TransitionPercentage = TransitionPercentage + (10f * delta);
-			} 
-			else
-			{
-				TransitionPercentage = 1;
+				controller.RemoveFromTile( this );
+				controller.Parent = null;
 			}
+
+			Controller = controller;
+			Controller.Parent = this;
+			Controller.AddToTile( this );
+
+			var neighbours = GetNeighbours<GenericTile>();
+			for ( int i = 0; i < neighbours.Length; i++ )
+			{
+				var neighbour = neighbours[i];
+				if ( neighbour?.Controller != null )
+				{
+					neighbour.Controller.OnNeighbourTileControllerChange( this, (Direction)i, previous, controller );
+				}
+			}
+		}
+
+		public T CreateController<T>(TileController t) where T: TileController, new()
+		{
+			var controller = new T();
+			this.AddController( controller );
+
+			return controller;
 		}
 
 

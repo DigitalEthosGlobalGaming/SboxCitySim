@@ -102,7 +102,7 @@ namespace CitySim
 			foreach ( var s in Grid )
 			{
 				var tile = (GenericTile)s;
-				if ( tile.TileType == GenericTile.TileTypeEnum.Base )
+				if ( tile.GetTileType() == GenericTile.TileTypeEnum.Base )
 				{
 					amount = amount + 1;
 				}

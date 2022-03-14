@@ -71,7 +71,7 @@ namespace CitySim
 				var xPosition = Rand.Int( startX, xStart );
 				for ( int i = 0; i < XSize; i++ )
 				{
-					var space = (GenericTile)GetSpace( xPosition, i );
+					var space = (GenericTile)GetSpace( i, xPosition );
 					if ( space != null )
 					{
 						space.SetHasRoad( true );
@@ -84,7 +84,7 @@ namespace CitySim
 				var yPosition = Rand.Int( startY, yStart );
 				for ( int i = 0; i < YSize; i++ )
 				{
-					var space = (GenericTile)GetSpace( i, yPosition );
+					var space = (GenericTile)GetSpace( yPosition, i );
 					if ( space != null )
 					{
 						space.SetHasRoad( true );

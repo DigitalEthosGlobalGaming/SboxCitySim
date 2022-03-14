@@ -3,10 +3,8 @@ using static CitySim.GenericTile;
 
 namespace CitySim
 {
-	public partial class HouseTileController : TileController
+	public partial class HouseTileController : BuildingTileController
 	{
-
-
 		public override TileTypeEnum GetTileType()
 		{
 			return TileTypeEnum.House;
@@ -15,13 +13,8 @@ namespace CitySim
 		public override void AddToTile(GenericTile tile)
 		{
 			base.AddToTile(tile);
-			var roadNeighbour = tile.GetRoadNeighbour();
-			if ( roadNeighbour != null )
-			{
-				var direction = roadNeighbour?.Key;
-				var rotation = GetRotationFromDirection( direction.GetValueOrDefault() );
-				Parent.TargetRotation = rotation;
-			}
+			MakeBuildingFaceRoad();
+			SetBuildingModel( "models/buildings/house_01.vmdl" );
 		}
 
 		public override bool CanAddToTile(GenericTile tile)
@@ -31,10 +24,5 @@ namespace CitySim
 			return (roadNeighbour != null);
 		}
 
-
-		public override void UpdateModel()
-		{
-			Parent.SetModel( "models/buildings/house_01.vmdl" );
-		}
 	}
 }

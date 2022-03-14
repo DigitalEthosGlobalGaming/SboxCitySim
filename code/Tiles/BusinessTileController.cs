@@ -2,7 +2,7 @@
 
 namespace CitySim
 {
-	public partial class BusinessTileController : TileController
+	public partial class BusinessTileController : BuildingTileController
 	{
 
 		public override TileTypeEnum GetTileType()
@@ -12,19 +12,11 @@ namespace CitySim
 
 		public override void AddToTile(GenericTile tile)
 		{
-			base.AddToTile(tile);
-			var roadNeighbour = tile.GetRoadNeighbour();
-			if ( roadNeighbour != null )
-			{
-				var direction = roadNeighbour?.Key;
-				var rotation = GetRotationFromDirection( direction.GetValueOrDefault() );
-				this.Parent.TargetRotation = rotation;
-			}
-
-
-			// Todo make it rotation the correct place.
-			// this.Parent.TargetRotation = this.Parent.Position
+			base.AddToTile( tile );
+			MakeBuildingFaceRoad();
+			SetBuildingModel( "models/buildings/shop.vmdl" );
 		}
+
 
 		public override bool CanAddToTile(GenericTile tile)
 		{
@@ -33,10 +25,5 @@ namespace CitySim
 			return (roadNeighbour != null);
 		}
 
-
-		public override void UpdateModel()
-		{
-			Parent.SetModel( "models/buildings/shop.vmdl" );
-		}
 	}
 }

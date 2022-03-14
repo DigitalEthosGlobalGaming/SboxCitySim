@@ -188,10 +188,10 @@ namespace CitySim
 			var controller = t;
 
 			var previous = Controller;
-			if ( Controller != controller && controller != Controller )
+			if ( previous != controller && previous != null)
 			{
-				controller.RemoveFromTile( this );
-				controller.Parent = null;
+				previous.RemoveFromTile( this );
+				previous.Parent = null;
 			}
 
 			Controller = controller;

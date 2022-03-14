@@ -69,10 +69,10 @@ namespace CitySim
 
 
 			GenericTile[] neighbours = influencer.GetNeighbours<GenericTile>();
-			var up = neighbours[0]?.Controller is RoadTileController;
-			var right = neighbours[1]?.Controller is RoadTileController;
-			var down = neighbours[2]?.Controller is RoadTileController;
-			var left = neighbours[3]?.Controller is RoadTileController;
+			var up = neighbours[0] == null || neighbours[0]?.Controller is RoadTileController;
+			var right = neighbours[1] == null || neighbours[1]?.Controller is RoadTileController;
+			var down = neighbours[2] == null || neighbours[2]?.Controller is RoadTileController;
+			var left = neighbours[3] == null || neighbours[3]?.Controller is RoadTileController;
 
 
 			RoadTypeEnum newRoadType = RoadTypeEnum.StreetEmpty;
@@ -186,9 +186,7 @@ namespace CitySim
 
 			var model = GetModelForRoadType( newRoadType );
 
-			var parent = this.Parent;
-			parent.SetModel( model );
-			parent.SetupPhysicsFromModel( PhysicsMotionType.Static, false );
+			SetModel( model );
 
 
 		}

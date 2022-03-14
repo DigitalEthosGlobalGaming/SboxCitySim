@@ -52,21 +52,6 @@
 						]
 						hidden_in_tools = false
 					},
-					{
-						_class = "BodyGroup"
-						name = "floor"
-						children = 
-						[
-							{
-								_class = "BodyGroupChoice"
-								meshes = 
-								[
-									"base",
-								]
-							},
-						]
-						hidden_in_tools = false
-					},
 				]
 			},
 			{
@@ -187,23 +172,6 @@
 							[
 								"Cube_011",
 							]
-						}
-					},
-					{
-						_class = "RenderMeshFile"
-						name = "base"
-						filename = "raw/models/road/Street_Empty.fbx"
-						import_translation = [ 0.0, 0.0, 0.0 ]
-						import_rotation = [ 0.0, 0.0, 0.0 ]
-						import_scale = 1.0
-						align_origin_x_type = "None"
-						align_origin_y_type = "None"
-						align_origin_z_type = "None"
-						parent_bone = ""
-						import_filter = 
-						{
-							exclude_by_default = false
-							exception_list = [  ]
 						}
 					},
 					{

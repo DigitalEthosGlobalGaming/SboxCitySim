@@ -61,6 +61,8 @@ namespace CitySim
 
 		private const float CameraFollowSmoothing = 30.0f;
 
+		public TileController ClientController { get; set; }
+
 		private const float distanceSensitivity = 5.0f;
 		private float upDistance = 0.0f;
 		private float forwardDistance = 0.0f;
@@ -105,19 +107,20 @@ namespace CitySim
 
 		public void ResetPivotPoint()
 		{
-			Log.Info( "Reset Pivot" );
 			PivotPoint = MyGame.GameObject.Map.Position;
 		}
 
-		public GenericTile GetRoadTileLookedAt()
+		public GenericTile GetTileLookedAt()
 		{
 			var endPos = EyePosition + (EyeRotation.Forward * 4000);
 			var mytrace = Trace.Ray( EyePosition, endPos );
+
 			if (GhostTile != null)
 			{
 				mytrace.Ignore( GhostTile );
 			}
 			var tr = mytrace.Run();
+			DebugOverlay.TraceResult( tr );
 			if ( tr.Entity != null && tr.Entity is GenericTile )
 			{
 				GenericTile ent = (GenericTile)tr.Entity;
@@ -206,7 +209,7 @@ namespace CitySim
 					// Left Click or RT
 					if ( Input.Pressed( InputButton.Attack1 ) )
 					{
-						var tile = GetRoadTileLookedAt();
+						var tile = GetTileLookedAt();
 						if ( tile != null )
 						{		
 							PlaceOnTile( tile );
@@ -261,14 +264,12 @@ namespace CitySim
 				if ( IsClient )
 				{
 					// Always raycast to check if the user has moved their selection else-where.
-					GenericTile tile = GetRoadTileLookedAt();
+					GenericTile tile = GetTileLookedAt();
 
 					// Update when we have moved our Cursor onto another Tile.
 					// This is to medigate the amount of updates being done to a tile, unless it is necessary.
-					if ( 
-						LastSelectedTile != tile								|| 
-						(LastSelectedTile != null && LastSelectedTile.IsDirty)	|| 
-						LastSelectedTileType != SelectedTileType 
+					if (
+						LastHighlighted != tile
 					)
 					{
 						if ( LastHighlighted != null )
@@ -293,32 +294,13 @@ namespace CitySim
 
 		public void OnTileHoverOff( GenericTile tile )
 		{
-			if (tile != null && !tile.IsValid)
-			{
-				LastHighlighted = null;
-				return;
-			}
 
 			tile.RenderColor = Color.White;
-
-			return;
-
-			DestroyGhost( tile );
-			tile.DestroyWorldUI();
-			foreach (var nextTile in tile.GetNeighbours<GenericTile>())
-			{
-				if (nextTile != null)
-				{
-					nextTile.DestroyWorldUI();
-				}
-			}
 		}
 
 		public void OnTileHover( GenericTile tile )
-		{
-
+		{			
 			tile.RenderColor = Color.Green;
-
 			return;
 
 			
@@ -382,6 +364,12 @@ namespace CitySim
 			}
 		}
 
+		public void SetTileController()
+		{
+			TileController controller = TileController.GetTileControllerForType( SelectedTileType );
+			this.SelectedController = controller;
+		}
+
 		public void SelectNextTile( TileTypeEnum type, int? nextBodyIndex = null, int? nextMaterialIndex = null )
 		{
 			NextTileBodyGroups = new Dictionary<string, int>();
@@ -422,31 +410,11 @@ namespace CitySim
 
 		public void PlaceOnTile( GenericTile tile )
 		{
-			TileController controller = null;
-			switch ( SelectedTileType )
-			{
-				case TileTypeEnum.Base:
-					controller = new TileController();
-					break;
-				case TileTypeEnum.Park:
-					controller = new ParkTileController();
-					break;
-				case TileTypeEnum.Business:
-					controller = new BusinessTileController();
-					break;
-				case TileTypeEnum.House:
-					controller = new HouseTileController();
-					break;
-				case TileTypeEnum.Road:
-					controller = new RoadTileController();
-					break;
-				default:
-					break;
-			}
-
+			TileController controller = TileController.GetTileControllerForType( SelectedTileType );
+			
 			if ( controller.CanAddToTile(tile))
 			{
-				tile.AddController(controller);
+				tile.AddController(controller );
 				PlaySoundClientSide( "physics.wood.impact" );
 			} else
 			{

@@ -11,6 +11,8 @@ namespace CitySim
 	{
 
 		public TileController Controller { get; set; }
+		[Net]
+		public TileTypeEnum ControllerId { get; set; }
 		public WorldTileStatUI WorldUI { get; private set; }
 		public TickableCollection ParentCollection { get; set; }
 
@@ -46,8 +48,16 @@ namespace CitySim
 		[ClientRpc]
 		public void UpdateWorldUI( string _name, int _points = 0 )
 		{
+			
 			if ( WorldUI == null )
+			{
+				SpawnUI();
+			}
+
+			if ( WorldUI == null)
+			{
 				return;
+			}
 
 			WorldUI.Name = _name;
 			WorldUI.Points = _points;
@@ -108,13 +118,6 @@ namespace CitySim
 
 
 
-
-		public void SetHasRoad(bool hasRoad)
-		{
-			var c = new RoadTileController();
-			AddController( c );
-		}
-
 		public KeyValuePair<Direction, GenericTile>? GetRoadNeighbour()
 		{
 			GenericTile[] neighbours = GetNeighbours<GenericTile>();
@@ -122,15 +125,13 @@ namespace CitySim
 			{
 				var tile = neighbours[i];
 
-				if ( tile?.Controller is RoadTileController )
+				if ( tile?.ControllerId == TileTypeEnum.Road)
 				{
 					return KeyValuePair.Create((Direction)i, tile);
 				}
 			}
 			return null;
 		}
-
-
 
 		public override void Spawn()
 		{
@@ -148,6 +149,7 @@ namespace CitySim
 		protected override void OnDestroy()
 		{
 			base.OnDestroy();
+			Controller?.Destroy();
 			if ( ParentCollection != null )
 			{
 				ParentCollection.Remove( this );
@@ -198,6 +200,8 @@ namespace CitySim
 			Controller.Parent = this;
 			Controller.AddToTile( this );
 
+			ControllerId = Controller.GetTileType();
+
 			var neighbours = GetNeighbours<GenericTile>();
 			for ( int i = 0; i < neighbours.Length; i++ )
 			{
@@ -209,7 +213,7 @@ namespace CitySim
 			}
 		}
 
-		public T CreateController<T>(TileController t) where T: TileController, new()
+		public T CreateController<T>() where T: TileController, new()
 		{
 			var controller = new T();
 			this.AddController( controller );

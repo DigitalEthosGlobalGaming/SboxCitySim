@@ -74,7 +74,7 @@ namespace CitySim
 					var space = (GenericTile)GetSpace( i, xPosition );
 					if ( space != null )
 					{
-						space.SetHasRoad( true );
+						space.CreateController<RoadTileController>();
 					}
 				}
 			}
@@ -87,7 +87,7 @@ namespace CitySim
 					var space = (GenericTile)GetSpace( yPosition, i );
 					if ( space != null )
 					{
-						space.SetHasRoad( true );
+						space.CreateController<RoadTileController>();
 					}
 				}
 			}

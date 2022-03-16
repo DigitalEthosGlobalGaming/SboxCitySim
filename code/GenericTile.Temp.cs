@@ -1,6 +1,7 @@
 ﻿using CitySim.Utils;
 using Degg.GridSystem;
 using Sandbox;
+using System;
 using System.Collections.Generic;
 
 namespace CitySim
@@ -17,10 +18,8 @@ namespace CitySim
 		}
 
 		public TileTypeEnum GetTileType() {
-			return Controller?.GetTileType() ?? TileTypeEnum.Base;
+			return ControllerId;
 		}
-
-
 		public static bool IsCombination( GenericTile aTile, GenericTile bTile, TileTypeEnum a, GenericTile.TileTypeEnum b, TileTypeEnum? pretenderForA = null )
 		{
 			var aType = aTile?.GetTileType() ?? TileTypeEnum.Base;
@@ -37,6 +36,20 @@ namespace CitySim
 			}
 
 			return false;
+		}
+
+		public int GetTileScore()
+		{
+			var totalScore = 0;
+			foreach ( var neighbourTile in GetNeighbours<GenericTile>() )
+			{
+				if ( neighbourTile != null )
+				{
+					totalScore = totalScore + GetTileScore( neighbourTile, this.GetTileType() );
+				}
+			}
+
+			return totalScore;
 		}
 
 		public int GetTileScore( GenericTile otherTile, TileTypeEnum? pretender = null )

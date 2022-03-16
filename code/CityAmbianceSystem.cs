@@ -87,15 +87,18 @@ namespace CitySim
 			{
 				if ( grid is GenericTile tile )
 				{
-					if (tile.HasNeeds)
+					var need = tile.Controller?.Needs;
+					if (need == null)
 					{
-						tile.FoodSupply -= tile.FoodDemand;
+						continue;
+					}
 
-						if (tile.FoodSupply <= 0)
-						{
-							tile.FoodSupply = 0;
-							listInNeed.Add(tile);
-						}
+					need.Supply -= need.Demand;
+
+					if ( need.Supply <= 0)
+					{
+						need.Supply = 0;
+						listInNeed.Add(tile);
 					}
 				}
 			}
@@ -159,8 +162,8 @@ namespace CitySim
 			}
 
 			var hospitalTiles = roadMap.GetGenericTiles();
-			// Spawn Random Ambulances
-			// var hospitalTiles = roadMap.GetGenericTiles().FindAll( ( tile ) => {
+			//Spawn Random Ambulances
+			//var hospitalTiles = roadMap.GetGenericTiles().FindAll( ( tile ) => {
 			//tile.BodyGroups.TryGetValue( "base", out int tileBaseIndex );
 
 			//return tile.TileType == GenericTile.TileTypeEnum.Business &&
@@ -255,8 +258,14 @@ namespace CitySim
 			// After we know the spawn points we can start looking for delivery points, so we can calculate a point to goto.
 			List<GenericTile> deliveryTiles = roadMap.GetGenericTiles();
 			deliveryTiles = deliveryTiles.FindAll( ( tile ) => {
-				return tile.HasNeeds && 
-				tile.FoodSupply <= 0 && 
+				var needs = tile?.Controller?.Needs;
+
+				if ( needs == null)
+				{
+					return false;
+				}
+
+				return needs.Supply <= 0 && 
 				tile.GetTileType() == behaviour.deliveryTileType && 
 				tile.IsNextToRoad();
 			} );
@@ -268,6 +277,11 @@ namespace CitySim
 			}
 
 			GenericTile deliveryTile = Rand.FromList( deliveryTiles );
+			var need = deliveryTile?.Controller?.Needs;
+			if ( need  == null)
+			{
+				return;
+			}
 
 			// Finally we know a list of places we are allowed to spawn, we need to determine if we want to spawn there.
 			possibleTiles = possibleTiles.FindAll( ( tile ) =>
@@ -290,8 +304,8 @@ namespace CitySim
 
 			ent.OnFinishEvents.Enqueue( () =>
 			{
-				deliveryTile.FoodSupply += Rand.Int( behaviour.randFoodCapacityMin, behaviour.randFoodCapacityMax );
-				deliveryTile.FoodSupply = (int)MathX.Clamp( deliveryTile.FoodSupply, 0, deliveryTile.FoodNeedMax );
+				need.Supply += Rand.Int( behaviour.randFoodCapacityMin, behaviour.randFoodCapacityMax );
+				need.Supply = (int)MathX.Clamp( need.Supply, 0, need.MaxSupply );
 
 				deliveryTile.DeliveryEntities.Remove(ent);
 

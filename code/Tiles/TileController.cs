@@ -1,5 +1,7 @@
 ﻿
 using Sandbox;
+using System.Collections.Generic;
+using System.Text.Json;
 using static CitySim.GenericTile;
 
 namespace CitySim
@@ -7,6 +9,9 @@ namespace CitySim
 	public partial class TileController 
 	{
 		public ModelEntity GhostModel { get; set; }
+
+		public TileNeeds Needs { get; set; }
+
 		public enum Direction
 		{
 			Up = 0,
@@ -34,6 +39,16 @@ namespace CitySim
 			}
 		}
 
+		public virtual void SetVisible(bool visible)
+		{
+			
+		}
+
+		public virtual bool GetVisible()
+		{
+			return true;
+		}
+
 		public static float GetDegreesFromDirection( Direction dir )
 		{
 
@@ -57,6 +72,11 @@ namespace CitySim
 			return  Rotation.FromAxis( Vector3.Up, degrees );
 		}
 
+		public virtual void Destroy()
+		{
+
+		}
+
 		public virtual TileTypeEnum GetTileType()
 		{
 			return TileTypeEnum.Base;
@@ -65,6 +85,16 @@ namespace CitySim
 		public virtual bool CanMoveOn(MovementEntity ent)
 		{
 			return ent != null;
+		}
+
+		public void OnTileHover()
+		{
+			this.Parent.RenderColor = Color.Green;
+		}
+
+		public void OnTileHoverOff()
+		{
+			this.Parent.RenderColor = Color.White;
 		}
 
 		public virtual void OnNeighbourTileControllerChange( GenericTile tile, Direction dir, TileController prev, TileController next)
@@ -77,17 +107,20 @@ namespace CitySim
 
 		public virtual bool CanAddToTile( GenericTile tile )
 		{
-			if ( tile.Parent == null )
+			if ( tile.ControllerId == TileTypeEnum.Base || this.GetTileType() == TileTypeEnum.Base )
 			{
-				return false;
+				return true;
 			}
 
-			return true;
+			return false;
 		}
 
 		public virtual void AddToTile(GenericTile tile)
 		{
-			UpdateModel();
+			if ( tile.IsServer )
+			{
+				UpdateModel();
+			}
 		}
 
 		public virtual void RemoveFromTile( GenericTile tile )
@@ -99,8 +132,11 @@ namespace CitySim
 		{
 			if ( Parent != null )
 			{
-				Parent.SetModel( modeName );
-				Parent.SetupPhysicsFromModel( PhysicsMotionType.Static, false );
+				if ( Parent.IsServer )
+				{
+					Parent.SetModel( modeName );
+					Parent.SetupPhysicsFromModel( PhysicsMotionType.Static, false );
+				}
 			}
 		}
 
@@ -117,6 +153,26 @@ namespace CitySim
 		public virtual void DestroyGhostModel()
 		{
 
+		}
+
+		public virtual Dictionary<string, string> Serialize()
+		{
+			return new Dictionary<string, string>();
+		}
+
+		public virtual string SerializeToJson()
+		{
+			return JsonSerializer.Serialize( Serialize() );
+		}
+
+		public virtual void Deserialize( string rawData )
+		{
+			Deserialize( JsonSerializer.Deserialize<Dictionary<string, string>>( rawData ) ) ;
+		}
+
+		public virtual void Deserialize(Dictionary<string, string> data)
+		{
+			
 		}
 
 	}

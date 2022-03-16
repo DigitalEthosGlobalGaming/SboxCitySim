@@ -1,10 +1,28 @@
 ﻿
+using Sandbox;
+using System.Collections.Generic;
 using static CitySim.GenericTile;
 
 namespace CitySim
 {
 	public partial class HouseTileController : BuildingTileController
 	{
+
+		public int BodyGroupIndex { get; set; } = -1;
+		public int MaterialIndex { get; set; } = -1;
+
+		public HouseTileController()
+		{
+			Needs = new TileNeeds( 5, 20 )
+			{
+				NeedType = TileNeeds.TileNeedsType.Food,
+				MaxSupply = Rand.Int( 18, 22 ),
+				Demand = 2
+			};
+
+			BodyGroupIndex = Rand.Int( 0, 4 );
+			MaterialIndex = Rand.Int( 0, 6 );
+		}
 		public override TileTypeEnum GetTileType()
 		{
 			return TileTypeEnum.House;
@@ -15,14 +33,43 @@ namespace CitySim
 			base.AddToTile(tile);
 			MakeBuildingFaceRoad();
 			SetBuildingModel( "models/buildings/house_01.vmdl" );
+
+			Building?.SetBodyGroup( "base", BodyGroupIndex );
+			Building?.SetMaterialGroup( MaterialIndex );
+
+
 		}
 
-		public override bool CanAddToTile(GenericTile tile)
+		public override bool CanAddToTile( GenericTile tile )
 		{
+			if ( !base.CanAddToTile( tile ) )
+			{
+				return false;
+			}
+
 			var roadNeighbour = tile.GetRoadNeighbour();
 
 			return (roadNeighbour != null);
 		}
+
+		public override Dictionary<string, string> Serialize()
+		{
+			var data = base.Serialize();
+			data["BodyGroupIndex"] = BodyGroupIndex.ToString();
+			data["MaterialIndex"] = MaterialIndex.ToString();
+
+			return data;
+		}
+
+		public override void Deserialize( Dictionary<string, string> data )
+		{
+			base.Deserialize( data );
+
+			BodyGroupIndex = data.GetValueOrDefault( "BodyGroupIndex", "0" ).ToInt();
+			MaterialIndex = data.GetValueOrDefault( "MaterialIndex", "0" ).ToInt();
+
+		}
+
 
 	}
 }

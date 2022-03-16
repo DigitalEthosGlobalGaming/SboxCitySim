@@ -6,8 +6,13 @@ using static CitySim.GenericTile;
 
 namespace CitySim
 {
-	public partial class RoadTileController : TileController
+	public partial class RoadTileController : BuildingTileController
 	{
+
+		public RoadTileController()
+		{
+			HideParent = true;
+		}
 
 		public enum RoadTypeEnum
 		{
@@ -69,10 +74,10 @@ namespace CitySim
 
 
 			GenericTile[] neighbours = influencer.GetNeighbours<GenericTile>();
-			var up = neighbours[0] == null || neighbours[0]?.Controller is RoadTileController;
-			var right = neighbours[1] == null || neighbours[1]?.Controller is RoadTileController;
-			var down = neighbours[2] == null || neighbours[2]?.Controller is RoadTileController;
-			var left = neighbours[3] == null || neighbours[3]?.Controller is RoadTileController;
+			var up = neighbours[0] == null || neighbours[0]?.ControllerId == TileTypeEnum.Road;
+			var right = neighbours[1] == null || neighbours[1]?.ControllerId == TileTypeEnum.Road;
+			var down = neighbours[2] == null || neighbours[2]?.ControllerId == TileTypeEnum.Road;
+			var left = neighbours[3] == null || neighbours[3]?.ControllerId == TileTypeEnum.Road;
 
 
 			RoadTypeEnum newRoadType = RoadTypeEnum.StreetEmpty;
@@ -181,12 +186,15 @@ namespace CitySim
 			}
 
 
-			influencer.TargetRotation = Rotation.FromAxis( Vector3.Up, rotation );
-			influencer.TargetPosition = influencer.GetWorldPosition();
+			var TargetRotation = Rotation.FromAxis( Vector3.Up, rotation );
 
 			var model = GetModelForRoadType( newRoadType );
 
-			SetModel( model );
+			SetBuildingModel( model );
+			if (this.Building != null)
+			{
+				Building.Rotation = TargetRotation;
+			}
 
 
 		}

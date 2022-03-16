@@ -7,6 +7,10 @@ namespace CitySim
 	{
 		public ModelEntity Building { get; set; }
 
+		public bool MakesTileHaveNeeds { get; set; }
+
+		public bool HideParent { get; set; }
+
 		public override void AddToTile(GenericTile tile)
 		{
 			base.AddToTile(tile);
@@ -17,9 +21,37 @@ namespace CitySim
 			}
 
 			Building = new ModelEntity();
-			Building.Position = tile.Position;
+			if ( tile.IsServer )
+			{
+				Building.Position = tile.Position;
+				tile.EnableDrawing = !HideParent;
+			} else
+			{
+				Building.Position = tile.Position + (Vector3.Up * 10f);
+				Building.RenderColor = Building.RenderColor.WithAlpha( 0.75f );
+			}
 
 			UpdateModel();
+		}
+
+
+		public override bool GetVisible()
+		{
+			return Building?.EnableDrawing ?? false;
+		}
+
+		public override void SetVisible( bool visible )
+		{
+			if (Building != null)
+			{
+				Building.EnableDrawing = visible;
+			}
+		}
+
+
+		public override void Destroy()
+		{
+			Building?.Delete();
 		}
 
 		public void SetBuildingModel(string model)
@@ -50,6 +82,12 @@ namespace CitySim
 				Building.Delete();
 				Building = null;
 			}
+
+			if ( Parent.IsServer )
+			{
+				tile.EnableDrawing = true;
+			}
+
 			this.UpdateModel();
 		}
 	}

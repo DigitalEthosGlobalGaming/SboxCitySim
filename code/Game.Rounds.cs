@@ -6,11 +6,14 @@
 namespace CitySim
 {
 
-	public class GameOptions
+	public partial class GameOptions: BaseNetworkable
 	{
+		[Net]
 		public int XSize { get; set; }
+		[Net]
 		public int YSize { get; set; }
 
+		[Net]
 		public MyGame.GameModes Mode { get; set; }
 	}
 
@@ -19,6 +22,8 @@ namespace CitySim
 
 		[Net]
 		public float StartGameTimer { get; set; } = 0;
+
+		[Net]
 		public static GameOptions CurrentGameOptions { get; set; }
 
 		public static GameStateEnum GameState { get; set; }
@@ -57,8 +62,8 @@ namespace CitySim
 			var maxAmount = 15;
 			if (mode == GameModes.Chaos)
 			{
-				minAmount = (int) (minAmount * 2f);
-				maxAmount = (int)(maxAmount * 2f);
+				minAmount = (int) (minAmount * 1.8f);
+				maxAmount = (int)(maxAmount * 1.8f);
 			} else if ( mode == GameModes.Sandbox )
 			{
 				minAmount = (int)(minAmount * 2f);

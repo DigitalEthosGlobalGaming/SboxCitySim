@@ -26,28 +26,7 @@ namespace CitySim
 		public int FoodSupply { get; set; } = 0;
 		public int FoodDemand { get; set; }
 		public int FoodNeedMax { get; set; } = 20;
-		public int FoodNeedMin { get; set; } = 5;
 		public List<MovementEntity> DeliveryEntities { get; set; } = new List<MovementEntity>();
-		/*
-				float NeedsNextTick = 0;
-				float NeedsInterval = 5f;
-		*/
-		//public bool IsNeedsSetup { get; set; } = false;
-		public void SetupNeeds()
-		{
-			var tileType = GetTileType();
-			if ( tileType == TileTypeEnum.House )
-			{
-				HasNeeds = true;
-				FoodDemand = Rand.Int( 1, 3 );
-				FoodSupply = Rand.Int( FoodNeedMin, FoodNeedMax );
-			}
-			else if ( tileType == TileTypeEnum.Business )
-			{
-				HasNeeds = true;
-				FoodDemand = Rand.Int( 1, 3 );
-				FoodSupply = Rand.Int( FoodNeedMin, FoodNeedMax );
-			}
-		}
+		
 	}
 }

@@ -15,7 +15,7 @@
 						[
 							{
 								from = "grey.vmat"
-								to = "materials/simple/simple_green_01.vmat"
+								to = "materials/other/grass/grass_01.vmat"
 							},
 							{
 								from = "leaves.vmat"
@@ -56,23 +56,6 @@
 				_class = "RenderMeshList"
 				children = 
 				[
-					{
-						_class = "RenderMeshFile"
-						name = "floor"
-						filename = "raw/models/road/Street_Empty.fbx"
-						import_translation = [ 0.0, 0.0, 1.0 ]
-						import_rotation = [ 0.0, 0.0, 0.0 ]
-						import_scale = 1.0
-						align_origin_x_type = "None"
-						align_origin_y_type = "None"
-						align_origin_z_type = "None"
-						parent_bone = ""
-						import_filter = 
-						{
-							exclude_by_default = false
-							exception_list = [  ]
-						}
-					},
 					{
 						_class = "RenderMeshFile"
 						name = "bush1"
@@ -175,6 +158,21 @@
 							exception_list = [  ]
 						}
 					},
+					{
+						_class = "RenderPrimitiveBox"
+						name = "floor"
+						parent_bone = ""
+						material_name = "materials/other/grass/grass_01.vmat"
+						origin = [ 0.0, 0.0, 11.0 ]
+						angles = [ 0.0, 0.0, 0.0 ]
+						max_u = 1.0
+						max_v = 1.0
+						dimensions = [ 200.0, 200.0, 10.0 ]
+						segments_x = 1
+						segments_y = 1
+						segments_z = 1
+						invert = false
+					},
 				]
 			},
 			{
@@ -209,21 +207,6 @@
 							{
 								_class = "BodyGroupChoice"
 								meshes = [  ]
-							},
-						]
-						hidden_in_tools = false
-					},
-					{
-						_class = "BodyGroup"
-						name = "floor2"
-						children = 
-						[
-							{
-								_class = "BodyGroupChoice"
-								meshes = 
-								[
-									"floor",
-								]
 							},
 						]
 						hidden_in_tools = false

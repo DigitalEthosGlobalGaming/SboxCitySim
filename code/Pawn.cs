@@ -72,6 +72,7 @@ namespace CitySim
 		public override void Spawn()
 		{
 			base.Spawn();
+			UpDistance = 250f;
 
 			SetModel( "models/sbox_props/watermelon/watermelon.vmdl" );
 

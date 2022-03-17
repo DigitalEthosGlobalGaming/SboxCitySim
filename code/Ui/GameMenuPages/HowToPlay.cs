@@ -1,4 +1,7 @@
-﻿using Sandbox.UI;
+﻿using Degg.UI;
+using Degg.Util;
+using Sandbox;
+using Sandbox.UI;
 using System.Collections.Generic;
 
 namespace CitySim.UI
@@ -19,6 +22,9 @@ namespace CitySim.UI
 			SetTemplate( "Ui/GameMenuPages/HowToPlay.html" );
 			StyleSheet.Load( "Ui/GameMenuPages/HowToPlay.scss" );
 			AddClass( "how-to-play" );
+			var button = this.AddChild<ButtonGlyph>();
+
+			button.SetIcon( AdvInput.InputButton( InputButton.Flashlight, InputButton.Menu ), "Toggle Menu" );
 		}
 
 

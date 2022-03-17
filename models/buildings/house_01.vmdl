@@ -52,6 +52,16 @@
 						]
 						hidden_in_tools = false
 					},
+					{
+						_class = "BodyGroup"
+						name = "floor"
+						hidden_in_tools = false
+					},
+					{
+						_class = "BodyGroup"
+						name = "floor2"
+						hidden_in_tools = false
+					},
 				]
 			},
 			{
@@ -241,6 +251,21 @@
 							exclude_by_default = false
 							exception_list = [  ]
 						}
+					},
+					{
+						_class = "RenderPrimitiveBox"
+						name = "floor"
+						parent_bone = ""
+						material_name = "materials/other/grass/grass_01.vmat"
+						origin = [ 0.0, 0.0, 11.0 ]
+						angles = [ 0.0, 0.0, 0.0 ]
+						max_u = 1.0
+						max_v = 1.0
+						dimensions = [ 200.0, 200.0, 10.0 ]
+						segments_x = 1
+						segments_y = 1
+						segments_z = 1
+						invert = false
 					},
 				]
 			},

@@ -77,10 +77,6 @@
 								from = "texture.vmat"
 								to = "materials/buildings/house_1.vmat"
 							},
-							{
-								from = "grey.vmat"
-								to = "materials/generic/concrete_simple.vmat"
-							},
 						]
 						use_global_default = false
 						global_default_material = ""
@@ -256,7 +252,7 @@
 						_class = "RenderPrimitiveBox"
 						name = "floor"
 						parent_bone = ""
-						material_name = "materials/other/grass/grass_01.vmat"
+						material_name = "materials/simple/simple_green_01.vmat"
 						origin = [ 0.0, 0.0, 11.0 ]
 						angles = [ 0.0, 0.0, 0.0 ]
 						max_u = 1.0

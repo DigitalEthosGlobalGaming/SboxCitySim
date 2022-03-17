@@ -14,10 +14,6 @@
 						remaps = 
 						[
 							{
-								from = "grey.vmat"
-								to = "materials/other/grass/grass_01.vmat"
-							},
-							{
 								from = "leaves.vmat"
 								to = "materials/simple/simple_green_02.vmat"
 							},
@@ -28,6 +24,10 @@
 							{
 								from = "tree.vmat"
 								to = "models/rust_props/portacabins/portacabin_plywood.vmat"
+							},
+							{
+								from = "materials/other/grass/grass_01.vmat"
+								to = "materials/simple/simple_green_01.vmat"
 							},
 						]
 						use_global_default = false

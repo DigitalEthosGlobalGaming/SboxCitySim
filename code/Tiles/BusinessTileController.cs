@@ -14,7 +14,7 @@ namespace CitySim
 			Needs = new TileNeeds( 5, 20 )
 			{
 				NeedType = TileNeeds.TileNeedsType.Food,
-				MaxSupply = Rand.Int( 18, 22 ),
+				MaxSupply = Rand.Int( 18, 30 ),
 				Demand = 2
 			};
 

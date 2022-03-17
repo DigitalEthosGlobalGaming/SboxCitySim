@@ -15,7 +15,7 @@
 						[
 							{
 								from = "grey.vmat"
-								to = "materials/simple/simple_grey_25.vmat"
+								to = "materials/simple/simple_grey_50.vmat"
 							},
 						]
 						use_global_default = false

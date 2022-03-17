@@ -59,7 +59,7 @@ namespace CitySim
 		[Net, Predicted]
 		public Vector3 PivotPoint { get; set; }
 
-		private const float CameraFollowSmoothing = 30.0f;
+		private const float CameraFollowSmoothing = 100.0f;
 
 		public TileController ClientController { get; set; }
 
@@ -67,13 +67,8 @@ namespace CitySim
 
 		public float UserRotation { get; set; } = 0f;
 
-		private const float distanceSensitivity = 5.0f;
-		private float upDistance = 0.0f;
-		private float forwardDistance = 0.0f;
-
-		private const float rotationSensitivity = 0.15f;
-		private float yaw = 0.0f;
-
+		[Net, Predicted]
+		private float UpDistance { get; set; }
 		public override void Spawn()
 		{
 			base.Spawn();
@@ -149,33 +144,29 @@ namespace CitySim
 			// Handle the Controls
 			if (Input.UsingController)
 			{
-				yaw += Input.Rotation.x;
-				upDistance += Input.Rotation.y;
-				forwardDistance -= Input.Rotation.y;
+				UpDistance += Input.Rotation.y;
 			}
 			else
 			{
-				if ( AdvInput.Pressed( InputButton.Menu, InputButton.SlotNext) )
-				{
-					UserRotation = UserRotation + 45;
-				}
-				// E
-				else if ( AdvInput.Pressed( InputButton.Use, InputButton.SlotPrev) )
-				{
-					UserRotation = UserRotation - 45;
-				}
-
-				upDistance -= Input.MouseWheel;
-				forwardDistance += Input.MouseWheel;
+				UpDistance -= (Input.MouseWheel * 10);
 			}
 
-			upDistance = MathX.Clamp( upDistance, 10, 50 );
-			forwardDistance = MathX.Clamp( forwardDistance, 0, 10 );
+			if ( AdvInput.Pressed( InputButton.Menu, InputButton.SlotNext ) )
+			{
+				UserRotation = UserRotation + 45;
+			}
+			// E
+			else if ( AdvInput.Pressed( InputButton.Use, InputButton.SlotPrev ) )
+			{
+				UserRotation = UserRotation - 45;
+			}
+
+			UpDistance = MathX.Clamp( UpDistance, 50, 250 );
 
 			var rot = Rotation.FromAxis( Vector3.Up, UserRotation );
 			var direction = rot.Forward;
-			var position = PivotPoint + (direction * (200f - (upDistance * 3.5f)));
-			position = position + (Vector3.Up * (upDistance * 5));
+			var position = PivotPoint + (direction * (200f - (UpDistance * 0.35f)));
+			position = position + (Vector3.Up * (UpDistance * 1f));
 
 
 			// Handle the Camera looking at the pivot point

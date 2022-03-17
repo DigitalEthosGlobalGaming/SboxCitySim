@@ -2,6 +2,7 @@
 using Sandbox;
 using System;
 using Degg.UI.Elements;
+using Degg.Util;
 
 namespace CitySim.UI
 {
@@ -52,7 +53,7 @@ namespace CitySim.UI
 			}
 			LastTick = Time.Tick;
 
-			if ( Input.Pressed( InputButton.Walk ) )
+			if ( AdvInput.Pressed(InputButton.Flashlight, InputButton.Menu) )
 			{
 				Opened = !Opened;
 

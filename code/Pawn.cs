@@ -155,13 +155,12 @@ namespace CitySim
 			}
 			else
 			{
-				// Q
-				if (Input.Pressed( InputButton.Menu))
+				if ( AdvInput.Pressed( InputButton.Menu, InputButton.SlotNext) )
 				{
 					UserRotation = UserRotation + 45;
 				}
 				// E
-				else if (Input.Pressed(InputButton.Use))
+				else if ( AdvInput.Pressed( InputButton.Use, InputButton.SlotPrev) )
 				{
 					UserRotation = UserRotation - 45;
 				}

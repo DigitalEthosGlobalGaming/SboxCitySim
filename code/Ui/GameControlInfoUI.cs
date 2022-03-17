@@ -1,4 +1,5 @@
 ﻿using Sandbox;
+using Degg.Util;
 using Sandbox.UI;
 
 namespace CitySim.UI
@@ -25,10 +26,12 @@ namespace CitySim.UI
 			bgPanel = AddChild<Panel>( "gamecontrolinfoui_panel" );
 
 			// Create the Button Glyphs
-			CreateButtonGlyph( InputButton.Attack1, ref PlaceBtn, "Place");
-			CreateButtonGlyph( InputButton.Attack2, ref DiscardBtn, "Discard" );
-			CreateButtonGlyph( InputButton.Score, ref ScoreBtn, "Score" );
-			CreateButtonGlyph( InputButton.Walk, ref MenuBtn, "Menu" );
+			CreateButtonGlyph( AdvInput.InputButton( InputButton.Attack1, InputButton.Jump), ref PlaceBtn, "Place" );
+			CreateButtonGlyph( AdvInput.InputButton( InputButton.Attack2, InputButton.Jump ), ref DiscardBtn, "Discard" );
+			CreateButtonGlyph( AdvInput.InputButton( InputButton.Score, InputButton.Jump ), ref ScoreBtn, "Score" );
+			CreateButtonGlyph( AdvInput.InputButton( InputButton.Flashlight, InputButton.Menu ), ref MenuBtn, "Menu" );
+
+			
 		}
 
 		private void CreateButtonGlyph( InputButton _inputBtn, ref Image _element, string _label )

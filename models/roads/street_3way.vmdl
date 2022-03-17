@@ -19,7 +19,7 @@
 							},
 							{
 								from = "grey.vmat"
-								to = "materials/generic/concrete_simple.vmat"
+								to = "materials/simple/simple_grey_25.vmat"
 							},
 							{
 								from = "black.vmat"

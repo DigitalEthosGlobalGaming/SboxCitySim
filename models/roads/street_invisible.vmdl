@@ -14,28 +14,8 @@
 						remaps = 
 						[
 							{
-								from = "white.vmat"
-								to = "materials/default/white.vmat"
-							},
-							{
 								from = "grey.vmat"
-								to = "materials/generic/concrete_simple.vmat"
-							},
-							{
-								from = "black.vmat"
-								to = "materials/tarmac.vmat"
-							},
-							{
-								from = "stone.vmat"
-								to = "materials/6_stones.vmat"
-							},
-							{
-								from = "water.vmat"
-								to = "materials/shadertest/test_water.vmat"
-							},
-							{
-								from = ""
-								to = "materials/default/white.vmat"
+								to = "materials/simple/simple_grey_25.vmat"
 							},
 						]
 						use_global_default = false

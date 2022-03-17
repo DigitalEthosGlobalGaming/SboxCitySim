@@ -65,6 +65,8 @@ namespace CitySim
 
 		public ModelEntity Ghost { get; set; }
 
+		public float UserRotation { get; set; } = 0f;
+
 		private const float distanceSensitivity = 5.0f;
 		private float upDistance = 0.0f;
 		private float forwardDistance = 0.0f;
@@ -154,22 +156,28 @@ namespace CitySim
 			else
 			{
 				// Q
-				if (Input.Down(InputButton.Menu))
+				if (Input.Pressed( InputButton.Menu))
 				{
-					yaw += 1 * rotationSensitivity;
+					UserRotation = UserRotation + 45;
 				}
 				// E
-				else if (Input.Down(InputButton.Use))
+				else if (Input.Pressed(InputButton.Use))
 				{
-					yaw -= 1 * rotationSensitivity;
+					UserRotation = UserRotation - 45;
 				}
 
 				upDistance -= Input.MouseWheel;
 				forwardDistance += Input.MouseWheel;
 			}
 
-			upDistance = MathX.Clamp( upDistance, 0, 50 );
+			upDistance = MathX.Clamp( upDistance, 10, 50 );
 			forwardDistance = MathX.Clamp( forwardDistance, 0, 10 );
+
+			var rot = Rotation.FromAxis( Vector3.Up, UserRotation );
+			var direction = rot.Forward;
+			var position = PivotPoint + (direction * (200f - (upDistance * 3.5f)));
+			position = position + (Vector3.Up * (upDistance * 5));
+
 
 			// Handle the Camera looking at the pivot point
 			Rotation = Rotation.LookAt( (PivotPoint - Position).Normal );
@@ -197,10 +205,7 @@ namespace CitySim
 			}
 
 			// Offset the Camera from the Pivot Point.
-			Vector3 desiredPosition = PivotPoint																											// Place the Center
-				+ (Vector3.Up * (100.0f + (upDistance * distanceSensitivity)))																				// Raise the Position up from the pivot
-				+ ( ((Vector3.Right * MathF.Cos( yaw )) + (Vector3.Forward * MathF.Sin( yaw ))).Normal * (100.0f + (forwardDistance * 5.0f)) )				// Rotate and Push back the camera in the inverse rotation that the camera will be facing.
-				;
+			Vector3 desiredPosition = position;
 
 			// Animate towards the desired position.
 			Position = Vector3.Lerp( Position, desiredPosition, Time.Delta * CameraFollowSmoothing );

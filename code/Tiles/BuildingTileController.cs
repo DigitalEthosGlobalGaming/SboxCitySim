@@ -7,8 +7,7 @@ namespace CitySim
 	public partial class BuildingTileController: TileController, ITickable
 	{
 		public ModelEntity Building { get; set; }
-
-
+		public string BuildingModel { get; private set; }
 		public Vector3 TargetPosition { get; set; }
 
 		public bool MakesTileHaveNeeds { get; set; }
@@ -17,6 +16,11 @@ namespace CitySim
 
 		public bool HideParent { get; set; }
 		public TickableCollection ParentCollection { get; set; }
+
+		public BuildingTileController(string _buildModel)
+		{
+			BuildingModel = _buildModel;
+		}
 
 		public override void AddToTile(GenericTile tile)
 		{
@@ -28,13 +32,17 @@ namespace CitySim
 			}
 
 			Building = new ModelEntity();
+
+			SetBuildingModel( BuildingModel );
+
 			if ( tile.IsServer )
 			{
 				Building.Position = tile.Position + ( Vector3.Up * SpawnHeight );
 				TargetPosition = tile.Position;
 				tile.EnableDrawing = !HideParent;
 				TickableCollection.Global.Add( this );
-			} else
+			} 
+			else
 			{				
 				Building.Position = tile.Position + (Vector3.Up * SpawnHeight);
 				Building.RenderColor = Building.RenderColor.WithAlpha( 0.75f );

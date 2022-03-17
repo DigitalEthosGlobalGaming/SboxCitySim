@@ -45,16 +45,14 @@ namespace CitySim
 		*/
 		public GenericTile LastSelectedTile { get; set; }
 
-		public TileController SelectedController { get; set; }
+		public TileController GhostController { get; set; }
 
 		public ModelEntity GhostTile { get; private set; }
 
 		[Net]
 		public GenericTile.TileTypeEnum SelectedTileType { get; set; } = GenericTile.TileTypeEnum.Base;
 		public GenericTile.TileTypeEnum LastSelectedTileType { get; set; } = GenericTile.TileTypeEnum.Base;
-		[Net]
-		public IDictionary<string, int> NextTileBodyGroups { get; set; }
-
+		
 		[Net]
 		public int TileMaterialIndex { get; set; } = 0;
 
@@ -166,8 +164,8 @@ namespace CitySim
 					yaw -= 1 * rotationSensitivity;
 				}
 
-				upDistance += Input.MouseWheel;
-				forwardDistance -= Input.MouseWheel;
+				upDistance -= Input.MouseWheel;
+				forwardDistance += Input.MouseWheel;
 			}
 
 			upDistance = MathX.Clamp( upDistance, 0, 50 );
@@ -261,44 +259,11 @@ namespace CitySim
 		public void SetTileController()
 		{
 			TileController controller = TileController.GetTileControllerForType( SelectedTileType );
-			this.SelectedController = controller;
+			this.GhostController = controller;
 		}
 
 		public void SelectNextTile( TileTypeEnum type, int? nextBodyIndex = null, int? nextMaterialIndex = null )
 		{
-			NextTileBodyGroups = new Dictionary<string, int>();
-			switch ( type )
-			{
-				case TileTypeEnum.Business:
-					{
-						NextTileBodyGroups.Add( "base", Rand.Int( 0, 2 ) );
-						TileMaterialIndex = nextMaterialIndex % 6 ?? Rand.Int( 0, 6 );
-						break;
-					}
-				case TileTypeEnum.House:
-					{
-						NextTileBodyGroups.Add( "base", Rand.Int( 0, 4 ) );
-						TileMaterialIndex = nextMaterialIndex % 6 ?? Rand.Int( 0, 6 );
-						break;
-					}
-				case TileTypeEnum.Park:
-					{
-						NextTileBodyGroups.Add( "rock1", Rand.Int( 0, 2 ) );
-						NextTileBodyGroups.Add( "rock2", Rand.Int( 0, 2 ) );
-						NextTileBodyGroups.Add( "rock3", Rand.Int( 0, 2 ) );
-						NextTileBodyGroups.Add( "bush1", Rand.Int( 0, 2 ) );
-						NextTileBodyGroups.Add( "bush2", Rand.Int( 0, 2 ) );
-						NextTileBodyGroups.Add( "bush3", Rand.Int( 0, 2 ) );
-						TileMaterialIndex = nextMaterialIndex % 6 ?? Rand.Int( 0, 6 );
-					}
-					break;
-				default:
-					{
-						NextTileBodyGroups.Add( "base", 0 );
-						TileMaterialIndex = 0;
-						break;
-					}
-			}
 			SelectedTileType = type;
 			RefreshSelectedTileType();
 		}

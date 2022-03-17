@@ -91,12 +91,11 @@ namespace CitySim
 						SelectedTileType = TileTypeEnum.Base;
 					}
 
-#if DEBUG && !RELEASE
 					if ( MyGame.CurrentGameOptions.Mode == MyGame.GameModes.Sandbox )
 					{
 						GenericTile.TileTypeEnum? tileToSelect = null;
 
-						// Debug controls for developers to test tiles.
+						// Controls for Sandbox GameMode
 						if ( Input.Pressed( InputButton.Slot1 ) )
 						{
 							tileToSelect = GenericTile.TileTypeEnum.Business;
@@ -120,12 +119,8 @@ namespace CitySim
 							SelectNextTile( tileToSelect.Value );
 						}
 					}
-
-#endif
 				}
 			}
-
-	}
-
+		}
 	}
 }

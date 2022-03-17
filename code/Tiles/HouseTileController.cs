@@ -11,7 +11,7 @@ namespace CitySim
 		public int BodyGroupIndex { get; set; } = -1;
 		public int MaterialIndex { get; set; } = -1;
 
-		public HouseTileController() : base()
+		public HouseTileController() : base( "models/buildings/house_01.vmdl" )
 		{
 			Needs = new TileNeeds( 5, 20 )
 			{
@@ -31,8 +31,8 @@ namespace CitySim
 		public override void AddToTile(GenericTile tile)
 		{
 			base.AddToTile(tile);
+
 			MakeBuildingFaceRoad();
-			SetBuildingModel( "models/buildings/house_01.vmdl" );
 
 			Building?.SetBodyGroup( "base", BodyGroupIndex );
 			Building?.SetMaterialGroup( MaterialIndex );

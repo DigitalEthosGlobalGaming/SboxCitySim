@@ -1,4 +1,5 @@
 ﻿
+using Degg.Util;
 using Sandbox;
 using System.Collections.Generic;
 using System.Text.Json;
@@ -172,7 +173,14 @@ namespace CitySim
 
 		public virtual void Deserialize(Dictionary<string, string> data)
 		{
-			
+			/*
+			foreach ( var dataKey in data.Keys )
+			{
+				var dataValue = data[ dataKey ];
+				if ( dataValue != null )
+					AdvLog.Info( dataKey, dataValue );
+			}
+			*/
 		}
 
 	}

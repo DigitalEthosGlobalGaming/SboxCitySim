@@ -9,7 +9,7 @@ namespace CitySim
 	public partial class RoadTileController : BuildingTileController
 	{
 
-		public RoadTileController() : base()
+		public RoadTileController() : base( "models/roads/street_empty.vmdl" )
 		{
 			HideParent = true;
 		}
@@ -64,8 +64,6 @@ namespace CitySim
 		{
 			UpdateModel();
 		}
-
-
 
 		public override void UpdateModel()
 		{

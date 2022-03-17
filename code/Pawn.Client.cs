@@ -1,4 +1,5 @@
-﻿using Sandbox;
+﻿using Degg.Util;
+using Sandbox;
 using System;
 using System.Collections.Generic;
 using System.Text.Json;
@@ -12,12 +13,12 @@ namespace CitySim
 		[ClientRpc]
 		public void RefreshSelectedTileType( GenericTile tile = null )
 		{
-			var previousTileData = this?.SelectedController?.Serialize();
-			var previousControllerType = this?.SelectedController?.GetTileType();
+			var previousTileData = this?.GhostController?.Serialize();
+			var previousControllerType = this?.GhostController?.GetTileType();
 
-			this?.SelectedController?.SetVisible( false );
+			this?.GhostController?.SetVisible( false );
 
-			tile = tile ?? LastHighlighted;
+			tile ??= LastHighlighted;
 			if ( tile != null && SelectedTileType != TileTypeEnum.Base )
 			{
 				TileController controller = TileController.GetTileControllerForType( SelectedTileType );
@@ -31,20 +32,20 @@ namespace CitySim
 				{
 					controller.Parent = tile;
 					controller.AddToTile( tile );
-					SelectedController = controller;
-					SelectedController?.SetVisible( true );
+					GhostController = controller;
+					GhostController?.SetVisible( true );
 				}
 			}
 
 			DeleteWorldUi( tile );
 
-			if ( SelectedController?.GetVisible() ?? false )
+			if ( GhostController?.GetVisible() ?? false )
 			{
 				foreach ( var neighbourTile in tile.GetNeighbours<GenericTile>() )
 				{
 					if ( neighbourTile != null )
 					{
-						int score = tile.GetTileScore( neighbourTile, SelectedController.GetTileType() );
+						int score = tile.GetTileScore( neighbourTile, GhostController.GetTileType() );
 						if ( score != 0 )
 						{
 
@@ -61,7 +62,7 @@ namespace CitySim
 			SetGhost( tile );
 
 
-			if ( this?.SelectedController?.GetVisible() ?? false )
+			if ( this?.GhostController?.GetVisible() ?? false )
 			{
 				Ghost.RenderColor = Color.Green;
 			} else
@@ -109,7 +110,7 @@ namespace CitySim
 
 					if ( Input.Pressed( InputButton.Attack1 ) )
 					{
-						var tileData = SelectedController?.SerializeToJson();
+						var tileData = GhostController?.SerializeToJson();
 						PlaceTile( tileData );
 					}
 

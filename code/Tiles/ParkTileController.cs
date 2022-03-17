@@ -9,7 +9,7 @@ namespace CitySim
 	public partial class ParkTileController : BuildingTileController
 	{
 
-		public ParkTileController(): base()
+		public ParkTileController(): base( "models/buildings/forest.vmdl" )
 		{
 			HideParent = true;
 		}
@@ -23,7 +23,6 @@ namespace CitySim
 		{
 			base.AddToTile(tile);
 			
-			SetBuildingModel( "models/buildings/forest.vmdl" );
 			Building.SetBodyGroup( "rock1", Rand.Int( 0, 2 ) );
 			Building.SetBodyGroup( "rock2", Rand.Int( 0, 2 ) );
 			Building.SetBodyGroup( "rock3", Rand.Int( 0, 2 ) );

@@ -203,7 +203,10 @@ namespace CitySim
 				Position = position;
 				if ( IsLastSpot )
 				{
-					RenderColor = RenderColor.WithAlpha( MovementPercentage );
+					RenderColor = RenderColor.WithAlpha( 1 - MovementPercentage );
+				} else
+				{
+					RenderColor = RenderColor.WithAlpha( 1 );
 				}
 			}
 		}

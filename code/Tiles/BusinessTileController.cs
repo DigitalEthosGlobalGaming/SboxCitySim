@@ -9,7 +9,7 @@ namespace CitySim
 
 		public int BodyGroupIndex { get; set; } = -1;
 		public int MaterialIndex { get; set; } = -1;
-		public BusinessTileController()
+		public BusinessTileController() : base()
 		{
 			Needs = new TileNeeds( 5, 20 )
 			{

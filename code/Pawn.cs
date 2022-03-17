@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text.Json;
 using Degg.Analytics;
 using Degg.GridSystem;
+using Degg.Util;
 using Sandbox;
 using static CitySim.GenericTile;
 
@@ -57,12 +58,14 @@ namespace CitySim
 		[Net]
 		public int TileMaterialIndex { get; set; } = 0;
 
-		[Net]
+		[Net, Predicted]
 		public Vector3 PivotPoint { get; set; }
 
 		private const float CameraFollowSmoothing = 30.0f;
 
 		public TileController ClientController { get; set; }
+
+		public ModelEntity Ghost { get; set; }
 
 		private const float distanceSensitivity = 5.0f;
 		private float upDistance = 0.0f;
@@ -76,6 +79,7 @@ namespace CitySim
 			base.Spawn();
 
 			SetModel( "models/sbox_props/watermelon/watermelon.vmdl" );
+
 
 			EnableAllCollisions = false; // Disable all the collisions, so we can ensure we don't collide with the world.
 			EnableDrawing = true;
@@ -91,6 +95,8 @@ namespace CitySim
 			ResetPivotPoint();
 		}
 
+
+		
 		[Event.Hotload]
 		public void OnLoad()
 		{
@@ -201,89 +207,12 @@ namespace CitySim
 			// Animate towards the desired position.
 			Position = Vector3.Lerp( Position, desiredPosition, Time.Delta * CameraFollowSmoothing );
 
-			// Gameplay Controls
-			if ( MyGame.GameState == MyGame.GameStateEnum.Playing )
+			if (IsClient)
 			{
-				// Input Actions 
-				if ( IsServer )
-				{
-					// Right Click or LT
-					if ( Input.Pressed( InputButton.Attack2 ) )
-					{
-
-						if ( SelectedTileType != TileTypeEnum.Base )
-						{
-							PlaySoundClientSide( "ui.navigate.back" );
-							GameAnalytics.TriggerEvent( Client.PlayerId.ToString(), "tile_place", -2 );
-						}
-
-						SelectedTileType = TileTypeEnum.Base;
-					}
-
-#if DEBUG && !RELEASE
-					if ( MyGame.CurrentGameOptions.Mode == MyGame.GameModes.Sandbox )
-					{
-						GenericTile.TileTypeEnum? tileToSelect = null;
-
-						// Debug controls for developers to test tiles.
-						if ( Input.Pressed( InputButton.Slot1 ) )
-						{
-							tileToSelect = GenericTile.TileTypeEnum.Business;
-						}
-						if ( Input.Pressed( InputButton.Slot2 ) )
-						{
-							tileToSelect = GenericTile.TileTypeEnum.Park;
-						}
-						if ( Input.Pressed( InputButton.Slot3 ) )
-						{
-							tileToSelect = GenericTile.TileTypeEnum.House;
-						}
-						if ( Input.Pressed( InputButton.Slot4 ) )
-						{
-							tileToSelect = GenericTile.TileTypeEnum.Road;
-						}
-
-						if (tileToSelect != null)
-						{
-							PlaySoundClientSide( "ui.button.press" );
-							SelectNextTile( tileToSelect.Value );
-						}
-					}
-				}
-#endif
-
-				if ( IsClient )
-				{
-					// Always raycast to check if the user has moved their selection else-where.
-					GenericTile tile = GetTileLookedAt();
-
-					if ( Input.Pressed( InputButton.Attack1 ) )
-					{
-						var tileData = SelectedController?.SerializeToJson();
-						PlaceTile( tileData );
-					}
-
-						// Update when we have moved our Cursor onto another Tile.
-						// This is to medigate the amount of updates being done to a tile, unless it is necessary.
-					if (					LastHighlighted != tile					)
-					{
-						if ( LastHighlighted != null )
-						{
-							OnTileHoverOff( LastHighlighted );
-							LastHighlighted = null;
-						}
-
-						if ( tile != null )
-						{							
-							OnTileHover( tile );
-							LastHighlighted = tile;
-						}
-
-						LastSelectedTile = tile;
-						LastSelectedTileType = SelectedTileType;
-					}
-				}
-
+				ClientSimulate();
+			} else
+			{
+				ServerSimulate( cl );
 			}
 		}
 
@@ -303,57 +232,12 @@ namespace CitySim
 			}
 		}
 		
-		[ClientRpc]
-		public void RefreshSelectedTileType(GenericTile tile = null)
-		{
-			var previousTileData = this?.SelectedController?.Serialize();
-			var previousControllerType = this?.SelectedController?.GetTileType();
-
-			this?.SelectedController?.SetVisible(false);
-
-			tile = tile ?? LastHighlighted;
-			if ( tile != null && SelectedTileType != TileTypeEnum.Base)
-			{
-				TileController controller = TileController.GetTileControllerForType( SelectedTileType );
-
-				if (controller.GetTileType() == previousControllerType ) {
-					controller.Deserialize( previousTileData );
-				}
-
-				if ( controller != null && controller.CanAddToTile( tile ) )
-				{
-					controller.Parent = tile;
-					controller.AddToTile( tile );
-					SelectedController = controller;
-					SelectedController?.SetVisible( true );
-				}
-			}
-
-			DeleteWorldUi( tile );
-
-			if ( SelectedController?.GetVisible() ?? false )
-			{
-				foreach ( var neighbourTile in tile.GetNeighbours<GenericTile>() )
-				{
-					if ( neighbourTile != null )
-					{
-						int score = tile.GetTileScore( neighbourTile, SelectedController.GetTileType() );
-						if ( score != 0 )
-						{
-
-							if ( neighbourTile.GetTileType() != TileTypeEnum.Base )
-							{
-								neighbourTile.SpawnUI();
-								neighbourTile.UpdateWorldUI( Enum.GetName( typeof( GenericTile.TileTypeEnum ), neighbourTile.GetTileType() ), score );
-							}
-						}
-					}
-				}
-			}
-		}
+		
 
 		public void OnTileHover( GenericTile tile )
 		{
+
+			SetGhost( tile );
 			if (IsClient) { 
 				RefreshSelectedTileType(tile);				
 			}

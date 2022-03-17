@@ -1,6 +1,9 @@
-﻿using Sandbox;
+﻿using Degg.Analytics;
+using Sandbox;
+using System;
 using System.Collections.Generic;
 using System.Text.Json;
+using static CitySim.GenericTile;
 
 namespace CitySim
 {
@@ -62,6 +65,67 @@ namespace CitySim
 			Client.SetInt( "score", clientScore );
 			RefreshSelectedTileType();
 		}
+
+		public void ServerSimulate( Client cl )
+		{
+			if ( DisabledControls && false )
+			{
+				return;
+			}
+			// Gameplay Controls
+			if ( MyGame.GameState == MyGame.GameStateEnum.Playing )
+			{
+				// Input Actions 
+				if ( IsServer )
+				{
+					// Right Click or LT
+					if ( Input.Pressed( InputButton.Attack2 ) )
+					{
+
+						if ( SelectedTileType != TileTypeEnum.Base )
+						{
+							PlaySoundClientSide( "ui.navigate.back" );
+							GameAnalytics.TriggerEvent( Client.PlayerId.ToString(), "tile_place", -2 );
+						}
+
+						SelectedTileType = TileTypeEnum.Base;
+					}
+
+#if DEBUG && !RELEASE
+					if ( MyGame.CurrentGameOptions.Mode == MyGame.GameModes.Sandbox )
+					{
+						GenericTile.TileTypeEnum? tileToSelect = null;
+
+						// Debug controls for developers to test tiles.
+						if ( Input.Pressed( InputButton.Slot1 ) )
+						{
+							tileToSelect = GenericTile.TileTypeEnum.Business;
+						}
+						if ( Input.Pressed( InputButton.Slot2 ) )
+						{
+							tileToSelect = GenericTile.TileTypeEnum.Park;
+						}
+						if ( Input.Pressed( InputButton.Slot3 ) )
+						{
+							tileToSelect = GenericTile.TileTypeEnum.House;
+						}
+						if ( Input.Pressed( InputButton.Slot4 ) )
+						{
+							tileToSelect = GenericTile.TileTypeEnum.Road;
+						}
+
+						if ( tileToSelect != null )
+						{
+							PlaySoundClientSide( "ui.button.press" );
+							SelectNextTile( tileToSelect.Value );
+						}
+					}
+
+#endif
+				}
+			}
+
+	}
 
 	}
 }

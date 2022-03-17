@@ -263,7 +263,7 @@ namespace Degg.GridSystem
 		public virtual void ServerTick()
 		{
 			var startTime = Time.Now;
-			var amountToCreateAtOnce = 2;
+			var amountToCreateAtOnce = 10;
 
 			if ( IsSetup == false )
 			{

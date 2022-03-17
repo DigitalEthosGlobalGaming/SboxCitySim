@@ -9,7 +9,7 @@ namespace CitySim
 	public partial class ParkTileController : BuildingTileController
 	{
 
-		public ParkTileController()
+		public ParkTileController(): base()
 		{
 			HideParent = true;
 		}

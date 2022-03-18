@@ -13,7 +13,7 @@ namespace CitySim.UI
 		public Main()
 		{
 			SetTemplate( "Ui/Main.html" );
-			StyleSheet.Load( "Ui/main.scss" );
+			StyleSheet.Load( "/Ui/Main.scss" );
 			gameControlInfoUI = AddChild<GameControlInfoUI>( "gamecontrolinfoui_root" );
 		}
 

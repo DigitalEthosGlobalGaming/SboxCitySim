@@ -217,11 +217,14 @@ namespace CitySim
 
 		public void DeleteWorldUi( GenericTile tile )
 		{
-			foreach ( var nextTile in tile.GetNeighbours<GenericTile>() )
+			if ( tile != null )
 			{
-				if ( nextTile != null )
+				foreach ( var nextTile in tile.GetNeighbours<GenericTile>() )
 				{
-					nextTile.DestroyWorldUI();
+					if ( nextTile != null )
+					{
+						nextTile.DestroyWorldUI();
+					}
 				}
 			}
 		}

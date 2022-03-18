@@ -6,6 +6,8 @@ namespace CitySim.UI
 {
 	public class GameControlInfoUI : Panel
 	{
+
+		public bool IsUsingController { get; set; }
 		private Panel bgPanel;
 
 		private Image PlaceBtn;
@@ -26,12 +28,26 @@ namespace CitySim.UI
 			bgPanel = AddChild<Panel>( "gamecontrolinfoui_panel" );
 
 			// Create the Button Glyphs
-			CreateButtonGlyph( AdvInput.InputButton( InputButton.Attack1, InputButton.Jump), ref PlaceBtn, "Place" );
-			CreateButtonGlyph( AdvInput.InputButton( InputButton.Attack2, InputButton.Jump ), ref DiscardBtn, "Discard" );
-			CreateButtonGlyph( AdvInput.InputButton( InputButton.Score, InputButton.Jump ), ref ScoreBtn, "Score" );
-			CreateButtonGlyph( AdvInput.InputButton( InputButton.Flashlight, InputButton.Menu ), ref MenuBtn, "Menu" );
+			CreateButtonGlyphs();
+		}
 
-			
+		public void CreateButtonGlyphs()
+		{
+			bgPanel.DeleteChildren();
+
+			CreateButtonGlyph( AdvInput.InputButton( InputButton.Attack1, InputButton.Attack1 ), ref PlaceBtn, "Place" );
+			CreateButtonGlyph( AdvInput.InputButton( InputButton.Attack2, InputButton.Attack2 ), ref DiscardBtn, "Discard" );
+			CreateButtonGlyph( AdvInput.InputButton( InputButton.Score, InputButton.Score ), ref ScoreBtn, "Score" );
+			CreateButtonGlyph( AdvInput.InputButton( InputButton.Flashlight, InputButton.Menu ), ref MenuBtn, "Menu" );
+		}
+
+		public override void Tick()
+		{
+			if ( IsUsingController  != Input.UsingController)
+			{
+				IsUsingController = Input.UsingController;
+				CreateButtonGlyphs();
+			}
 		}
 
 		private void CreateButtonGlyph( InputButton _inputBtn, ref Image _element, string _label )

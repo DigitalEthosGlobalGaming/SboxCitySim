@@ -1,4 +1,5 @@
-﻿using Sandbox;
+﻿using Degg.Util;
+using Sandbox;
 using Sandbox.UI;
 
 
@@ -16,9 +17,12 @@ namespace CitySim.UI
 		public GameUi()
 		{
 			OnGameStateChange();
+
+			var children = RootPanel.Children;
 			RootPanel.AddChild<ChatBox>();
 			RootPanel.AddChild<CustomScoreboard>();
 			RootPanel.AddChild<GameMenu>();
+			RootPanel.StyleSheet.Load( "/Degg/Ui/Styles/base.scss" );
 		}
 
 		public WorldTileStatUI CreateWorldUi()

@@ -1,39 +1,46 @@
-﻿using Sandbox.UI;
+﻿using Degg.UI;
+using Degg.UI.Elements;
+using Degg.UI.Forms;
+using Degg.UI.Forms.Elements;
+using Degg.Util;
 using Sandbox;
+using Sandbox.UI;
 
 namespace CitySim.UI
 {
 	public partial class StartScreen: Panel
 	{
 
-		public Panel Base { get; set; }
-
-		public Button StartNormalButton { get; set; }
-		public Button StartChaosButton { get; set; }
-		public Button StartSandboxButton { get; set; }
+		public Degg.UI.Forms.Form Form { get; set; }
 
 		public StartScreen()
 		{
-			SetTemplate( "Ui/StartScreen.html" );
-			StyleSheet.Load( "Ui/StartScreen.scss" );
-			StyleSheet.Load( "Ui/Styles/button.scss" );
-			AddClass("start-screen");
-			StartNormalButton.Text =  "Play" ;
-			StartNormalButton.AddClass( "button" );
-			StartNormalButton.AddEventListener( "onclick", () => { VoteToStart(MyGame.GameModes.Normal); } );
+			var start = AddChild<SplashScreen>();
+			var form = start.AddChild<Degg.UI.Forms.Form>();
 
-			StartChaosButton.Text = "Play Chaos Mode";
-			StartChaosButton.AddClass( "button" );
-			StartChaosButton.AddEventListener( "onclick", () => { VoteToStart( MyGame.GameModes.Chaos); } );
+			var header = form.AddChild<Header>();
+			header.SetText( "City Sim" );
 
-			StartSandboxButton.Text = "Play Sandbox Mode";
-			StartSandboxButton.AddClass( "button" );
-			StartSandboxButton.AddEventListener( "onclick", () => { VoteToStart( MyGame.GameModes.Sandbox ); } );
+			form.AddChild<Spacer>();
+
+			var btn = form.AddChild<FEButton>();
+			btn.Label.Text = "Normal";
+			btn.AddEventListener( "onpress", () => { VoteToStart( MyGame.GameModes.Normal ); } );
+
+			btn = form.AddChild<FEButton>();
+			btn.Label.Text = "Chaos";
+			btn.AddEventListener( "onpress", () => { VoteToStart( MyGame.GameModes.Chaos ); } );
+
+			btn = form.AddChild<FEButton>();
+			btn.Label.Text = "Sandbox";
+			btn.AddEventListener( "onpress", () => { VoteToStart( MyGame.GameModes.Sandbox ); } );
+
+			var button = form.AddChild<ButtonGlyph>();
+			button.SetIcon( AdvInput.InputButton( InputButton.Flashlight, InputButton.Menu ), "Show Help" );
 		}
 
 		public override void Tick()
 		{
-
 			SetClass( "open", Input.Down( InputButton.Score ) );
 		}
 

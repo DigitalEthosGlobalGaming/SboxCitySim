@@ -1,0 +1,12 @@
+﻿@import "../Styles/variables.scss";
+
+.splash-screen {
+    background-color: $c-primary-dark;
+    position: absolute;
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-content: center;
+    pointer-events: all;
+}

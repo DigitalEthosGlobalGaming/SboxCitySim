@@ -22,9 +22,6 @@ namespace CitySim.UI
 			SetTemplate( "Ui/GameMenuPages/HowToPlay.html" );
 			StyleSheet.Load( "Ui/GameMenuPages/HowToPlay.scss" );
 			AddClass( "how-to-play" );
-			var button = this.AddChild<ButtonGlyph>();
-
-			button.SetIcon( AdvInput.InputButton( InputButton.Flashlight, InputButton.Menu ), "Toggle Menu" );
 		}
 
 

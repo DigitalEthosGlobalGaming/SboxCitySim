@@ -8,10 +8,11 @@
     padding-right: $size-md;
     padding-top: $size-sm;
     padding-bottom: $size-sm;
+    font-family: $font-base;
 
-    &:hover {
+    &:Hover, &.focus {
         background-color: $c-secondary;
-        color: rgba(0,0,0,0.90);
+        color: rgba(0,0,0,0.80);
     }
 
     &.active {

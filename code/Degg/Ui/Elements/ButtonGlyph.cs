@@ -10,7 +10,7 @@ namespace Degg.UI
 
 		// Configuration for the Input Glyphs.
 		private const InputGlyphSize inputGlyphSize = InputGlyphSize.Small;
-		private GlyphStyle glyphStyle = GlyphStyle.Dark;
+		private GlyphStyle glyphStyle = GlyphStyle.Knockout;
 
 		public ButtonGlyph()
 		{

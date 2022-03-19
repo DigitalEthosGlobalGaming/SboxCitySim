@@ -62,12 +62,16 @@ namespace CitySim
 			SetGhost( tile );
 
 
-			if ( this?.GhostController?.GetVisible() ?? false )
+			if ( Ghost != null )
 			{
-				Ghost.RenderColor = Color.Green;
-			} else
-			{
-				Ghost.RenderColor = Color.Red;
+				if ( this?.GhostController?.GetVisible() ?? false )
+				{
+					Ghost.RenderColor = Color.Green;
+				}
+				else
+				{
+					Ghost.RenderColor = Color.Red;
+				}
 			}
 		}
 

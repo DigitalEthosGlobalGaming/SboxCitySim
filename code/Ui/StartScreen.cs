@@ -18,24 +18,29 @@ namespace CitySim.UI
 			var start = AddChild<SplashScreen>();
 			var form = start.AddChild<Degg.UI.Forms.Form>();
 
-			var header = form.AddChild<Header>();
-			header.SetText( "City Sim" );
+			form.AddChild<Center>().AddChild<Header>().SetText( "City Sim" );
 
-			form.AddChild<Spacer>();
+			form.AddChild<Center>().AddChild<Header>().SetText( "Select Mode", 4 );
 
 			var btn = form.AddChild<FEButton>();
 			btn.Label.Text = "Normal";
+			btn.SetCenter( true );
 			btn.AddEventListener( "onpress", () => { VoteToStart( MyGame.GameModes.Normal ); } );
 
 			btn = form.AddChild<FEButton>();
 			btn.Label.Text = "Chaos";
+			btn.SetCenter( true );
 			btn.AddEventListener( "onpress", () => { VoteToStart( MyGame.GameModes.Chaos ); } );
 
 			btn = form.AddChild<FEButton>();
 			btn.Label.Text = "Sandbox";
+			btn.SetCenter( true );
 			btn.AddEventListener( "onpress", () => { VoteToStart( MyGame.GameModes.Sandbox ); } );
 
-			var button = form.AddChild<ButtonGlyph>();
+			form.AddChild<Spacer>();
+			form.AddChild<Spacer>();
+
+			var button = form.AddChild<Center>().AddChild<ButtonGlyph>();
 			button.SetIcon( AdvInput.InputButton( InputButton.Flashlight, InputButton.Menu ), "Show Help" );
 		}
 

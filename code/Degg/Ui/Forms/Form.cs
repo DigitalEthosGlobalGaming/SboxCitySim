@@ -43,8 +43,6 @@ namespace Degg.UI.Forms
 				FocusedElement.SetControllerFocus( false );
 			}
 
-			Log.Info( FocusedIndex );
-
 			FocusedElement = children[FocusedIndex];
 
 			FocusedElement.SetControllerFocus( true );

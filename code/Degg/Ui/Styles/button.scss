@@ -3,12 +3,15 @@
 .button {
     background-color: $c-primary;
     cursor: pointer;
-    color: rgba(255,255,255,0.9);
+    color: rgba(0,0,0,0.9);
+    font-weight: bold;
+    font-size: $font-size-medium;
     padding-left: $size-md;
     padding-right: $size-md;
     padding-top: $size-sm;
     padding-bottom: $size-sm;
     font-family: $font-base;
+    border-radius: $border-radius;
 
     &:Hover, &.focus {
         background-color: $c-secondary;
@@ -19,4 +22,11 @@
         background-color: $c-secondary;
         color: rgba(0,0,0,0.90);
     }
+}
+
+.button-centre {
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }

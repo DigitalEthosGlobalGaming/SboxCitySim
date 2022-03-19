@@ -1,6 +1,7 @@
 ﻿using Sandbox.UI;
 using Sandbox;
 using System.Collections.Generic;
+using Degg.UI.Forms.Elements;
 
 namespace Degg.UI.Elements
 {
@@ -15,7 +16,7 @@ namespace Degg.UI.Elements
 		public float LastTick { get; set; }
 
 		public List<Panel> Pages {get;set;}
-		public List<Button> PageNames { get; set; }
+		public List<FEButton> PageNames { get; set; }
 
 		public NavPanel()
 		{
@@ -24,7 +25,7 @@ namespace Degg.UI.Elements
 			AddClass( "nav-panel" );
 
 			Pages = new List<Panel>();
-			PageNames = new List<Button>();
+			PageNames = new List<FEButton>();
 			SetPage( 0 );
 		}
 
@@ -40,15 +41,15 @@ namespace Degg.UI.Elements
 				NavBar = AddChild<Panel>();
 			}
 
-			var button = NavBar.AddChild<Button>();
+			var button = NavBar.AddChild<FEButton>();
 			PageNames.Add( button );
-			button.Text = name;
+			button.Label.Text = name;
+			button.AddClass( "nav-button" );
 
 			button.AddEventListener( "onclick", () =>
 			 {
 				 SetPage( currentCount );
 			 } );
-			button.AddClass( "button" );
 
 			SetPage( Page );
 		}

@@ -115,7 +115,10 @@ namespace CitySim
 					if ( Input.Pressed( InputButton.Attack1 ) )
 					{
 						var tileData = GhostController?.SerializeToJson();
-						PlaceTile( tileData );
+						if ( tileData != null )
+						{
+							PlaceTile( tileData );
+						}
 					}
 
 					// Update when we have moved our Cursor onto another Tile.

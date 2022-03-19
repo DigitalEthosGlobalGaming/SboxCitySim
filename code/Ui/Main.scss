@@ -13,19 +13,14 @@
 }
 
 .score-container {
-    font-size: 32;
-    color: rgba(255,255,255,0.98);
+    color: $fc-primary;
     padding: 20px;
-    font-weight: bold;
     text-align: center;
-    background-color: rgba(0,0,0,0.75);
-    background-color: $c-primary;
-    border-bottom-left-radius: 16px;
-    border-color: rgba(0,0,0,0.8);
-    border-style: solid;
-    border-width: 5px;
-    border-top: none;
-    border-right: none;
+    border-bottom-left-radius: $border-radius;
+    background-color: rgba($c-primary-800,0.7);
+    color: $fc-primary;
+    font-size: $font-size-large;
+    font-weight: bold;
 }
 
 .top-container {
@@ -41,18 +36,12 @@
 
 .current-item-container {
     padding: 8px;
-    background-color: $c-primary;
-    color: white;
-    font-size: large;
+    background-color: rgba($c-primary-800,0.7);
+    border-bottom-left-radius: $border-radius;
+    border-bottom-right-radius: $border-radius;
+    color: $fc-primary;
     font-weight: bold;
-    border-color: rgba(0,0,0,0.8);
-    border-style: solid;
-    border-width: 5px;
-    border-top: none;
-}
-
-.current-item {
-    font-size: 32;
+    font-size: $font-size-large;
 }
 
 .hidden {

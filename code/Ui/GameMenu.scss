@@ -1,4 +1,6 @@
-﻿.game-menu {
+﻿@import "/Degg/Ui/Styles/variables.scss";
+
+.game-menu {
     position: absolute;
     top: 10%;
     left: 10%;
@@ -8,30 +10,27 @@
     justify-content: flex-start;
     flex-direction: column;
     align-items: center;
-    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+    font-family: $font-base;
     opacity: 0;
     transition: all 0.1s ease-out;
-    background-color: #131217;
+    background-color: rgba(#09091b, 0.99);
     z-index: 999;
-    color: rgba(255,255,255,0.98);
+    color: rgba(255,255,255,0.95);
 
     &.open {
         pointer-events: all;
         opacity: 1;
     }
-
-    
 }
 
 
 
 .menu-title {
-    font-size: 32;
+    font-size: $font-size-large;
+    font-weight: bold;
     justify-content: center;
     align-content: center;
-    padding-bottom: 8px;
     text-align: center;
-    width: 100%;
 }
 
 .hidden {

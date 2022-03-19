@@ -1,15 +1,52 @@
-﻿$c-primary: #3D3A4B;
-$c-primary-dark: #131217;
+﻿
+
+
+
+$c-secondary-50: #adc8ef;
+$c-secondary-100: #8cb2e9;
+$c-secondary-200: #73a2e4;
+$c-secondary-300: #6b9ce3;
+$c-secondary-400: #4a86dc;
+$c-secondary-500: #4a86dc;
+$c-secondary-600: #286cce;
+$c-secondary-700: #2057a5;
+$c-secondary-800: #194584;
+$c-secondary-900: #15386b;
+
+
+$c-primary-50: #e8eafc;
+$c-primary-100: #c5c9f7;
+$c-primary-200: #9da6f2;
+$c-primary-300: #7383ed;
+$c-primary-400: #4f66e9;
+$c-primary-500: #2349e2;
+$c-primary-600: #1d41d7;
+$c-primary-700: #0936cb;
+$c-primary-800: #002ac0;
+$c-primary-900: #0012a8;
+
+$c-primary: $c-primary-200;
+$c-secondary: $c-secondary-400;
+
+$c-primary-dark: #0D456E; 
+
+$fc-primary: rgba(255,255,255,0.95);
+
+
+$c-primary-dark: #0D456E;
 $c-secondary: #E3DFFF;
 
 $c-success: #378F2B;
 $c-danger: #E23D41;
 
 $size-sm: 8px;
-
 $size-md: 16px;
-
 $size-lg: 32px;
 
+$border-radius: 16px;
+
+$font-size-large: 48px;
+$font-size-medium: 32px;
+$font-size-small: 24px;
 
 $font-base: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;

@@ -17,7 +17,7 @@
     padding: 20px;
     text-align: center;
     border-bottom-left-radius: $border-radius;
-    background-color: rgba($c-primary-800,0.7);
+    background-color: rgba($c-primary-500,0.85);
     color: $fc-primary;
     font-size: $font-size-large;
     font-weight: bold;
@@ -36,7 +36,7 @@
 
 .current-item-container {
     padding: 8px;
-    background-color: rgba($c-primary-800,0.7);
+    background-color: rgba($c-primary-500,0.85);
     border-bottom-left-radius: $border-radius;
     border-bottom-right-radius: $border-radius;
     color: $fc-primary;

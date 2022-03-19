@@ -20,7 +20,7 @@ namespace CitySim.UI
 			SetTemplate( "Ui/GameMenu.html" );
 			StyleSheet.Load( "Ui/GameMenu.scss" );
 			AddClass( "game-menu" );
-			Opened = true;			
+			Opened = false;			
 
 			var nav = NavBar.AddChild<NavPanel>();
 			nav.AddPage<HowToPlay>("Welcome");

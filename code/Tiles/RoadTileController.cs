@@ -9,6 +9,7 @@ namespace CitySim
 	public partial class RoadTileController : BuildingTileController
 	{
 
+		public RoadTypeEnum RoadType { get; set; } = RoadTypeEnum.StreetEmpty;
 		public RoadTileController() : base( "models/roads/street_empty.vmdl" )
 		{
 			HideParent = true;
@@ -182,6 +183,8 @@ namespace CitySim
 			{
 				newRoadType = RoadTypeEnum.FourWay;
 			}
+
+			RoadType = newRoadType;
 
 
 			var TargetRotation = Rotation.FromAxis( Vector3.Up, rotation );

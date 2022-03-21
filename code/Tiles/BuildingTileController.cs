@@ -32,6 +32,7 @@ namespace CitySim
 			}
 
 			Building = new ModelEntity();
+			Building.Transmit = TransmitType.Always;
 
 			SetBuildingModel( BuildingModel );
 

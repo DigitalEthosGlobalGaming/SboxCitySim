@@ -1,5 +1,6 @@
 ﻿using Degg.GridSystem;
 using Sandbox;
+using System;
 using System.Collections.Generic;
 
 namespace CitySim
@@ -27,7 +28,7 @@ namespace CitySim
 		// This will determine which tile that a vehicle will spawn from.
 		public GenericTile.TileTypeEnum spawnTileType;
 		// This integer is applied to sub catagories like Spawn Tile Road, and Road Type of any type.
-		public int userSpawnTileIndex;
+		public Action canSpawn { get; set; }
 
 		// This will determine which tile that a vehicle will go to after spawning.
 		// Note: If the spawn and delivery tile types are the same, it will goto the next available tile of type.
@@ -37,7 +38,7 @@ namespace CitySim
 	public class CityAmbianceSystem
 	{
 		public static uint MAX_VEHICLE_LIMIT = 100;
-		public static int MAX_VEHICLE_SPAWN_RATE = 3;
+		public static int MAX_VEHICLE_SPAWN_RATE = 10;
  		private static float TICKINTERVAL = 5f;
 
 		public int Deliverers 
@@ -93,6 +94,11 @@ namespace CitySim
 						continue;
 					}
 
+					if ( need.IsDelivering)
+					{
+						continue;
+					}
+
 					need.Supply -= need.Demand;
 
 					if ( need.Supply <= 0)
@@ -138,8 +144,7 @@ namespace CitySim
 						shouldReturn = true,
 
 						spawnFromType = CityAmbianceVehicleSpawnType.Edge,
-						spawnTileType = GenericTile.TileTypeEnum.Road,
-						userSpawnTileIndex = (int)RoadTileController.RoadTypeEnum.DeadEnd
+						spawnTileType = GenericTile.TileTypeEnum.Road
 					} );
 				}
 				else
@@ -191,7 +196,6 @@ namespace CitySim
 							spawnFromType = CityAmbianceVehicleSpawnType.Tile,
 
 							spawnTileType = GenericTile.TileTypeEnum.Business,
-							userSpawnTileIndex = 2
 						} );
 					}
 					ambulanceCount++;
@@ -278,7 +282,12 @@ namespace CitySim
 
 			GenericTile deliveryTile = Rand.FromList( deliveryTiles );
 			var need = deliveryTile?.Controller?.Needs;
-			if ( need  == null)
+			if ( need == null)
+			{
+				return;
+			}
+
+			if ( need.IsDelivering )
 			{
 				return;
 			}
@@ -290,10 +299,14 @@ namespace CitySim
 			} );
 
 			// Verify that we still have places to spawn.
-			if (possibleTiles.Count == 0)
+			if ( possibleTiles.Count == 0 )
 			{
+				Log.Info( "Not next to road" );
 				return;
 			}
+
+
+			Log.Info( "Creating" );
 
 			GenericTile spawnTile = Rand.FromList( possibleTiles );
 
@@ -302,10 +315,13 @@ namespace CitySim
 			MovementEntity ent = new T();
 			ent.SetBodyGroup( "base", (int)behaviour.bodyIndex );
 
+			need.IsDelivering = true;
+
 			ent.OnFinishEvents.Enqueue( () =>
 			{
 				need.Supply += Rand.Int( behaviour.randFoodCapacityMin, behaviour.randFoodCapacityMax );
 				need.Supply = (int)MathX.Clamp( need.Supply, 0, need.MaxSupply );
+				need.IsDelivering = false;
 
 				deliveryTile.DeliveryEntities.Remove(ent);
 

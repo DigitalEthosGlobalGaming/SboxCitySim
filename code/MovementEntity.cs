@@ -52,6 +52,7 @@ namespace CitySim
 			SetModel( "models/cars/normalcar1.vmdl" );
 			SetBodyGroup( "base", Rand.Int( 0, 4 ) );
 			TickableCollection.Global.Add( this );
+			this.Name = "Movement Entity";
 		}
 
 		public void Init(List<GridSpace> path, bool shouldReverse = false )

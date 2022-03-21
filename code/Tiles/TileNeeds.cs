@@ -6,6 +6,7 @@ namespace CitySim
 {
 	public partial class TileNeeds 
 	{
+		public bool IsDelivering = false;
 		public enum TileNeedsType
 		{
 			Food = 0

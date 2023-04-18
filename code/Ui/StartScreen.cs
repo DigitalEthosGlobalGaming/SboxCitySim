@@ -1,37 +1,62 @@
-﻿using Sandbox.UI;
+﻿using Degg.UI;
+using Degg.UI.Elements;
+using Degg.UI.Forms.Elements;
+using Degg.Util;
 using Sandbox;
-using CitySim;
-using System;
+using Sandbox.UI;
 
-namespace GridSystem.Ui
+namespace CitySim.UI
 {
-	public partial class StartScreen: Panel
+	public partial class StartScreen : Panel
 	{
 
-		public Panel Base { get; set; }
-
-		public Button StartButton { get; set; }
+		public Degg.UI.Forms.Form Form { get; set; }
 
 		public StartScreen()
 		{
-			SetTemplate( "Ui/StartScreen.html" );
-			StyleSheet.Load( "Ui/StartScreen.scss" );
-			AddClass("start-screen");
+			var start = AddChild<SplashScreen>();
+			var form = start.AddChild<Degg.UI.Forms.Form>();
+
+			form.AddChild<Center>().AddChild<Header>().SetText( "City Sim" );
+
+			form.AddChild<Center>().AddChild<Header>().SetText( "Select Mode", 4 );
+
+			var btn = form.AddChild<FEButton>();
+			btn.Label.Text = "Normal";
+			btn.SetCenter( true );
+			btn.AddEventListener( "onpress", () => { VoteToStart( MyGame.GameModes.Normal ); } );
+
+			btn = form.AddChild<FEButton>();
+			btn.Label.Text = "Chaos";
+			btn.SetCenter( true );
+			btn.AddEventListener( "onpress", () => { VoteToStart( MyGame.GameModes.Chaos ); } );
+
+			btn = form.AddChild<FEButton>();
+			btn.Label.Text = "Sandbox";
+			btn.SetCenter( true );
+			btn.AddEventListener( "onpress", () => { VoteToStart( MyGame.GameModes.Sandbox ); } );
+
+			form.AddChild<Spacer>();
+			form.AddChild<Spacer>();
+
+			var button = form.AddChild<Center>().AddChild<ButtonGlyph>();
+			button.SetIcon( AdvInput.InputButton( InputButton.Flashlight, InputButton.Menu ), "Show Help" );
 		}
 
 		public override void Tick()
 		{
-
 			SetClass( "open", Input.Down( InputButton.Score ) );
-			if ( Input.Down( InputButton.Jump ) )
-			{
-				VoteToStart();
-			}
 		}
 
-		public void VoteToStart()
+		public void VoteToStart( MyGame.GameModes mode )
 		{
-			MyGame.VoteToStart();
+			var pawn = (Pawn)Game.LocalPawn;
+			var opened = pawn.DisabledControls;
+			if ( !opened )
+			{
+				MyGame.VoteToStart( mode );
+			}
+
 		}
 
 	}

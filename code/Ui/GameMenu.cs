@@ -1,22 +1,17 @@
 ﻿using Sandbox.UI;
 using Sandbox;
-using CitySim;
 using System;
-using System.Collections.Generic;
-using Degg.Ui.Elements;
+using Degg.UI.Elements;
+using Degg.Util;
 
-namespace GridSystem.Ui
+namespace CitySim.UI
 {
 	public partial class GameMenu : Panel
 	{
 		public Panel Base { get; set; }
-
 		public bool Opened { get; set; }
-		public int Page { get; set; }
-
 		public float LastTick { get; set; }
 
-		public List<Panel> Pages {get;set;}
 		public Panel NavBar { get; set; }
 		public FormattableString IsClient { get; private set; }
 
@@ -25,13 +20,11 @@ namespace GridSystem.Ui
 			SetTemplate( "Ui/GameMenu.html" );
 			StyleSheet.Load( "Ui/GameMenu.scss" );
 			AddClass( "game-menu" );
-			Pages = new List<Panel>();
-
-			Opened = true;
+			Opened = false;			
 
 			var nav = NavBar.AddChild<NavPanel>();
 			nav.AddPage<HowToPlay>("Welcome");
-			nav.AddPage<TestPage>("Test");
+			nav.AddPage<CreditsPage>("Credits");
 		}
 
 
@@ -39,11 +32,14 @@ namespace GridSystem.Ui
 		public void OpenMenu()
 		{
 			Pawn.SetControlsDisabledCmd( true );
+			Opened = true;
 		}
 
 		public void CloseMenu()
 		{
+			Pawn.GetClientPawn().HasReadWelcome = true;
 			Pawn.SetControlsDisabledCmd(false);
+			Opened = false;
 		}
 		public override void Tick()
 		{
@@ -52,9 +48,10 @@ namespace GridSystem.Ui
 			}
 			LastTick = Time.Tick;
 
-			if ( Input.Pressed( (InputButton.Menu) ) )
+			if ( AdvInput.Pressed(InputButton.Flashlight, InputButton.Menu) )
 			{
 				Opened = !Opened;
+
 				if ( Opened )
 				{
 					OpenMenu();
@@ -65,17 +62,7 @@ namespace GridSystem.Ui
 				}
 			}
 
-			SetClass( "open", Opened );
-
-			var values = Enum.GetValues( typeof(InputButton) );
-			foreach(var i in values)
-			{
-				if (Input.Pressed( (InputButton)i) )
-				{
-					Log.Info( i );
-				}
-			}
-			
+			SetClass( "open", Opened );			
 		}
 
 	}

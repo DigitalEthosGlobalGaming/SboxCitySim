@@ -21,9 +21,72 @@
 								from = "grey.vmat"
 								to = "materials/generic/concrete_simple.vmat"
 							},
+							{
+								from = "hospital.vmat"
+								to = "materials/buildings/house_1.vmat"
+							},
+							{
+								from = "texture.vmat"
+								to = "materials/buildings/house_1.vmat"
+							},
 						]
 						use_global_default = false
 						global_default_material = ""
+					},
+					{
+						_class = "MaterialGroup"
+						name = "variant2"
+						remaps = 
+						[
+							{
+								from = "materials/buildings/house_1.vmat"
+								to = "materials/buildings/house_2.vmat"
+							},
+						]
+					},
+					{
+						_class = "MaterialGroup"
+						name = "varient3"
+						remaps = 
+						[
+							{
+								from = "materials/buildings/house_1.vmat"
+								to = "materials/buildings/house_3.vmat"
+							},
+						]
+					},
+					{
+						_class = "MaterialGroup"
+						name = "varient4"
+						remaps = 
+						[
+							{
+								from = "materials/buildings/house_1.vmat"
+								to = "materials/buildings/house_4.vmat"
+							},
+						]
+					},
+					{
+						_class = "MaterialGroup"
+						name = "varient5"
+						remaps = 
+						[
+							{
+								from = "materials/buildings/house_1.vmat"
+								to = "materials/buildings/house_5.vmat"
+							},
+						]
+					},
+					{
+						_class = "MaterialGroup"
+						name = "varient6"
+						remaps = 
+						[
+							{
+								from = "materials/buildings/house_1.vmat"
+								to = "materials/buildings/house_6.vmat"
+							},
+						]
 					},
 				]
 			},
@@ -32,15 +95,16 @@
 				children = 
 				[
 					{
-						_class = "PhysicsHullFromRender"
+						_class = "PhysicsShapeBox"
 						parent_bone = ""
 						surface_prop = "default"
 						collision_group = ""
 						collision_interact_as = ""
 						collision_interact_with = ""
 						collision_interact_exclude = ""
-						faceMergeAngle = 20.0
-						maxHullVertices = 32
+						origin = [ 0.0, 0.0, 15.0 ]
+						angles = [ 0.0, 0.0, 0.0 ]
+						dimensions = [ 200.0, 200.0, 50.0 ]
 					},
 				]
 			},
@@ -50,6 +114,7 @@
 				[
 					{
 						_class = "RenderMeshFile"
+						name = "shop"
 						filename = "raw/models/buildings/Shop.fbx"
 						import_translation = [ 0.0, 0.0, 12.5 ]
 						import_rotation = [ 0.0, 0.0, 0.0 ]
@@ -69,7 +134,25 @@
 					},
 					{
 						_class = "RenderMeshFile"
-						filename = "raw/models/road/Street_Empty.fbx"
+						name = "hospital"
+						filename = "raw/models/buildings/Hospital.fbx"
+						import_translation = [ 0.0, 0.0, 0.0 ]
+						import_rotation = [ 0.0, 0.0, 0.0 ]
+						import_scale = 0.45
+						align_origin_x_type = "None"
+						align_origin_y_type = "None"
+						align_origin_z_type = "None"
+						parent_bone = ""
+						import_filter = 
+						{
+							exclude_by_default = false
+							exception_list = [  ]
+						}
+					},
+					{
+						_class = "RenderMeshFile"
+						name = "flat"
+						filename = "raw/models/buildings/Flat2.fbx"
 						import_translation = [ 0.0, 0.0, 0.0 ]
 						import_rotation = [ 0.0, 0.0, 0.0 ]
 						import_scale = 1.0
@@ -82,6 +165,44 @@
 							exclude_by_default = false
 							exception_list = [  ]
 						}
+					},
+				]
+			},
+			{
+				_class = "BodyGroupList"
+				children = 
+				[
+					{
+						_class = "BodyGroup"
+						name = "base"
+						children = 
+						[
+							{
+								_class = "BodyGroupChoice"
+								name = "shop"
+								meshes = 
+								[
+									"shop",
+								]
+							},
+							{
+								_class = "BodyGroupChoice"
+								name = "flat"
+								meshes = 
+								[
+									"flat",
+								]
+							},
+							{
+								_class = "BodyGroupChoice"
+								name = "hospital"
+								meshes = 
+								[
+									"hospital",
+								]
+							},
+						]
+						hidden_in_tools = false
 					},
 				]
 			},

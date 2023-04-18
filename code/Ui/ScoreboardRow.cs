@@ -1,8 +1,8 @@
-﻿using Sandbox.UI;
-using Sandbox;
+﻿using Sandbox;
+using Sandbox.UI;
 using Sandbox.UI.Construct;
 
-namespace GridSystem.Ui
+namespace CitySim.UI
 {
 	public partial class ScoreboardRow : ScoreboardEntry
 	{
@@ -40,7 +40,7 @@ namespace GridSystem.Ui
 			PlayerName.Text = Client.Name;
 			Score.Text = Client.GetInt( "score" ).ToString();
 			Ping.Text = Client.Ping.ToString();
-			SetClass( "me", Client == Local.Client );
+			SetClass( "me", Client == Game.LocalClient );
 		}
 	}
 }

@@ -1,6 +1,6 @@
 ﻿using Sandbox.UI;
 
-namespace GridSystem.Ui
+namespace CitySim.UI
 {
 	public partial class LoadingScreen : Panel
 	{

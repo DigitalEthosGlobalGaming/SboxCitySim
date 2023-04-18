@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using Sandbox;
 
-namespace CitySim
+namespace CitySim.Utils
 {
 
 	public interface ITickable
@@ -41,7 +41,7 @@ namespace CitySim
 				{
 					if ( item != null )
 					{
-						item.OnServerTick( Time.Delta, Time.Tick );
+						item.OnClientTick( Time.Delta, Time.Tick );
 					}
 				}
 			}

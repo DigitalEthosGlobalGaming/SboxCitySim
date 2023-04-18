@@ -1,0 +1,27 @@
+﻿@import "../Styles/variables.scss";
+
+.header {
+    color: white;
+    font-family: $font-base;
+}
+
+.header-1 {
+    font-size: 5vh;
+    padding-bottom: 24px;
+}
+.header-2 {
+    font-size: 4vh;
+    padding-bottom: 16px;
+}
+.header-3 {
+    font-size: 3vh;
+    padding-bottom: 8px;
+}
+.header-4 {
+    font-size: 2.5vh;
+    padding-bottom: 8px;
+}
+.header-5 {
+    font-size: 2vh;
+    padding-bottom: 8px;
+}

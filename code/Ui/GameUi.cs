@@ -1,9 +1,9 @@
-﻿using CitySim;
+﻿using Degg.Util;
 using Sandbox;
 using Sandbox.UI;
 
 
-namespace GridSystem.Ui
+namespace CitySim.UI
 {
 	public partial class GameUi : HudEntity<RootPanel>
 	{
@@ -17,9 +17,17 @@ namespace GridSystem.Ui
 		public GameUi()
 		{
 			OnGameStateChange();
+
+			var children = RootPanel.Children;
 			RootPanel.AddChild<ChatBox>();
 			RootPanel.AddChild<CustomScoreboard>();
 			RootPanel.AddChild<GameMenu>();
+			RootPanel.StyleSheet.Load( "/Degg/Ui/Styles/base.scss" );
+		}
+
+		public WorldTileStatUI CreateWorldUi()
+		{
+			return RootPanel.AddChild<WorldTileStatUI>();
 		}
 
 
@@ -27,7 +35,6 @@ namespace GridSystem.Ui
 		public void OnGameStateChange()
 		{
 			var state = MyGame.GameState;
-			Log.Info( "STATE: " + state.ToString() );
 
 			StartScreenElement?.Delete();
 			MainElement?.Delete();

@@ -1,90 +1,44 @@
-﻿using GridSystem;
+﻿using Degg.GridSystem;
 using Sandbox;
-using System;
+using System.Collections.Generic;
 
 namespace CitySim
 {
 	public partial class RoadMap : GridMap
 	{
+		public const float TileScale = 0.25f;
 
 		[Net]
 		public bool IsEnd { get; set; }
 
 		public float TimeBetweenPieces { get; set; } = 3;
+		public float TimeBetweenPiecesModifier { get; set; } = 1;
 
 		[Net]
 		public float TimeForNewPiece { get; set; }
 		[Net]
-		public float Score { get; set;}
+		public float Score { get; set; }
 
-		public void UpdateScore() {
+		public void UpdateScore()
+		{
 			CheckGameEnd();
 		}
 
-		public static bool IsCombination(RoadTile aTile, RoadTile bTile, RoadTile.TileTypeEnum a, RoadTile.TileTypeEnum b)
-		{
-			if (aTile.TileType == a && bTile.TileType == b)
-			{
-				return true;
-			}
-			if ( bTile.TileType == a && aTile.TileType == b )
-			{
-				return true;
-			}
-
-			return false;
-		}
 
 
-		public int CalculateTileScore(RoadTile tile)
+		public int CalculateTileScore( GenericTile tile )
 		{
 			var score = 1;
 
-			var neighbours = tile.GetNeighbours<RoadTile>();
+			var neighbours = tile.GetNeighbours<GenericTile>();
 			var a = tile;
 
 			foreach ( var b in neighbours )
 			{
-				if ( b != null )
-				{
-					// House House
-					if ( IsCombination( a, b, RoadTile.TileTypeEnum.House, RoadTile.TileTypeEnum.House ) )
-					{
-						score = score + 1;
-					// House Park
-					} else if ( IsCombination( a, b, RoadTile.TileTypeEnum.House, RoadTile.TileTypeEnum.Park ) )
-					{
-						score = score + 2;
-					}
-					// House Business
-					else if ( IsCombination( a, b, RoadTile.TileTypeEnum.House, RoadTile.TileTypeEnum.Business ) )
-					{
-						score = score - 1;
-					}
-					// Park Park
-					else if ( IsCombination( a, b, RoadTile.TileTypeEnum.Park, RoadTile.TileTypeEnum.Park ) )
-					{
-						score = score + 2;
-					}
-					// Park Road
-					else if ( IsCombination( a, b, RoadTile.TileTypeEnum.Park, RoadTile.TileTypeEnum.Road ) )
-					{
-						score = score - 1;
-					}
-					// Park Business
-					else if ( IsCombination( a, b, RoadTile.TileTypeEnum.Park, RoadTile.TileTypeEnum.Business ) )
-					{
-						score = score - 1;
-					}					
-					// Business Business
-					else if ( IsCombination( a, b, RoadTile.TileTypeEnum.Business, RoadTile.TileTypeEnum.Business ) )
-					{
-						score = score + 2;
-					}
-				}
+				score += a.GetTileScore( b );
 			}
 
-			if ( score  < 0)
+			if ( score < 0 )
 			{
 				score = 0;
 			}
@@ -92,20 +46,20 @@ namespace CitySim
 			return score;
 		}
 
-		public void Init(int xAmount, int yAmount)
+		public void Init( int xAmount, int yAmount )
 		{
-			Init<RoadTile>( new Vector3( 0, 0, 1000 ), new Vector2( 200, 200 ), xAmount, yAmount );
+			Init<GenericTile>( new Vector3( 0, 0, 250 ), new Vector2( TileScale * 200.0f, TileScale * 200.0f ), xAmount, yAmount );
 		}
 
-		public override void OnSpaceSetup(GridSpace space)
+		public override void OnSpaceSetup( GridSpace space )
 		{
-			
+
 		}
 
 		public override void OnSetup()
 		{
-			var numberOfRows = Rand.Int( 1, 4 );
-			var numberOfCols = Rand.Int( 1, 4 );
+			var numberOfRows = Game.Random.Int( 1, 4 );
+			var numberOfCols = Game.Random.Int( 1, 4 );
 			var startX = 0;
 			var startY = 0;
 			var xStart = XSize - startX - 1;
@@ -115,26 +69,26 @@ namespace CitySim
 			for ( int row = 0; row < numberOfRows; row++ )
 			{
 
-				var xPosition = Rand.Int( startX, xStart );
+				var xPosition = Game.Random.Int( startX, xStart );
 				for ( int i = 0; i < XSize; i++ )
 				{
-					var space = (RoadTile)GetSpace( i, xPosition );
+					var space = (GenericTile)GetSpace( i, xPosition );
 					if ( space != null )
 					{
-						space.SetHasRoad( true );
+						space.CreateController<RoadTileController>();
 					}
 				}
 			}
 
 			for ( int col = 0; col < numberOfCols; col++ )
 			{
-				var yPosition = Rand.Int( startY, yStart );
+				var yPosition = Game.Random.Int( startY, yStart );
 				for ( int i = 0; i < YSize; i++ )
 				{
-					var space = (RoadTile)GetSpace( yPosition, i );
+					var space = (GenericTile)GetSpace( yPosition, i );
 					if ( space != null )
 					{
-						space.SetHasRoad( true );
+						space.CreateController<RoadTileController>();
 					}
 				}
 			}
@@ -148,8 +102,8 @@ namespace CitySim
 			var amount = 0;
 			foreach ( var s in Grid )
 			{
-				var tile = (RoadTile)s;
-				if ( tile.TileType == RoadTile.TileTypeEnum.Base )
+				var tile = (GenericTile)s;
+				if ( tile.GetTileType() == GenericTile.TileTypeEnum.Base )
 				{
 					amount = amount + 1;
 				}
@@ -160,38 +114,32 @@ namespace CitySim
 
 		public void CheckGameEnd()
 		{
-			if ( GetBlankTiles() == 0)
+			var totalTiles = Grid.Count;
+			var tilesToEnd = totalTiles - (totalTiles * 0.9);
+
+			var blank = GetBlankTiles();
+			if ( blank <= tilesToEnd )
 			{
-				IsEnd = true;
+				MyGame.GameObject.SetGameState( MyGame.GameStateEnum.End );
 			}
 		}
 
 
 		public void GivePlayersNewPiece()
 		{
-			if (MyGame.GameState != MyGame.GameStateEnum.Playing)
+			if ( MyGame.GameState != MyGame.GameStateEnum.Playing )
 			{
 				return;
 			}
-			foreach(var client in Client.All)
+			foreach ( var client in Game.Clients )
 			{
 				var player = client.Pawn;
-				if (player is Pawn)
+				if ( player is Pawn )
 				{
 					var p = player as Pawn;
-					if ( p.SelectedTileType == RoadTile.TileTypeEnum.Base )
+					if ( p.SelectedTileType == GenericTile.TileTypeEnum.Base )
 					{
-						var start = 1;
-						var end = 6;
-						var rndInt = Rand.Int( start, end );
-						if ( rndInt > 4 )
-						{
-							p.SelectedTileType = RoadTile.TileTypeEnum.House;
-						}
-						else
-						{
-							p.SelectedTileType = (RoadTile.TileTypeEnum)Enum.GetValues( typeof( RoadTile.TileTypeEnum ) ).GetValue( rndInt );
-						}
+						p.SelectNextRandomTile();
 					}
 				}
 			}
@@ -201,15 +149,27 @@ namespace CitySim
 		{
 			base.ServerTick();
 
-			if (MyGame.GameState == MyGame.GameStateEnum.Playing)
+			if ( MyGame.GameState == MyGame.GameStateEnum.Playing )
 			{
-				if ( TimeForNewPiece < Time.Now )
+				if ( TimeBetweenPieces > 0 && TimeForNewPiece < Time.Now )
 				{
-					TimeForNewPiece = Time.Now + TimeBetweenPieces + Client.All.Count;
+					TimeForNewPiece = Time.Now + TimeBetweenPieces + (Game.Clients.Count * TimeBetweenPiecesModifier);
 					GivePlayersNewPiece();
 				}
 			}
 		}
+
+		public List<GenericTile> GetGenericTiles()
+		{
+			// Conversion is expensive...
+			List<GenericTile> tiles = new List<GenericTile>( this.Grid.Count );
+			for ( int i = 0; i < this.Grid.Count; i++ )
+			{
+				tiles.Add( (GenericTile)this.Grid[i] );
+			}
+			return tiles;
+		}
+
 	}
 
 }

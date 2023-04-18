@@ -1,16 +1,13 @@
-﻿using Sandbox.UI;
+﻿using Degg.UI;
+using Degg.Util;
 using Sandbox;
-using CitySim;
-using System;
+using Sandbox.UI;
 using System.Collections.Generic;
 
-namespace GridSystem.Ui
+namespace CitySim.UI
 {
 	public partial class HowToPlay : Panel
 	{
-
-		public Panel Base { get; set; }
-
 		public bool Opened { get; set; }
 
 		public bool IsOpening { get; set; }
@@ -26,7 +23,6 @@ namespace GridSystem.Ui
 			StyleSheet.Load( "Ui/GameMenuPages/HowToPlay.scss" );
 			AddClass( "how-to-play" );
 		}
-
 
 
 	}

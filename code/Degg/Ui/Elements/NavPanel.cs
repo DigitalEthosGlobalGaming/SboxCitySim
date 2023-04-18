@@ -1,8 +1,9 @@
 ﻿using Sandbox.UI;
 using Sandbox;
 using System.Collections.Generic;
+using Degg.UI.Forms.Elements;
 
-namespace Degg.Ui.Elements
+namespace Degg.UI.Elements
 {
 	public partial class NavPanel : Panel
 	{
@@ -15,7 +16,7 @@ namespace Degg.Ui.Elements
 		public float LastTick { get; set; }
 
 		public List<Panel> Pages {get;set;}
-		public List<string> PageNames { get; set; }
+		public List<FEButton> PageNames { get; set; }
 
 		public NavPanel()
 		{
@@ -24,22 +25,33 @@ namespace Degg.Ui.Elements
 			AddClass( "nav-panel" );
 
 			Pages = new List<Panel>();
-			PageNames = new List<string>();
+			PageNames = new List<FEButton>();
 			SetPage( 0 );
 		}
 
 		public void AddPage<T>(string name ) where T : Panel, new()
 		{
-			Pages.Add( AddChild<T>());
-			PageNames.Add( name );
+			var currentCount = Pages.Count;
+			var page = AddChild<T>();
+			Pages.Add( page );
+			page.AddClass( "hidden" );		
+
 			if (NavBar == null)
 			{
 				NavBar = AddChild<Panel>();
 			}
 
-			var button = NavBar.AddChild<Button>();
-			button.Text = name;
-			button.AddClass( "button" );
+			var button = NavBar.AddChild<FEButton>();
+			PageNames.Add( button );
+			button.Label.Text = name;
+			button.AddClass( "nav-button" );
+
+			button.AddEventListener( "onclick", () =>
+			 {
+				 SetPage( currentCount );
+			 } );
+
+			SetPage( Page );
 		}
 
 
@@ -67,13 +79,16 @@ namespace Degg.Ui.Elements
 			for ( int i = 0; i < Pages.Count; i++ )
 			{
 				var page = Pages[i];
+				var pageButton = PageNames[i];
 				if (page != null)
 				{
 					if ( i == pageNumber )
 					{
-						CurrentPage.RemoveClass( "hidden" );
+						pageButton.AddClass( "active" );
+						page.RemoveClass( "hidden" );
 					} else {
-						CurrentPage.AddClass( "hidden" );
+						pageButton.RemoveClass( "active" );
+						page.AddClass( "hidden" );
 					}
 				}
 			}

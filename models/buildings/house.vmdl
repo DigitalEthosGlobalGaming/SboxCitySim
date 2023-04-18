@@ -11,12 +11,45 @@
 				[
 					{
 						_class = "MaterialGroup"
-						name = "Base"
+						name = "house1"
 						remaps = 
 						[
 							{
 								from = "texture.vmat"
 								to = "materials/buildings/house_1.vmat"
+							},
+						]
+					},
+					{
+						_class = "MaterialGroup"
+						name = "house2"
+						remaps = 
+						[
+							{
+								from = "texture.vmat"
+								to = "materials/buildings/house_2.vmat"
+							},
+						]
+					},
+					{
+						_class = "MaterialGroup"
+						name = "house3"
+						remaps = 
+						[
+							{
+								from = "texture.vmat"
+								to = "materials/lighthouse_concrete_floor.vmat"
+							},
+						]
+					},
+					{
+						_class = "MaterialGroup"
+						name = "house4"
+						remaps = 
+						[
+							{
+								from = "texture.vmat"
+								to = "materials/buildings/house_4.vmat"
 							},
 						]
 					},
@@ -41,6 +74,36 @@
 							exclude_by_default = false
 							exception_list = [  ]
 						}
+					},
+				]
+			},
+			{
+				_class = "SpawnConfig"
+				children = 
+				[
+					{
+						_class = "ConfigSetMaterialGroup"
+						material_group = ""
+					},
+				]
+				hide_materialgroup_in_tools = false
+				hide_rendercolor_in_tools = false
+			},
+			{
+				_class = "PhysicsShapeList"
+				children = 
+				[
+					{
+						_class = "PhysicsShapeBox"
+						parent_bone = ""
+						surface_prop = "default"
+						collision_group = ""
+						collision_interact_as = ""
+						collision_interact_with = ""
+						collision_interact_exclude = ""
+						origin = [ 0.0, 0.0, 0.0 ]
+						angles = [ 0.0, 0.0, 0.0 ]
+						dimensions = [ 200.0, 200.0, 10.0 ]
 					},
 				]
 			},

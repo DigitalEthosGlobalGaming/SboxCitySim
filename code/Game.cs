@@ -1,5 +1,7 @@
-﻿
-using GridSystem.Ui;
+﻿using CitySim.UI;
+using CitySim.Utils;
+using Degg.Analytics;
+using Degg.Util;
 using Sandbox;
 
 //
@@ -7,7 +9,6 @@ using Sandbox;
 //
 namespace CitySim
 {
-	[Library( "citysim" ), Hammer.Skip]
 	/// <summary>
 	/// This is your game class. This is an entity that is created serverside when
 	/// the game starts, and is replicated to the client. 
@@ -15,29 +16,37 @@ namespace CitySim
 	/// You can use this to create things like HUDs and declare which player class
 	/// to use for spawned players.
 	/// </summary>
-	public partial class MyGame : Sandbox.Game
+	public partial class MyGame : GameManager
 	{
-
 		public static MyGame GameObject { get; set; }
 		public static GameUi Ui { get; set; } = null;
+
+		[Net]
+		public RoadMap Map { get; set; }
+
+		public CityAmbianceSystem CityAmbianceSystem { get; set; }
+
+		public MyGame()
+		{
+			SetupAnalytics();
+
+			GameObject = this;
+			if ( Game.IsServer )
+			{
+				GameAnalytics.TriggerEvent( null, "game_start" );
+			}
+			CreateUi();
+		}
 
 		public static RoadMap GetMap()
 		{
 			return GameObject.Map;
 		}
 
-		[Net]
-		public RoadMap Map { get; set; }
-		public MyGame()
-		{
-			GameObject = this;
-			CreateUi();
-		}
-
 		/// <summary>
 		/// A client has joined the server. Make them a pawn to play with
 		/// </summary>
-		public override void ClientJoined( Client client )
+		public override void ClientJoined( IClient client )
 		{
 			base.ClientJoined( client );
 
@@ -45,30 +54,63 @@ namespace CitySim
 			var pawn = new Pawn();
 			client.Pawn = pawn;
 
-			if (Map != null)
+			if ( Game.IsServer )
 			{
-				pawn.Position = Map.Position + (Vector3.Up * 500f);
+				GameAnalytics.TriggerEvent( client.SteamId.ToString(), "game_join" );
+			}
+
+			if ( Map != null )
+			{
+				pawn.Position = Map.Position;
+				pawn.PivotPoint = Map.Position;
 			}
 			UpdateClientGameState( GameState );
 		}
 
-		[ServerCmd( "check_models" )]
-		public static void TestServerCmd()
+		public override void ClientDisconnect( IClient cl, NetworkDisconnectionReason reason )
 		{
-			((MyGame)Current).RefreshMap();
+			base.ClientDisconnect( cl, reason );
+			GameAnalytics.TriggerEvent( cl.SteamId.ToString(), "game_disconnect", (int)reason );
+		}
+
+		[ConCmd.Server( "cs.debug.cleanupEntities" )]
+		public static void CleanupEntitiesCmd()
+		{
+			foreach ( var entity in Entity.All )
+			{
+				if ( entity is MovementEntity )
+				{
+					entity.DeleteAsync( 0 );
+				}
+			}
+
+			CleanupWorldUIRpc();
+		}
+		[ConCmd.Client( "cs.debug.cleanupWorldUI" )]
+		public static void CleanupWorldUICmd()
+		{
+			CleanupWorldUIRpc();
+		}
+
+		[ClientRpc]
+		public static void CleanupWorldUIRpc()
+		{
+			foreach ( var ui in WorldTileStatUI.All )
+			{
+				ui.Delete();
+			}
 		}
 
 
 		public void CreateUi()
 		{
-			if ( IsClient )
+			if ( Game.IsClient )
 			{
-					if (Ui != null)
+				if ( Ui != null )
 				{
 					Ui.Delete();
 				}
 
-			
 				Ui = new GameUi();
 			}
 
@@ -77,9 +119,9 @@ namespace CitySim
 		[Event.Hotload]
 		public void OnLoad()
 		{
-			if ( IsServer )
+			if ( Game.IsServer )
 			{
-				//this.RefreshMap();
+				SetupAnalytics();
 			}
 
 			CreateUi();
@@ -90,14 +132,14 @@ namespace CitySim
 		{
 			if ( Map != null )
 			{
-				foreach(var item in Map.Grid)
+				foreach ( var item in Map.Grid )
 				{
-					((RoadTile)item).CheckModel();
+					// ((GenericTile)item).CheckModel();
 				}
 			}
 			else
 			{
-				Log.Info( "NO MAP" );
+				AdvLog.Info( "NO MAP" );
 			}
 		}
 
@@ -113,6 +155,7 @@ namespace CitySim
 			{
 				TickableCollection.Global.ClientTick();
 			}
+
 			if ( Map != null )
 			{
 				Map.ClientTick();
@@ -121,13 +164,23 @@ namespace CitySim
 		[Event.Tick.Server]
 		public void ServerTick()
 		{
-			if ( TickableCollection.Global != null)
+			if ( TickableCollection.Global != null )
 			{
 				TickableCollection.Global.ServerTick();
 			}
+
+			if ( CityAmbianceSystem != null )
+			{
+				CityAmbianceSystem.Update();
+			}
+
 			if ( Map != null )
 			{
 				Map.ServerTick();
+			}
+			if ( GameState == GameStateEnum.End && StartGameTimer < Time.Now )
+			{
+				SetGameState( GameStateEnum.Start );
 			}
 		}
 

@@ -1,0 +1,33 @@
+﻿@import "/Degg/Ui/Styles/variables.scss";
+
+.container {
+    display: flex;
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    background-color: rgba($c-primary-500,0.85);
+    font-weight: bold;
+    border-top-left-radius: $border-radius;
+    z-index: 9999;
+}
+
+.button-prompt {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px;
+}
+
+.button-prompt-label {
+    padding: 16px;
+    color: white;
+    text-align: center;
+    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+}
+
+.button-prompt {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-direction: row;
+}

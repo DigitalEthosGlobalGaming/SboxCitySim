@@ -6,16 +6,15 @@
     height: 100%;
     display: flex;
     flex-direction: column;
+    justify-content: center;
+    color: rgba(0,0,0,0.9);
+    font-size: $font-size-large;
     align-items: center;
     font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
-    opacity: 0;
-    background-color: rgba( 0, 0, 0, 0.9 );
-    transition: all 0.1s ease-out;
-    transform: scale( 1.05 );
-    transform-origin: 50% 50%;
-
-    &.open {
-        opacity: 1;
-        transform: scale( 1 );
+    opacity: 1;
+    background-color: $c-primary-dark;
+    pointer-events: all;
+    .button {
+        margin: 8px;
     }
 }

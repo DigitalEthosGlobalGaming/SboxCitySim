@@ -1,7 +1,17 @@
 ﻿<div @ref=Base class="main">
     <div class="top-container">
-        <div class="progress-timer">
-            <text class="time-to-new-piece">End Screen</text>
+        <div class="your-score" @ref=YourScore>
+            <div class="title">
+                <text>Your Score</text>
+            </div>
+            <div class="score">
+                <text @ref=CurrentPlayerLabel>Your Score</text>
+            </div>
+        </div>
+        <div class="top-players-title">
+            <text class="time-to-new-piece">Top Players</text>
+        </div>
+        <div class="player-scores" @ref=PlayerScores>
         </div>
     </div>
 </div>

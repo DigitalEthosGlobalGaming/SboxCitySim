@@ -39,7 +39,7 @@ namespace CitySim
 			if ( WorldUI != null )
 				return;
 
-			if (GetTileType() != TileTypeEnum.Base)
+			if ( GetTileType() != TileTypeEnum.Base )
 			{
 				WorldUI = MyGame.Ui.CreateWorldUi();
 			}
@@ -48,13 +48,13 @@ namespace CitySim
 		[ClientRpc]
 		public void UpdateWorldUI( string _name, int _points = 0 )
 		{
-			
+
 			if ( WorldUI == null )
 			{
 				SpawnUI();
 			}
 
-			if ( WorldUI == null)
+			if ( WorldUI == null )
 			{
 				return;
 			}
@@ -75,7 +75,7 @@ namespace CitySim
 		public void UpdateName()
 		{
 			var suffix = "";
-			if (HasRoad())
+			if ( HasRoad() )
 			{
 				suffix = "R";
 			}
@@ -101,18 +101,18 @@ namespace CitySim
 
 		public override float GetMovementWeight( GridSpace a, NavPoint n )
 		{
-			if (n.Parent == null)
+			if ( n.Parent == null )
 			{
 				return 10f;
 			}
-			if (a is GenericTile )
+			if ( a is GenericTile )
 			{
 				if ( HasRoad() )
 				{
 					return 10;
 				}
 			}
-				
+
 			return -1;
 		}
 
@@ -125,9 +125,9 @@ namespace CitySim
 			{
 				var tile = neighbours[i];
 
-				if ( tile?.ControllerId == TileTypeEnum.Road)
+				if ( tile?.ControllerId == TileTypeEnum.Road )
 				{
-					return KeyValuePair.Create((Direction)i, tile);
+					return KeyValuePair.Create( (Direction)i, tile );
 				}
 			}
 			return null;
@@ -159,16 +159,16 @@ namespace CitySim
 
 		public void OnClientTick( float delta, float currentTick )
 		{
-			if (WorldUI != null)
+			if ( WorldUI != null )
 			{
 				var position = GetWorldPosition();
-				var distance = position.Distance( Pawn.GetClientPawn().EyePosition );
-				if (distance == 0)
+				var distance = position.Distance( Pawn.GetClientPawn().Position );
+				if ( distance == 0 )
 				{
 					distance = 1;
 				}
-				float scale =  500 / distance;
-				WorldUI.SetScale( scale);
+				float scale = 500 / distance;
+				WorldUI.SetScale( scale );
 				WorldUI.SetPosition( position + (Vector3.Up * 10f) );
 			}
 		}
@@ -185,12 +185,12 @@ namespace CitySim
 			Position = Position.LerpTo( TargetPosition, transitionAmount * delta );
 		}
 
-		public void AddController(TileController t)
+		public void AddController( TileController t )
 		{
 			var controller = t;
 
 			var previous = Controller;
-			if ( previous != controller && previous != null)
+			if ( previous != controller && previous != null )
 			{
 				previous.RemoveFromTile( this );
 				previous.Parent = null;
@@ -213,7 +213,7 @@ namespace CitySim
 			}
 		}
 
-		public T CreateController<T>() where T: TileController, new()
+		public T CreateController<T>() where T : TileController, new()
 		{
 			var controller = new T();
 			this.AddController( controller );

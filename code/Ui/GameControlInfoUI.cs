@@ -1,5 +1,5 @@
-﻿using Sandbox;
-using Degg.Util;
+﻿using Degg.Util;
+using Sandbox;
 using Sandbox.UI;
 
 namespace CitySim.UI
@@ -35,15 +35,15 @@ namespace CitySim.UI
 		{
 			bgPanel.DeleteChildren();
 
-			CreateButtonGlyph( AdvInput.InputButton( InputButton.Attack1, InputButton.Attack1 ), ref PlaceBtn, "Place" );
-			CreateButtonGlyph( AdvInput.InputButton( InputButton.Attack2, InputButton.Attack2 ), ref DiscardBtn, "Discard" );
+			CreateButtonGlyph( AdvInput.InputButton( InputButton.PrimaryAttack, InputButton.PrimaryAttack ), ref PlaceBtn, "Place" );
+			CreateButtonGlyph( AdvInput.InputButton( InputButton.SecondaryAttack, InputButton.SecondaryAttack ), ref DiscardBtn, "Discard" );
 			CreateButtonGlyph( AdvInput.InputButton( InputButton.Score, InputButton.Score ), ref ScoreBtn, "Score" );
 			CreateButtonGlyph( AdvInput.InputButton( InputButton.Flashlight, InputButton.Menu ), ref MenuBtn, "Menu" );
 		}
 
 		public override void Tick()
 		{
-			if ( IsUsingController  != Input.UsingController)
+			if ( IsUsingController != Input.UsingController )
 			{
 				IsUsingController = Input.UsingController;
 				CreateButtonGlyphs();

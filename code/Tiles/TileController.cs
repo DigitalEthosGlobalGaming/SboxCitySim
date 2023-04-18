@@ -1,13 +1,11 @@
-﻿
-using Degg.Util;
-using Sandbox;
+﻿using Sandbox;
 using System.Collections.Generic;
 using System.Text.Json;
 using static CitySim.GenericTile;
 
 namespace CitySim
 {
-	public partial class TileController 
+	public partial class TileController
 	{
 		public ModelEntity GhostModel { get; set; }
 
@@ -21,7 +19,7 @@ namespace CitySim
 			Left = 3,
 		}
 
-		public static TileController GetTileControllerForType(TileTypeEnum tileType)
+		public static TileController GetTileControllerForType( TileTypeEnum tileType )
 		{
 			switch ( tileType )
 			{
@@ -40,9 +38,9 @@ namespace CitySim
 			}
 		}
 
-		public virtual void SetVisible(bool visible)
+		public virtual void SetVisible( bool visible )
 		{
-			
+
 		}
 
 		public virtual bool GetVisible()
@@ -67,10 +65,10 @@ namespace CitySim
 					return 0f;
 			}
 		}
-		public static Rotation GetRotationFromDirection(Direction dir)
+		public static Rotation GetRotationFromDirection( Direction dir )
 		{
 			var degrees = GetDegreesFromDirection( dir );
-			return  Rotation.FromAxis( Vector3.Up, degrees );
+			return Rotation.FromAxis( Vector3.Up, degrees );
 		}
 
 		public virtual void Destroy()
@@ -83,7 +81,7 @@ namespace CitySim
 			return TileTypeEnum.Base;
 		}
 
-		public virtual bool CanMoveOn(MovementEntity ent)
+		public virtual bool CanMoveOn( MovementEntity ent )
 		{
 			return ent != null;
 		}
@@ -98,7 +96,7 @@ namespace CitySim
 			this.Parent.RenderColor = Color.White;
 		}
 
-		public virtual void OnNeighbourTileControllerChange( GenericTile tile, Direction dir, TileController prev, TileController next)
+		public virtual void OnNeighbourTileControllerChange( GenericTile tile, Direction dir, TileController prev, TileController next )
 		{
 
 		}
@@ -116,9 +114,9 @@ namespace CitySim
 			return false;
 		}
 
-		public virtual void AddToTile(GenericTile tile)
+		public virtual void AddToTile( GenericTile tile )
 		{
-			if ( tile.IsServer )
+			if ( Game.IsServer )
 			{
 				UpdateModel();
 			}
@@ -126,14 +124,14 @@ namespace CitySim
 
 		public virtual void RemoveFromTile( GenericTile tile )
 		{
-			
+
 		}
 
-		public virtual void SetModel(string modeName)
+		public virtual void SetModel( string modeName )
 		{
 			if ( Parent != null )
 			{
-				if ( Parent.IsServer )
+				if ( Game.IsServer )
 				{
 					Parent.SetModel( modeName );
 					Parent.SetupPhysicsFromModel( PhysicsMotionType.Static, false );
@@ -168,10 +166,10 @@ namespace CitySim
 
 		public virtual void Deserialize( string rawData )
 		{
-			Deserialize( JsonSerializer.Deserialize<Dictionary<string, string>>( rawData ) ) ;
+			Deserialize( JsonSerializer.Deserialize<Dictionary<string, string>>( rawData ) );
 		}
 
-		public virtual void Deserialize(Dictionary<string, string> data)
+		public virtual void Deserialize( Dictionary<string, string> data )
 		{
 			/*
 			foreach ( var dataKey in data.Keys )

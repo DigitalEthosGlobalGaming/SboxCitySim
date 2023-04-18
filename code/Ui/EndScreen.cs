@@ -1,11 +1,11 @@
-﻿using Sandbox.UI;
-using Sandbox;
+﻿using Sandbox;
+using Sandbox.UI;
 using System.Collections.Generic;
 using System.Linq;
 
 namespace CitySim.UI
 {
-	public partial class EndScreen: Panel
+	public partial class EndScreen : Panel
 	{
 
 		public Panel Base { get; set; }
@@ -14,9 +14,9 @@ namespace CitySim.UI
 		public Panel YourScore { get; set; }
 		public Label CurrentPlayerLabel { get; set; }
 
-		Dictionary<Client, Panel> Rows = new();
+		Dictionary<IClient, Panel> Rows = new();
 
-		PriorityQueue<Client, int> ClientScores = new();
+		PriorityQueue<IClient, int> ClientScores = new();
 
 		public EndScreen()
 		{
@@ -30,7 +30,7 @@ namespace CitySim.UI
 			if ( PlayerScores != null )
 			{
 				PlayerScores.DeleteChildren();
-				foreach ( var client in Client.All.Except( Rows.Keys ) )
+				foreach ( var client in Game.Clients.Except( Rows.Keys ) )
 				{
 					ClientScores.Enqueue( client, client.GetInt( "score", 0 ) );
 				}
@@ -58,16 +58,16 @@ namespace CitySim.UI
 				}
 
 
-				var currentPlayer = Local.Client;
+				var currentPlayer = Game.LocalClient;
 				CurrentPlayerLabel.Text = currentPlayer.GetInt( "score", 0 ).ToString();
-				
+
 			}
 
 		}
 
 		public override void Tick()
 		{
-			
+
 		}
 
 	}

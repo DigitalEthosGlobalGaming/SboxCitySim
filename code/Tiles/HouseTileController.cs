@@ -16,12 +16,12 @@ namespace CitySim
 			Needs = new TileNeeds( 5, 20 )
 			{
 				NeedType = TileNeeds.TileNeedsType.Food,
-				MaxSupply = Rand.Int( 18, 30 ),
+				MaxSupply = Game.Random.Int( 18, 30 ),
 				Demand = 2
 			};
 
-			BodyGroupIndex = Rand.Int( 0, 4 );
-			MaterialIndex = Rand.Int( 0, 6 );
+			BodyGroupIndex = Game.Random.Int( 0, 4 );
+			MaterialIndex = Game.Random.Int( 0, 6 );
 		}
 		public override TileTypeEnum GetTileType()
 		{

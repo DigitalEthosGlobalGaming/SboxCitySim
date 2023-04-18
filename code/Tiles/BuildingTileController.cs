@@ -4,7 +4,7 @@ using Sandbox;
 
 namespace CitySim
 {
-	public partial class BuildingTileController: TileController, ITickable
+	public partial class BuildingTileController : TileController, ITickable
 	{
 		public ModelEntity Building { get; set; }
 		public string BuildingModel { get; private set; }
@@ -17,16 +17,16 @@ namespace CitySim
 		public bool HideParent { get; set; }
 		public TickableCollection ParentCollection { get; set; }
 
-		public BuildingTileController(string _buildModel)
+		public BuildingTileController( string _buildModel )
 		{
 			BuildingModel = _buildModel;
 		}
 
-		public override void AddToTile(GenericTile tile)
+		public override void AddToTile( GenericTile tile )
 		{
-			base.AddToTile(tile);
+			base.AddToTile( tile );
 
-			if ( Building != null)
+			if ( Building != null )
 			{
 				Building.Delete();
 			}
@@ -36,15 +36,15 @@ namespace CitySim
 
 			SetBuildingModel( BuildingModel );
 
-			if ( tile.IsServer )
+			if ( Game.IsServer )
 			{
-				Building.Position = tile.Position + ( Vector3.Up * SpawnHeight );
+				Building.Position = tile.Position + (Vector3.Up * SpawnHeight);
 				TargetPosition = tile.Position;
 				tile.EnableDrawing = !HideParent;
 				TickableCollection.Global.Add( this );
-			} 
+			}
 			else
-			{				
+			{
 				Building.Position = tile.Position + (Vector3.Up * SpawnHeight);
 				Building.RenderColor = Building.RenderColor.WithAlpha( 0.75f );
 			}
@@ -60,7 +60,7 @@ namespace CitySim
 
 		public override void SetVisible( bool visible )
 		{
-			if (Building != null)
+			if ( Building != null )
 			{
 				Building.EnableDrawing = visible;
 			}
@@ -72,9 +72,9 @@ namespace CitySim
 			Building?.Delete();
 		}
 
-		public void SetBuildingModel(string model)
+		public void SetBuildingModel( string model )
 		{
-			if (Building != null)
+			if ( Building != null )
 			{
 				Building.SetModel( model );
 				Building.Scale = RoadMap.TileScale;
@@ -101,7 +101,7 @@ namespace CitySim
 				Building = null;
 			}
 
-			if ( Parent.IsServer )
+			if ( Game.IsServer )
 			{
 				tile.EnableDrawing = true;
 			}
@@ -114,10 +114,10 @@ namespace CitySim
 		{
 			throw new System.NotImplementedException();
 		}
-		
-		public void SetBuildingPosition(Vector3 pos)
+
+		public void SetBuildingPosition( Vector3 pos )
 		{
-			if ( ParentCollection == null)
+			if ( ParentCollection == null )
 			{
 				TickableCollection.Global.Add( this );
 			}
@@ -126,7 +126,7 @@ namespace CitySim
 		}
 
 		void ITickable.OnServerTick( float delta, float currentTick )
-		{			
+		{
 			if ( Building != null )
 			{
 				var distance = 25f * delta;
@@ -141,7 +141,7 @@ namespace CitySim
 
 		void ITickable.OnSharedTick( float delta, float currentTick )
 		{
-			
+
 		}
 	}
 

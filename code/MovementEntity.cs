@@ -50,7 +50,7 @@ namespace CitySim
 			base.Spawn();
 			VehicleRevSound = PlaySound( "vehicle.rev" );
 			SetModel( "models/cars/normalcar1.vmdl" );
-			SetBodyGroup( "base", Rand.Int( 0, 4 ) );
+			SetBodyGroup( "base", Game.Random.Int( 0, 4 ) );
 			TickableCollection.Global.Add( this );
 			this.Name = "Movement Entity";
 		}
@@ -61,8 +61,8 @@ namespace CitySim
 			IsReverse = false;
 			CurrentIndex = -1;
 			Scale = 0.025f;
-			MovementAcceleration = Rand.Float( 0.5f, 1f );
-			MaxMovementSpeed = Rand.Float( 5f, 8f );
+			MovementAcceleration = Game.Random.Float( 0.5f, 1f );
+			MaxMovementSpeed = Game.Random.Float( 5f, 8f );
 			NavPath = path;
 			MoveToNext();
 			Position = TargetPosition;
@@ -215,7 +215,7 @@ namespace CitySim
 
 		public Vector3 NextPathPosition(float _rightOffset = 1.0f)
 		{
-			var offset = Rand.Float( _rightOffset * 0.5f, _rightOffset );
+			var offset = Game.Random.Float( _rightOffset * 0.5f, _rightOffset );
 			var nextPosition = TargetSpace.Position + (Vector3.Up * CarHeight);
 			Rotation perdictedRotation = Rotation.LookAt( nextPosition - Position, Vector3.Up );
 			nextPosition += (perdictedRotation.Right * offset);

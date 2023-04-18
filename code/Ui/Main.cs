@@ -1,9 +1,9 @@
-﻿using Sandbox.UI;
-using Sandbox;
+﻿using Sandbox;
+using Sandbox.UI;
 
 namespace CitySim.UI
 {
-	public partial class Main: Panel
+	public partial class Main : Panel
 	{
 		public Panel Base { get; set; }
 		public Label CurrentItem { get; set; }
@@ -19,9 +19,9 @@ namespace CitySim.UI
 
 		public override void Tick()
 		{
-			var player = Local.Pawn as Pawn;
+			var player = Game.LocalPawn as Pawn;
 
-			if ( player != null)
+			if ( player != null )
 			{
 				var selectedTile = player.SelectedTileType;
 				if ( selectedTile == GenericTile.TileTypeEnum.Base )
@@ -35,7 +35,7 @@ namespace CitySim.UI
 
 
 				var map = MyGame.GetMap();
-				var score = Local.Client.GetInt( "score", 0 );
+				var score = Game.LocalClient.GetInt( "score", 0 );
 
 				CurrentScore.Text = (score).ToString();
 			}

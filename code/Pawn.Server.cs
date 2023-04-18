@@ -1,17 +1,14 @@
 ﻿using Degg.Analytics;
 using Sandbox;
-using System;
-using System.Collections.Generic;
-using System.Text.Json;
 using static CitySim.GenericTile;
 
 namespace CitySim
 {
-	partial class Pawn : AnimEntity
+	partial class Pawn : AnimatedEntity
 	{
 
-		[ServerCmd]
-		public static void PlaceTile(string tileData )
+		[ConCmd.Server]
+		public static void PlaceTile( string tileData )
 		{
 			var player = ConsoleSystem.Caller.Pawn as Pawn;
 			var tile = player.GetTileLookedAt();
@@ -23,7 +20,7 @@ namespace CitySim
 
 		public void PlaceTile( GenericTile tile, string rawTileData )
 		{
-			if (!IsServer)
+			if ( !Game.IsServer )
 			{
 				return;
 			}
@@ -41,7 +38,7 @@ namespace CitySim
 				PlaySoundClientSide( "ui.navigate.deny" );
 			}
 
-			if ( MyGame.CurrentGameOptions.Mode != MyGame.GameModes.Sandbox )
+			if ( MyGame.GameObject.CurrentGameOptions.Mode != MyGame.GameModes.Sandbox )
 			{
 				SelectedTileType = GenericTile.TileTypeEnum.Base;
 			}
@@ -53,7 +50,7 @@ namespace CitySim
 			var clientScore = Client.GetInt( "score", 0 );
 
 			var score = tile.GetTileScore();
-			if ( score <= 0)
+			if ( score <= 0 )
 			{
 				score = 0;
 			}
@@ -66,7 +63,7 @@ namespace CitySim
 			RefreshSelectedTileType();
 		}
 
-		public void ServerSimulate( Client cl )
+		public void ServerSimulate( IClient cl )
 		{
 			if ( DisabledControls && false )
 			{
@@ -76,22 +73,22 @@ namespace CitySim
 			if ( MyGame.GameState == MyGame.GameStateEnum.Playing )
 			{
 				// Input Actions 
-				if ( IsServer )
+				if ( Game.IsServer )
 				{
 					// Right Click or LT
-					if ( Input.Pressed( InputButton.Attack2 ) )
+					if ( Input.Pressed( InputButton.SecondaryAttack ) )
 					{
 
 						if ( SelectedTileType != TileTypeEnum.Base )
 						{
 							PlaySoundClientSide( "ui.navigate.back" );
-							GameAnalytics.TriggerEvent( Client.PlayerId.ToString(), "tile_place", -2 );
+							GameAnalytics.TriggerEvent( Client.SteamId.ToString(), "tile_place", -2 );
 						}
 
 						SelectedTileType = TileTypeEnum.Base;
 					}
 
-					if ( MyGame.CurrentGameOptions.Mode == MyGame.GameModes.Sandbox )
+					if ( MyGame.GameObject.CurrentGameOptions.Mode == MyGame.GameModes.Sandbox )
 					{
 						GenericTile.TileTypeEnum? tileToSelect = null;
 

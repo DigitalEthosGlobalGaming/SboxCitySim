@@ -1,8 +1,9 @@
 
-using System;
-using Sandbox;
-using System.Collections.Generic;
 using CitySim;
+using Degg.Util;
+using Sandbox;
+using System;
+using System.Collections.Generic;
 
 namespace Degg.GridSystem
 {
@@ -31,7 +32,7 @@ namespace Degg.GridSystem
 		[Net]
 		public bool IsSetup { get; set; }
 
-		public GridMap( )
+		public GridMap()
 		{
 			Transmit = TransmitType.Always;
 		}
@@ -40,13 +41,13 @@ namespace Degg.GridSystem
 		{
 			base.OnDestroy();
 
-			foreach(var i in Grid)
+			foreach ( var i in Grid )
 			{
-				if ( IsServer )
+				if ( Game.IsServer )
 				{
 					i.Delete();
 				}
-			}				
+			}
 		}
 
 
@@ -78,7 +79,7 @@ namespace Degg.GridSystem
 			}
 		}
 
-		public bool CreateNextTile<T>(int x, int y) where T : GridSpace, new()
+		public bool CreateNextTile<T>( int x, int y ) where T : GridSpace, new()
 		{
 			try
 			{
@@ -91,12 +92,13 @@ namespace Degg.GridSystem
 				OnSpaceSetup( newSpace );
 				newSpace.OnAddToMap();
 				return true;
-			} catch(Exception e)
+			}
+			catch ( Exception e )
 			{
-				Log.Info( e );
+				AdvLog.Info( e );
 				return false;
 			}
-			
+
 		}
 
 		public void CheckFinish()
@@ -104,7 +106,8 @@ namespace Degg.GridSystem
 			IsStarting = true;
 		}
 
-		public int TransformGridPosition(int x, int y)		{
+		public int TransformGridPosition( int x, int y )
+		{
 			return (x * YSize) + y;
 		}
 		public int TransformGridPosition( float x, float y )
@@ -116,7 +119,7 @@ namespace Degg.GridSystem
 		{
 			var grid = new List<GridSpace>();
 
-			foreach(var item in Grid)
+			foreach ( var item in Grid )
 			{
 				grid.Add( item );
 			}
@@ -135,7 +138,7 @@ namespace Degg.GridSystem
 		}
 		public Vector3 GetMapSize()
 		{
-			return new Vector3(this.GridSize * new Vector2(XSize, YSize));
+			return new Vector3( this.GridSize * new Vector2( XSize, YSize ) );
 		}
 
 		public GridSpace GetSpace( float x, float y )
@@ -145,27 +148,27 @@ namespace Degg.GridSystem
 
 		public GridSpace GetSpace( int x, int y )
 		{
-			if ( Grid == null)
+			if ( Grid == null )
 			{
 				return null;
 			}
 			if ( (x < XSize && x >= 0) && (y < YSize && y >= 0) )
 			{
 				var amount = TransformGridPosition( x, y );
-				if (amount >= 0 && amount < Grid.Count)
+				if ( amount >= 0 && amount < Grid.Count )
 				{
 					return Grid[amount];
 				}
-				
+
 			}
 
 			return null;
 		}
 
 
-		public List<GridSpace> CreatePath(Vector2 start, Vector2 end )
+		public List<GridSpace> CreatePath( Vector2 start, Vector2 end )
 		{
-			var mesh =  new NavMesh( this );
+			var mesh = new NavMesh( this );
 			return mesh.BuildPath( start, end );
 		}
 
@@ -177,8 +180,8 @@ namespace Degg.GridSystem
 		public GridSpace GetRandomSpace()
 		{
 			var rnd = new Random();
-			var x = rnd.Next( 0, XSize-1 );
-			var y = rnd.Next( 0, YSize-1 );
+			var x = rnd.Next( 0, XSize - 1 );
+			var y = rnd.Next( 0, YSize - 1 );
 
 			return GetSpace( (int)x, (int)y );
 		}
@@ -186,12 +189,12 @@ namespace Degg.GridSystem
 		public List<T> GetTilesAtEdgeOfMap<T>() where T : GridSpace
 		{
 			List<T> tiles = new();
-			for ( int i = 0; i < XSize -1; i++ )
+			for ( int i = 0; i < XSize - 1; i++ )
 			{
 				tiles.Add( (T)GetSpace( i, 0 ) );
-				tiles.Add( (T)GetSpace( i, YSize -1 ) );
+				tiles.Add( (T)GetSpace( i, YSize - 1 ) );
 			}
-			for ( int i = 0; i < YSize -1; i++ )
+			for ( int i = 0; i < YSize - 1; i++ )
 			{
 				tiles.Add( (T)GetSpace( 0, i ) );
 				tiles.Add( (T)GetSpace( XSize - 1, i ) );
@@ -233,7 +236,7 @@ namespace Degg.GridSystem
 			return true;
 		}
 
-		public virtual void OnSpaceSetup(GridSpace space)
+		public virtual void OnSpaceSetup( GridSpace space )
 		{
 
 		}
@@ -243,7 +246,7 @@ namespace Degg.GridSystem
 
 		}
 
-		
+
 
 
 		public virtual void ClientTick()

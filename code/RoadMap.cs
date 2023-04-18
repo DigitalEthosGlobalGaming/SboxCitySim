@@ -17,15 +17,16 @@ namespace CitySim
 		[Net]
 		public float TimeForNewPiece { get; set; }
 		[Net]
-		public float Score { get; set;}
+		public float Score { get; set; }
 
-		public void UpdateScore() {
+		public void UpdateScore()
+		{
 			CheckGameEnd();
 		}
 
 
 
-		public int CalculateTileScore(GenericTile tile)
+		public int CalculateTileScore( GenericTile tile )
 		{
 			var score = 1;
 
@@ -37,7 +38,7 @@ namespace CitySim
 				score += a.GetTileScore( b );
 			}
 
-			if ( score  < 0)
+			if ( score < 0 )
 			{
 				score = 0;
 			}
@@ -45,20 +46,20 @@ namespace CitySim
 			return score;
 		}
 
-		public void Init(int xAmount, int yAmount)
+		public void Init( int xAmount, int yAmount )
 		{
 			Init<GenericTile>( new Vector3( 0, 0, 250 ), new Vector2( TileScale * 200.0f, TileScale * 200.0f ), xAmount, yAmount );
 		}
 
-		public override void OnSpaceSetup(GridSpace space)
+		public override void OnSpaceSetup( GridSpace space )
 		{
-			
+
 		}
 
 		public override void OnSetup()
 		{
-			var numberOfRows = Rand.Int( 1, 4 );
-			var numberOfCols = Rand.Int( 1, 4 );
+			var numberOfRows = Game.Random.Int( 1, 4 );
+			var numberOfCols = Game.Random.Int( 1, 4 );
 			var startX = 0;
 			var startY = 0;
 			var xStart = XSize - startX - 1;
@@ -68,7 +69,7 @@ namespace CitySim
 			for ( int row = 0; row < numberOfRows; row++ )
 			{
 
-				var xPosition = Rand.Int( startX, xStart );
+				var xPosition = Game.Random.Int( startX, xStart );
 				for ( int i = 0; i < XSize; i++ )
 				{
 					var space = (GenericTile)GetSpace( i, xPosition );
@@ -81,7 +82,7 @@ namespace CitySim
 
 			for ( int col = 0; col < numberOfCols; col++ )
 			{
-				var yPosition = Rand.Int( startY, yStart );
+				var yPosition = Game.Random.Int( startY, yStart );
 				for ( int i = 0; i < YSize; i++ )
 				{
 					var space = (GenericTile)GetSpace( yPosition, i );
@@ -126,14 +127,14 @@ namespace CitySim
 
 		public void GivePlayersNewPiece()
 		{
-			if (MyGame.GameState != MyGame.GameStateEnum.Playing)
+			if ( MyGame.GameState != MyGame.GameStateEnum.Playing )
 			{
 				return;
 			}
-			foreach(var client in Client.All)
+			foreach ( var client in Game.Clients )
 			{
 				var player = client.Pawn;
-				if (player is Pawn)
+				if ( player is Pawn )
 				{
 					var p = player as Pawn;
 					if ( p.SelectedTileType == GenericTile.TileTypeEnum.Base )
@@ -148,11 +149,11 @@ namespace CitySim
 		{
 			base.ServerTick();
 
-			if (MyGame.GameState == MyGame.GameStateEnum.Playing)
+			if ( MyGame.GameState == MyGame.GameStateEnum.Playing )
 			{
-				if (TimeBetweenPieces > 0 && TimeForNewPiece < Time.Now )
+				if ( TimeBetweenPieces > 0 && TimeForNewPiece < Time.Now )
 				{
-					TimeForNewPiece = Time.Now + TimeBetweenPieces + (Client.All.Count * TimeBetweenPiecesModifier);
+					TimeForNewPiece = Time.Now + TimeBetweenPieces + (Game.Clients.Count * TimeBetweenPiecesModifier);
 					GivePlayersNewPiece();
 				}
 			}
@@ -162,7 +163,7 @@ namespace CitySim
 		{
 			// Conversion is expensive...
 			List<GenericTile> tiles = new List<GenericTile>( this.Grid.Count );
-			for (int i = 0; i < this.Grid.Count; i++)
+			for ( int i = 0; i < this.Grid.Count; i++ )
 			{
 				tiles.Add( (GenericTile)this.Grid[i] );
 			}

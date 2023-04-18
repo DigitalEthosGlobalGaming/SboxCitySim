@@ -128,7 +128,7 @@ namespace CitySim
 			// Spawn the maximum amount of tiles in need, within the range of the MAX_VEHICLE_SPAWN_RATE.
 			for ( var i = 0; i < System.Math.Min( tilesInNeed.Count, MAX_VEHICLE_SPAWN_RATE ); i++ )
 			{
-				int randNum = Rand.Int( 100 );
+				int randNum = Game.Random.Int( 100 );
 
 				if (randNum < 25)
 				{
@@ -151,7 +151,7 @@ namespace CitySim
 				{
 					SpawnVehicle( new CityAmbianceVehicleBehaviour()
 					{
-						bodyIndex = (uint)Rand.Int(0, 4),
+						bodyIndex = (uint)Game.Random.Int(0, 4),
 
 						deliveryTileType = GenericTile.TileTypeEnum.Business,
 
@@ -179,7 +179,7 @@ namespace CitySim
 			{
 				if (ambulanceCount < MAX_VEHICLE_SPAWN_RATE/2)
 				{
-					int randNum = Rand.Int( 100 );
+					int randNum = Game.Random.Int( 100 );
 					if ( randNum <= 5 )
 					{
 						SpawnVehicle<AmbulanceEntityMovement>( new CityAmbianceVehicleBehaviour()
@@ -280,7 +280,7 @@ namespace CitySim
 				return;
 			}
 
-			GenericTile deliveryTile = Rand.FromList( deliveryTiles );
+			GenericTile deliveryTile = Game.Random.FromList( deliveryTiles );
 			var need = deliveryTile?.Controller?.Needs;
 			if ( need == null)
 			{
@@ -308,7 +308,7 @@ namespace CitySim
 
 			Log.Info( "Creating" );
 
-			GenericTile spawnTile = Rand.FromList( possibleTiles );
+			GenericTile spawnTile = Game.Random.FromList( possibleTiles );
 
 			var path = roadMap.CreatePath( spawnTile.GridPosition, deliveryTile.GridPosition );
 
@@ -319,7 +319,7 @@ namespace CitySim
 
 			ent.OnFinishEvents.Enqueue( () =>
 			{
-				need.Supply += Rand.Int( behaviour.randFoodCapacityMin, behaviour.randFoodCapacityMax );
+				need.Supply += Game.Random.Int( behaviour.randFoodCapacityMin, behaviour.randFoodCapacityMax );
 				need.Supply = (int)MathX.Clamp( need.Supply, 0, need.MaxSupply );
 				need.IsDelivering = false;
 

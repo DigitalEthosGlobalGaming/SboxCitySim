@@ -1,6 +1,7 @@
 ﻿using CitySim.UI;
 using CitySim.Utils;
 using Degg.Analytics;
+using Degg.Util;
 using Sandbox;
 
 //
@@ -8,7 +9,6 @@ using Sandbox;
 //
 namespace CitySim
 {
-	[Library( "citysim" ), Hammer.Skip]
 	/// <summary>
 	/// This is your game class. This is an entity that is created serverside when
 	/// the game starts, and is replicated to the client. 
@@ -16,7 +16,7 @@ namespace CitySim
 	/// You can use this to create things like HUDs and declare which player class
 	/// to use for spawned players.
 	/// </summary>
-	public partial class MyGame : Sandbox.Game
+	public partial class MyGame : GameManager
 	{
 		public static MyGame GameObject { get; set; }
 		public static GameUi Ui { get; set; } = null;
@@ -31,7 +31,7 @@ namespace CitySim
 			SetupAnalytics();
 
 			GameObject = this;
-			if ( IsServer )
+			if ( Game.IsServer )
 			{
 				GameAnalytics.TriggerEvent( null, "game_start" );
 			}
@@ -46,7 +46,7 @@ namespace CitySim
 		/// <summary>
 		/// A client has joined the server. Make them a pawn to play with
 		/// </summary>
-		public override void ClientJoined( Client client )
+		public override void ClientJoined( IClient client )
 		{
 			base.ClientJoined( client );
 
@@ -54,12 +54,12 @@ namespace CitySim
 			var pawn = new Pawn();
 			client.Pawn = pawn;
 
-			if ( IsServer )
+			if ( Game.IsServer )
 			{
-				GameAnalytics.TriggerEvent( client.PlayerId.ToString(), "game_join" );
+				GameAnalytics.TriggerEvent( client.SteamId.ToString(), "game_join" );
 			}
 
-			if (Map != null)
+			if ( Map != null )
 			{
 				pawn.Position = Map.Position;
 				pawn.PivotPoint = Map.Position;
@@ -67,13 +67,13 @@ namespace CitySim
 			UpdateClientGameState( GameState );
 		}
 
-		public override void ClientDisconnect( Client cl, NetworkDisconnectionReason reason )
+		public override void ClientDisconnect( IClient cl, NetworkDisconnectionReason reason )
 		{
 			base.ClientDisconnect( cl, reason );
-			GameAnalytics.TriggerEvent( cl.PlayerId.ToString(), "game_disconnect", (int)reason  );
+			GameAnalytics.TriggerEvent( cl.SteamId.ToString(), "game_disconnect", (int)reason );
 		}
 
-		[ServerCmd( "cs.debug.cleanupEntities" )]
+		[ConCmd.Server( "cs.debug.cleanupEntities" )]
 		public static void CleanupEntitiesCmd()
 		{
 			foreach ( var entity in Entity.All )
@@ -86,7 +86,7 @@ namespace CitySim
 
 			CleanupWorldUIRpc();
 		}
-		[ClientCmd("cs.debug.cleanupWorldUI")]
+		[ConCmd.Client( "cs.debug.cleanupWorldUI" )]
 		public static void CleanupWorldUICmd()
 		{
 			CleanupWorldUIRpc();
@@ -101,24 +101,16 @@ namespace CitySim
 			}
 		}
 
-#if DEBUG && !RELEASE
-		[ServerCmd( "cs.test.updateMap" )]
-		public static void TestServerCmd()
-		{
-			((MyGame)Current).RefreshMap();
-		}
-#endif
-
 
 		public void CreateUi()
 		{
-			if ( IsClient )
+			if ( Game.IsClient )
 			{
-				if (Ui != null)
+				if ( Ui != null )
 				{
 					Ui.Delete();
 				}
-			
+
 				Ui = new GameUi();
 			}
 
@@ -127,7 +119,7 @@ namespace CitySim
 		[Event.Hotload]
 		public void OnLoad()
 		{
-			if ( IsServer )
+			if ( Game.IsServer )
 			{
 				SetupAnalytics();
 			}
@@ -140,14 +132,14 @@ namespace CitySim
 		{
 			if ( Map != null )
 			{
-				foreach(var item in Map.Grid)
+				foreach ( var item in Map.Grid )
 				{
 					// ((GenericTile)item).CheckModel();
 				}
 			}
 			else
 			{
-				Log.Info( "NO MAP" );
+				AdvLog.Info( "NO MAP" );
 			}
 		}
 
@@ -172,12 +164,12 @@ namespace CitySim
 		[Event.Tick.Server]
 		public void ServerTick()
 		{
-			if ( TickableCollection.Global != null)
+			if ( TickableCollection.Global != null )
 			{
 				TickableCollection.Global.ServerTick();
 			}
 
-			if (CityAmbianceSystem != null)
+			if ( CityAmbianceSystem != null )
 			{
 				CityAmbianceSystem.Update();
 			}
@@ -186,7 +178,7 @@ namespace CitySim
 			{
 				Map.ServerTick();
 			}
-			if ( GameState == GameStateEnum.End && StartGameTimer < Time.Now)
+			if ( GameState == GameStateEnum.End && StartGameTimer < Time.Now )
 			{
 				SetGameState( GameStateEnum.Start );
 			}

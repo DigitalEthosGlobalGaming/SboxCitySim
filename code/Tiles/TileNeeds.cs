@@ -25,7 +25,7 @@ namespace CitySim
 			Supply = startingSupply;
 		}
 
-		public TileNeeds(int startingMin, int startingMax): this( Rand.Int( startingMin, startingMax ) )
+		public TileNeeds(int startingMin, int startingMax): this( Game.Random.Int( startingMin, startingMax ) )
 		{
 
 		}

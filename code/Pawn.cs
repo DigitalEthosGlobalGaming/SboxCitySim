@@ -1,15 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text.Json;
-using Degg.Analytics;
-using Degg.GridSystem;
-using Degg.Util;
+﻿using Degg.Util;
 using Sandbox;
+using System;
 using static CitySim.GenericTile;
 
 namespace CitySim
 {
-	partial class Pawn : AnimEntity
+	partial class Pawn : AnimatedEntity
 	{
 		/// <summary>
 		/// Called when the entity is first created 
@@ -18,15 +14,23 @@ namespace CitySim
 
 		public static Pawn GetClientPawn()
 		{
-			
-			return (Pawn)Local.Client?.Pawn;
+
+			return (Pawn)Game.LocalClient?.Pawn;
 		}
 
-		public int Score {
-			get { return Client.GetInt("score", 0); }
+		public int Score
+		{
+			get { return Client.GetInt( "score", 0 ); }
 			set
 			{
-				Client.SetInt( "score", value );
+				try
+				{
+					Client.SetInt( "score", value );
+				}
+				catch ( Exception e )
+				{
+					AdvLog.Error( e );
+				}
 			}
 		}
 
@@ -52,7 +56,7 @@ namespace CitySim
 		[Net]
 		public GenericTile.TileTypeEnum SelectedTileType { get; set; } = GenericTile.TileTypeEnum.Base;
 		public GenericTile.TileTypeEnum LastSelectedTileType { get; set; } = GenericTile.TileTypeEnum.Base;
-		
+
 		[Net]
 		public int TileMaterialIndex { get; set; } = 0;
 
@@ -69,12 +73,25 @@ namespace CitySim
 
 		[Net, Predicted]
 		private float UpDistance { get; set; }
+
+		// An example BuildInput method within a player's Pawn class.
+		[ClientInput] public Vector3 InputDirection { get; protected set; }
+		[ClientInput] public Angles ViewAngles { get; set; }
+
+		public override void BuildInput()
+		{
+			InputDirection = Input.AnalogMove;
+
+			var look = Input.AnalogLook;
+
+			var viewAngles = ViewAngles;
+			viewAngles += look;
+			ViewAngles = viewAngles.Normal;
+		}
 		public override void Spawn()
 		{
 			base.Spawn();
 			UpDistance = 250f;
-
-			SetModel( "models/sbox_props/watermelon/watermelon.vmdl" );
 
 
 			EnableAllCollisions = false; // Disable all the collisions, so we can ensure we don't collide with the world.
@@ -92,7 +109,7 @@ namespace CitySim
 		}
 
 
-		
+
 		[Event.Hotload]
 		public void OnLoad()
 		{
@@ -100,7 +117,7 @@ namespace CitySim
 		}
 
 
-		[ServerCmd]
+		[ConCmd.Server]
 		public static void SetControlsDisabledCmd( bool value )
 		{
 			Pawn pawn = (Pawn)ConsoleSystem.Caller.Pawn;
@@ -110,16 +127,15 @@ namespace CitySim
 
 		public void ResetPivotPoint()
 		{
-
-			PivotPoint = (MyGame.GameObject.Map?.Position ?? null).GetValueOrDefault(Vector3.Zero);
+			PivotPoint = (MyGame.GameObject.Map?.Position ?? null).GetValueOrDefault( Vector3.Zero );
 		}
 
 		public GenericTile GetTileLookedAt()
 		{
-			var endPos = EyePosition + (EyeRotation.Forward * 4000);
-			var mytrace = Trace.Ray( EyePosition, endPos );
+			var endPos = Position + (Rotation.Forward * 4000);
+			var mytrace = Trace.Ray( Position, endPos );
 
-			if (GhostTile != null)
+			if ( GhostTile != null )
 			{
 				mytrace.Ignore( GhostTile );
 			}
@@ -135,17 +151,22 @@ namespace CitySim
 		/// <summary>
 		/// Called every tick, clientside and serverside.
 		/// </summary>
-		public override void Simulate( Client cl )
+		public override void Simulate( IClient cl )
 		{
 			if ( DisabledControls && false )
 			{
 				return;
 			}
 
-			// Handle the Controls
-			if (Input.UsingController)
+			if ( AdvInput.Pressed( InputButton.Reload ) )
 			{
-				UpDistance += Input.Rotation.y;
+				ResetPivotPoint();
+			}
+
+			// Handle the Controls
+			if ( Input.UsingController )
+			{
+				UpDistance += ViewAngles.ToRotation().y;
 			}
 			else
 			{
@@ -172,7 +193,6 @@ namespace CitySim
 
 			// Handle the Camera looking at the pivot point
 			Rotation = Rotation.LookAt( (PivotPoint - Position).Normal );
-			EyeRotation = Rotation;
 
 			// Ensure we have a 2D Rotation Forward
 			Vector3 flatForward = Rotation.Forward;
@@ -180,7 +200,7 @@ namespace CitySim
 			flatForward = flatForward.Normal;
 
 			// build movement from the input values
-			var movement = new Vector3( Input.Forward, Input.Left, 0 ).Normal;
+			var movement = InputDirection.Normal;
 
 			// move it towards the direction we're facing
 			Velocity = Rotation.LookAt( flatForward ) * movement;
@@ -190,7 +210,7 @@ namespace CitySim
 
 			// Modify the pivot point position.
 			PivotPoint += Velocity * Time.Delta;
-			if (PivotPoint.z < MyGame.GetMap()?.Position.z)
+			if ( PivotPoint.z < MyGame.GetMap()?.Position.z )
 			{
 				ResetPivotPoint();
 			}
@@ -201,10 +221,14 @@ namespace CitySim
 			// Animate towards the desired position.
 			Position = Vector3.Lerp( Position, desiredPosition, Time.Delta * CameraFollowSmoothing );
 
-			if (IsClient)
+			Camera.Position = Position;
+			Camera.Rotation = Rotation;
+
+			if ( Game.IsClient )
 			{
 				ClientSimulate();
-			} else
+			}
+			else
 			{
 				ServerSimulate( cl );
 			}
@@ -228,15 +252,16 @@ namespace CitySim
 				}
 			}
 		}
-		
-		
+
+
 
 		public void OnTileHover( GenericTile tile )
 		{
 
 			SetGhost( tile );
-			if (IsClient) { 
-				RefreshSelectedTileType(tile);				
+			if ( Game.IsClient )
+			{
+				RefreshSelectedTileType( tile );
 			}
 		}
 
@@ -244,14 +269,14 @@ namespace CitySim
 		{
 			var start = 1;
 			var end = 5;
-			var rndInt = Rand.Int( start, end );
+			var rndInt = Game.Random.Int( start, end );
 			if ( rndInt > 4 )
 			{
 				SelectNextTile( GenericTile.TileTypeEnum.House );
 			}
 			else
 			{
-				SelectNextTile((GenericTile.TileTypeEnum)Enum.GetValues( typeof( GenericTile.TileTypeEnum ) ).GetValue( rndInt ));
+				SelectNextTile( (GenericTile.TileTypeEnum)Enum.GetValues( typeof( GenericTile.TileTypeEnum ) ).GetValue( rndInt ) );
 			}
 		}
 
@@ -267,7 +292,7 @@ namespace CitySim
 			RefreshSelectedTileType();
 		}
 
-		
+
 
 		[ClientRpc]
 		public void PlaySoundClientSide( string name )
@@ -278,7 +303,7 @@ namespace CitySim
 
 
 		[ClientRpc]
-		public void SpawnGhost(GenericTile tile)
+		public void SpawnGhost( GenericTile tile )
 		{
 			if ( tile != null )
 			{
@@ -291,7 +316,6 @@ namespace CitySim
 						// Spawn's the Ghost Local Model
 						GhostTile = new ModelEntity
 						{
-							EnableDrawOverWorld = true,
 							Name = "Ghost Tile",
 							PhysicsEnabled = false,
 							Transmit = TransmitType.Never,

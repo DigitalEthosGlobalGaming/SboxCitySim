@@ -1,7 +1,4 @@
-﻿using CitySim.UI;
-using CitySim.Utils;
-using Degg.GridSystem;
-using Sandbox;
+﻿using Sandbox;
 using static CitySim.GenericTile;
 
 namespace CitySim
@@ -9,7 +6,7 @@ namespace CitySim
 	public partial class ParkTileController : BuildingTileController
 	{
 
-		public ParkTileController(): base( "models/buildings/forest.vmdl" )
+		public ParkTileController() : base( "models/buildings/forest.vmdl" )
 		{
 			HideParent = true;
 		}
@@ -19,17 +16,17 @@ namespace CitySim
 			return TileTypeEnum.Park;
 		}
 
-		public override void AddToTile(GenericTile tile)
+		public override void AddToTile( GenericTile tile )
 		{
-			base.AddToTile(tile);
-			
-			Building.SetBodyGroup( "rock1", Rand.Int( 0, 2 ) );
-			Building.SetBodyGroup( "rock2", Rand.Int( 0, 2 ) );
-			Building.SetBodyGroup( "rock3", Rand.Int( 0, 2 ) );
-			Building.SetBodyGroup( "bush1", Rand.Int( 0, 2 ) );
-			Building.SetBodyGroup( "bush2", Rand.Int( 0, 2 ) );
-			Building.SetBodyGroup( "bush3", Rand.Int( 0, 2 ) );
-			if ( Parent.IsServer )
+			base.AddToTile( tile );
+
+			Building.SetBodyGroup( "rock1", Game.Random.Int( 0, 2 ) );
+			Building.SetBodyGroup( "rock2", Game.Random.Int( 0, 2 ) );
+			Building.SetBodyGroup( "rock3", Game.Random.Int( 0, 2 ) );
+			Building.SetBodyGroup( "bush1", Game.Random.Int( 0, 2 ) );
+			Building.SetBodyGroup( "bush2", Game.Random.Int( 0, 2 ) );
+			Building.SetBodyGroup( "bush3", Game.Random.Int( 0, 2 ) );
+			if ( Game.IsServer )
 			{
 				Parent.EnableDrawing = false;
 			}
@@ -37,7 +34,7 @@ namespace CitySim
 		public override void RemoveFromTile( GenericTile tile )
 		{
 			base.RemoveFromTile( tile );
-			if ( Parent.IsServer )
+			if ( Game.IsServer )
 			{
 				Parent.EnableDrawing = true;
 			}

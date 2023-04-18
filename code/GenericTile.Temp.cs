@@ -137,7 +137,7 @@ namespace CitySim
 				return null;
 			}
 
-			var index = Rand.Int( 0, connectedTiles.Count - 1 );
+			var index = Game.Random.Int( 0, connectedTiles.Count - 1 );
 			return (GenericTile) connectedTiles[index];
 		}
 	}

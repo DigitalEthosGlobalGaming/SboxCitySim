@@ -19,20 +19,20 @@ namespace Degg.Util
 			Backend.DeggBackend.SendEvent( "report", message );
 		}
 
-		private static void ClientPrint(object message, ReportSeverity severity = ReportSeverity.Info )
+		private static void ClientPrint( object message, ReportSeverity severity = ReportSeverity.Info )
 		{
-			if ( Game.Current.IsClient )
+			if ( Game.IsClient )
 			{
 				switch ( severity )
 				{
 					case ReportSeverity.Info:
-						Log.Info( $"[CLIENT] {message}" );
+						AdvLog.Info( $"[CLIENT] {message}" );
 						break;
 					case ReportSeverity.Warning:
-						Log.Warning( $"[CLIENT] {message}" );
+						AdvLog.Warning( $"[CLIENT] {message}" );
 						break;
 					case ReportSeverity.Error:
-						Log.Error( $"[CLIENT] {message}" );
+						AdvLog.Error( $"[CLIENT] {message}" );
 						break;
 				}
 			}
@@ -40,7 +40,7 @@ namespace Degg.Util
 
 		private static void ServerPrint( object message, ReportSeverity severity = ReportSeverity.Info )
 		{
-			if ( Game.Current.IsServer )
+			if ( Game.IsServer )
 			{
 				switch ( severity )
 				{

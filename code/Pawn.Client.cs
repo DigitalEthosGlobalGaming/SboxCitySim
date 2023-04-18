@@ -1,13 +1,10 @@
-﻿using Degg.Util;
-using Sandbox;
+﻿using Sandbox;
 using System;
-using System.Collections.Generic;
-using System.Text.Json;
 using static CitySim.GenericTile;
 
 namespace CitySim
 {
-	partial class Pawn : AnimEntity
+	partial class Pawn : AnimatedEntity
 	{
 
 		[ClientRpc]
@@ -78,14 +75,14 @@ namespace CitySim
 		[ClientRpc]
 		public void SetGhost( GenericTile tile )
 		{
-			if ( IsClient )
+			if ( Game.IsClient )
 			{
 				if ( tile != null )
 				{
 
 					if ( Ghost == null )
 					{
-						Ghost = Create<ModelEntity>();
+						Ghost = (ModelEntity)CreateByName( "ModelEntity" );
 					}
 
 					Ghost.SetModel( "models/roads/street_ghost.vmdl" );
@@ -93,7 +90,8 @@ namespace CitySim
 					Ghost.Scale = tile.Scale;
 					Ghost.EnableShadowCasting = false;
 
-				} else
+				}
+				else
 				{
 					Ghost?.Delete();
 					Ghost = null;
@@ -107,12 +105,12 @@ namespace CitySim
 			// Gameplay Controls
 			if ( MyGame.GameState == MyGame.GameStateEnum.Playing )
 			{
-				if ( IsClient )
+				if ( Game.IsClient )
 				{
 					// Always raycast to check if the user has moved their selection else-where.
 					GenericTile tile = GetTileLookedAt();
 
-					if ( Input.Pressed( InputButton.Attack1 ) )
+					if ( Input.Pressed( InputButton.PrimaryAttack ) )
 					{
 						var tileData = GhostController?.SerializeToJson();
 						if ( tileData != null )

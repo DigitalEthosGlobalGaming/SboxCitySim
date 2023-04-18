@@ -1,6 +1,5 @@
 ﻿using Degg.UI;
 using Degg.UI.Elements;
-using Degg.UI.Forms;
 using Degg.UI.Forms.Elements;
 using Degg.Util;
 using Sandbox;
@@ -8,7 +7,7 @@ using Sandbox.UI;
 
 namespace CitySim.UI
 {
-	public partial class StartScreen: Panel
+	public partial class StartScreen : Panel
 	{
 
 		public Degg.UI.Forms.Form Form { get; set; }
@@ -49,15 +48,15 @@ namespace CitySim.UI
 			SetClass( "open", Input.Down( InputButton.Score ) );
 		}
 
-		public void VoteToStart(MyGame.GameModes mode)
+		public void VoteToStart( MyGame.GameModes mode )
 		{
-			var pawn = (Pawn)Local.Client.Pawn;
+			var pawn = (Pawn)Game.LocalPawn;
 			var opened = pawn.DisabledControls;
 			if ( !opened )
 			{
 				MyGame.VoteToStart( mode );
 			}
-			
+
 		}
 
 	}

@@ -1,3 +1,2 @@
-/code/obj
-/.vs
-*.csproj
+code/obj/Debug/
+code/obj/

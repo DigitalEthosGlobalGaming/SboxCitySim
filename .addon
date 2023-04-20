@@ -13,7 +13,9 @@
   ],
   "HasCode": true,
   "CodePath": "/code/",
-  "PackageReferences": [],
+  "PackageReferences": [
+    "degg.needs"
+  ],
   "EditorReferences": null,
   "Metadata": {
     "MaxPlayers": 64,
@@ -26,6 +28,10 @@
     "RankType": "None",
     "PerMapRanking": false,
     "LeaderboardType": "None",
-    "ProjectTemplate": null
+    "ProjectTemplate": null,
+    "CsProjName": "",
+    "Summary": "Work together to build a city.",
+    "Description": "Build a city together but also try to steer the city to meet your hidden goal.",
+    "Public": true
   }
 }

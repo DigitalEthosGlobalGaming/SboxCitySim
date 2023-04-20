@@ -1,5 +1,4 @@
-﻿using Degg.GridSystem;
-using Sandbox;
+﻿using Sandbox;
 using System;
 using System.Collections.Generic;
 
@@ -24,7 +23,7 @@ namespace CitySim
 
 		// Tell the City Ambiance System, where you want to spawn this vehicle type.
 		public CityAmbianceVehicleSpawnType spawnFromType;
-		
+
 		// This will determine which tile that a vehicle will spawn from.
 		public GenericTile.TileTypeEnum spawnTileType;
 		// This integer is applied to sub catagories like Spawn Tile Road, and Road Type of any type.
@@ -37,31 +36,31 @@ namespace CitySim
 
 	public class CityAmbianceSystem
 	{
-		public static uint MAX_VEHICLE_LIMIT = 100;
-		public static int MAX_VEHICLE_SPAWN_RATE = 10;
- 		private static float TICKINTERVAL = 5f;
+		public static uint MAX_VEHICLE_LIMIT = 1000;
+		public static int MAX_VEHICLE_SPAWN_RATE = 100;
+		private static float TICKINTERVAL = 1f;
 
-		public int Deliverers 
+		public int Deliverers
 		{
 			get
 			{
 				int count = 0;
 				foreach ( var ent in MovementEntity.All )
 				{
-					if (ent is MovementEntity)
+					if ( ent is MovementEntity )
 					{
 						count++;
 					}
 				}
 				return count;
-			} 
+			}
 		}
 
 		private float nextTick = 0;
 
 		private RoadMap roadMap;
-		
-		public CityAmbianceSystem(RoadMap _roadMap)
+
+		public CityAmbianceSystem( RoadMap _roadMap )
 		{
 			roadMap = _roadMap;
 		}
@@ -72,8 +71,8 @@ namespace CitySim
 			List<GenericTile> tiles = roadMap.GetGenericTiles();
 			tiles.FindAll( ( tile ) =>
 			{
-				return tile.HasNeeds && 
-				tile.FoodSupply <= 0 && 
+				return tile.HasNeeds &&
+				tile.FoodSupply <= 0 &&
 				tile.DeliveryEntities.Count == 0;
 			} );
 
@@ -84,27 +83,27 @@ namespace CitySim
 		{
 			List<GenericTile> listInNeed = new List<GenericTile>();
 			// Scan all the Grids and update their Food Supplies.
-			foreach (var grid in roadMap.Grid)
+			foreach ( var grid in roadMap.Grid )
 			{
 				if ( grid is GenericTile tile )
 				{
 					var need = tile.Controller?.Needs;
-					if (need == null)
+					if ( need == null )
 					{
 						continue;
 					}
 
-					if ( need.IsDelivering)
+					if ( need.IsDelivering )
 					{
 						continue;
 					}
 
 					need.Supply -= need.Demand;
 
-					if ( need.Supply <= 0)
+					if ( need.Supply <= 0 )
 					{
 						need.Supply = 0;
-						listInNeed.Add(tile);
+						listInNeed.Add( tile );
 					}
 				}
 			}
@@ -114,7 +113,7 @@ namespace CitySim
 
 		public void Update()
 		{
-			if (nextTick > Time.Now)
+			if ( nextTick > Time.Now )
 			{
 				// Not ready to execute the this tick.
 				return;
@@ -130,14 +129,14 @@ namespace CitySim
 			{
 				int randNum = Game.Random.Int( 100 );
 
-				if (randNum < 25)
+				if ( randNum < 25 )
 				{
 					SpawnVehicle( new CityAmbianceVehicleBehaviour()
 					{
 						bodyIndex = 6,
-					
+
 						deliveryTileType = GenericTile.TileTypeEnum.Business,
-					
+
 						randFoodCapacityMax = 6,
 						randFoodCapacityMin = 3,
 
@@ -151,7 +150,7 @@ namespace CitySim
 				{
 					SpawnVehicle( new CityAmbianceVehicleBehaviour()
 					{
-						bodyIndex = (uint)Game.Random.Int(0, 4),
+						bodyIndex = (uint)Game.Random.Int( 0, 4 ),
 
 						deliveryTileType = GenericTile.TileTypeEnum.Business,
 
@@ -177,7 +176,7 @@ namespace CitySim
 			int ambulanceCount = 0;
 			foreach ( var hospitalTile in hospitalTiles )
 			{
-				if (ambulanceCount < MAX_VEHICLE_SPAWN_RATE/2)
+				if ( ambulanceCount < MAX_VEHICLE_SPAWN_RATE / 2 )
 				{
 					int randNum = Game.Random.Int( 100 );
 					if ( randNum <= 5 )
@@ -220,14 +219,15 @@ namespace CitySim
 			}
 
 			List<GenericTile> possibleTiles = new List<GenericTile>();
-			
+
 			// Create a list of possible tiles that the later logic can determine which one will be picked for spawning and delivering the package.
-			switch(behaviour.spawnFromType)
+			switch ( behaviour.spawnFromType )
 			{
 				case CityAmbianceVehicleSpawnType.Edge:
 					{
 						List<GenericTile> tiles = roadMap.GetTilesAtEdgeOfMap<GenericTile>();
-						tiles = tiles.FindAll( ( tile ) => {
+						tiles = tiles.FindAll( ( tile ) =>
+						{
 							return tile.GetTileType() == behaviour.spawnTileType;
 						} );
 
@@ -238,7 +238,8 @@ namespace CitySim
 				case CityAmbianceVehicleSpawnType.Tile:
 					{
 						List<GenericTile> tiles = roadMap.GetGenericTiles();
-						tiles = tiles.FindAll( ( tile ) => {
+						tiles = tiles.FindAll( ( tile ) =>
+						{
 							return tile.GetTileType() == behaviour.spawnTileType;
 						} );
 
@@ -254,35 +255,36 @@ namespace CitySim
 			}
 
 			// Verify that we have possible places to spawn.
-			if (possibleTiles.Count == 0)
+			if ( possibleTiles.Count == 0 )
 			{
 				return;
 			}
 
 			// After we know the spawn points we can start looking for delivery points, so we can calculate a point to goto.
 			List<GenericTile> deliveryTiles = roadMap.GetGenericTiles();
-			deliveryTiles = deliveryTiles.FindAll( ( tile ) => {
+			deliveryTiles = deliveryTiles.FindAll( ( tile ) =>
+			{
 				var needs = tile?.Controller?.Needs;
 
-				if ( needs == null)
+				if ( needs == null )
 				{
 					return false;
 				}
 
-				return needs.Supply <= 0 && 
-				tile.GetTileType() == behaviour.deliveryTileType && 
+				return needs.Supply <= 0 &&
+				tile.GetTileType() == behaviour.deliveryTileType &&
 				tile.IsNextToRoad();
 			} );
 
 			// Verify that we have places to deliver.
-			if (deliveryTiles.Count == 0)
+			if ( deliveryTiles.Count == 0 )
 			{
 				return;
 			}
 
 			GenericTile deliveryTile = Game.Random.FromList( deliveryTiles );
 			var need = deliveryTile?.Controller?.Needs;
-			if ( need == null)
+			if ( need == null )
 			{
 				return;
 			}
@@ -323,12 +325,12 @@ namespace CitySim
 				need.Supply = (int)MathX.Clamp( need.Supply, 0, need.MaxSupply );
 				need.IsDelivering = false;
 
-				deliveryTile.DeliveryEntities.Remove(ent);
+				deliveryTile.DeliveryEntities.Remove( ent );
 
 				return true;
 			} );
 
-			deliveryTile.DeliveryEntities.Add(ent);
+			deliveryTile.DeliveryEntities.Add( ent );
 			ent.Init( path, behaviour.shouldReturn );
 		}
 	}

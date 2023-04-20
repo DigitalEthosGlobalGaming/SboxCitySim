@@ -1,5 +1,6 @@
 ﻿using CitySim.Utils;
 using Degg.GridSystem;
+using Degg.Util;
 using Sandbox;
 using System;
 using System.Collections.Generic;
@@ -8,7 +9,6 @@ namespace CitySim
 {
 	public partial class MovementEntity : ModelEntity, ITickable
 	{
-
 		public GenericTile LastHighlighted { get; set; }
 		public List<GridSpace> NavPath { get; set; } = new List<GridSpace>();
 
@@ -28,7 +28,7 @@ namespace CitySim
 		public Queue<Func<bool>> OnFinishEvents = new Queue<Func<bool>>();
 		public TickableCollection ParentCollection { get; set; }
 
-		public Rotation TargetRotation {get;set;}
+		public Rotation TargetRotation { get; set; }
 
 		public GridSpace NextTurnGridSpace { get; set; }
 
@@ -55,7 +55,7 @@ namespace CitySim
 			this.Name = "Movement Entity";
 		}
 
-		public void Init(List<GridSpace> path, bool shouldReverse = false )
+		public void Init( List<GridSpace> path, bool shouldReverse = false )
 		{
 			ShouldReverse = shouldReverse;
 			IsReverse = false;
@@ -85,7 +85,7 @@ namespace CitySim
 
 		public void OnFinish()
 		{
-			while (OnFinishEvents.Count > 0)
+			while ( OnFinishEvents.Count > 0 )
 			{
 				var callback = OnFinishEvents.Dequeue();
 				callback();
@@ -94,7 +94,7 @@ namespace CitySim
 
 		public void OnClientTick( float delta, float currentTick )
 		{
-			
+
 		}
 
 		public void OnSharedTick( float delta, float currentTick )
@@ -104,36 +104,38 @@ namespace CitySim
 
 		public void OnServerTick( float delta, float currentTick )
 		{
-			if ( Moving )
+			try
 			{
-				if ( ShouldPullOver )
+				if ( Moving )
 				{
-					// Player cause Cars to pull over for now.
-					bool foundEmergency = false;
-
-					foreach ( var entity in Entity.All )
+					if ( ShouldPullOver )
 					{
-						if ( entity is MovementEntity vehicle )
+						// Player cause Cars to pull over for now.
+						bool foundEmergency = false;
+
+						foreach ( var entity in Entity.All )
 						{
-							if ( vehicle.IsEmergencyVehicle )
+							if ( entity is MovementEntity vehicle )
 							{
-								var eDist = entity.Position.Distance( TargetPosition );
-								if ( eDist < 50.0f )
+								if ( vehicle.IsEmergencyVehicle )
 								{
-									foundEmergency = true;
+									var eDist = entity.Position.Distance( TargetPosition );
+									if ( eDist < 50.0f )
+									{
+										foundEmergency = true;
+									}
+									break;
 								}
-								break;
 							}
 						}
+						NearbyEmergencyVehicle = foundEmergency;
 					}
-					NearbyEmergencyVehicle = foundEmergency;
-				}
-				
-				MaxMovementSpeed = 10f;
 
-				if ( MovementPercentage > 1f )
-				{
-					MovementPercentage = 0;
+					MaxMovementSpeed = 10f;
+
+					if ( MovementPercentage > 1f )
+					{
+						MovementPercentage = 0;
 
 						var canMoveToNext = MoveToNext();
 
@@ -163,57 +165,63 @@ namespace CitySim
 								return;
 							}
 						}
-				}
+					}
 
-				var accelleration = MovementAcceleration;
+					var accelleration = MovementAcceleration;
 
-				var newRotation = Rotation.LookAt( TargetPosition - Position, Vector3.Up);
-				var turningDistance = Rotation.Distance( newRotation );
-				var isTurning = turningDistance > 10;
+					var newRotation = Rotation.LookAt( TargetPosition - Position, Vector3.Up );
+					var turningDistance = Rotation.Distance( newRotation );
+					var isTurning = turningDistance > 10;
 
-				Rotation = newRotation;
+					Rotation = newRotation;
 
-				if ( MovementSpeed > MaxMovementSpeed )
-				{
-					MovementSpeed = MaxMovementSpeed;
-				}
-				else
-				{
-					if ( isTurning )
+					if ( MovementSpeed > MaxMovementSpeed )
 					{
-						// Deccelerate
-						MovementSpeed /= 3;
+						MovementSpeed = MaxMovementSpeed;
 					}
 					else
 					{
-						// Accellerate
-						MovementSpeed += (accelleration * delta);
+						if ( isTurning )
+						{
+							// Deccelerate
+							MovementSpeed /= 3;
+						}
+						else
+						{
+							// Accellerate
+							MovementSpeed += (accelleration * delta);
+						}
+
+
+						if ( NearbyEmergencyVehicle )
+						{
+							// Slow way down!
+							MovementSpeed *= 0.05f;
+						}
 					}
 
+					MovementPercentage += (MovementSpeed * delta);
 
-					if ( NearbyEmergencyVehicle )
+					var position = ((TargetPosition - StartPosition) * MovementPercentage) + StartPosition;
+					Position = position;
+					if ( IsLastSpot )
 					{
-						// Slow way down!
-						MovementSpeed *= 0.05f;
+						RenderColor = RenderColor.WithAlpha( 1 - MovementPercentage );
+					}
+					else
+					{
+						RenderColor = RenderColor.WithAlpha( 1 );
 					}
 				}
-
-				MovementPercentage += (MovementSpeed * delta);
-
-				var position = ((TargetPosition - StartPosition) * MovementPercentage) + StartPosition;
-				Position = position;
-				if ( IsLastSpot )
-				{
-					RenderColor = RenderColor.WithAlpha( 1 - MovementPercentage );
-				} else
-				{
-					RenderColor = RenderColor.WithAlpha( 1 );
-				}
+			}
+			catch ( Exception e )
+			{
+				AdvLog.Warning( e );
 			}
 		}
 
 
-		public Vector3 NextPathPosition(float _rightOffset = 1.0f)
+		public Vector3 NextPathPosition( float _rightOffset = 1.0f )
 		{
 			var offset = Game.Random.Float( _rightOffset * 0.5f, _rightOffset );
 			var nextPosition = TargetSpace.Position + (Vector3.Up * CarHeight);
@@ -227,19 +235,21 @@ namespace CitySim
 			if ( IsReverse )
 			{
 				CurrentIndex = CurrentIndex - 1;
-			} else
+			}
+			else
 			{
 				CurrentIndex = CurrentIndex + 1;
 			}
 
 			IsLastSpot = false;
-			if (ShouldReverse)
+			if ( ShouldReverse )
 			{
 				if ( CurrentIndex <= 0 )
 				{
 					IsLastSpot = true;
 				}
-			} else
+			}
+			else
 			{
 				if ( CurrentIndex >= NavPath.Count )
 				{
@@ -256,9 +266,9 @@ namespace CitySim
 
 				// Get the Next Path Position, with the offset.	
 				TargetPosition = NextPathPosition( (IsEmergencyVehicle) ? 1.0f : 6.0f * (NearbyEmergencyVehicle ? 2.0f : 1.0f) );
-			
+
 				return true;
-			} 
+			}
 			else
 			{
 				return false;

@@ -1,5 +1,6 @@
 ﻿
 using CitySim.Utils;
+using NeedsLibrary;
 using Sandbox;
 
 namespace CitySim
@@ -17,9 +18,16 @@ namespace CitySim
 		public bool HideParent { get; set; }
 		public TickableCollection ParentCollection { get; set; }
 
+		public Consumer MyConsumer { get; set; }
+
 		public BuildingTileController( string _buildModel )
 		{
 			BuildingModel = _buildModel;
+			if ( Game.IsServer )
+			{
+				var store = NeedsLibrary.Needs.GetOrCreateStore( "Game" );
+				MyConsumer = store.CreateConsumer( this );
+			}
 		}
 
 		public override void AddToTile( GenericTile tile )
@@ -70,6 +78,41 @@ namespace CitySim
 		public override void Destroy()
 		{
 			Building?.Delete();
+			if ( Game.IsServer )
+			{
+				MyConsumer.Delete();
+			}
+		}
+
+		public void CheckConsumer()
+		{
+			if ( Game.IsServer )
+			{
+				if ( MyConsumer == null )
+				{
+					MyConsumer = NeedsLibrary.Needs.GetOrCreateStore( "citysim" ).CreateConsumer( this );
+				}
+			}
+		}
+
+		public void CreateNeed( string type, float demand, float maxSupply )
+		{
+			if ( Game.IsServer )
+			{
+				CheckConsumer();
+
+				MyConsumer.CreateDemand( type, demand, maxSupply );
+			}
+		}
+
+		public void CreateSupply( string type, float amount, float maxSupply )
+		{
+			if ( Game.IsServer )
+			{
+				CheckConsumer();
+				// MyConsumer.CreateProduce( type, amount, maxSupply );
+
+			}
 		}
 
 		public void SetBuildingModel( string model )

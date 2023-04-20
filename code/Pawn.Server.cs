@@ -25,12 +25,19 @@ namespace CitySim
 				return;
 			}
 
+			var isSandbox = MyGame.GameObject.CurrentGameOptions.Mode == MyGame.GameModes.Sandbox;
+
 			TileController controller = TileController.GetTileControllerForType( SelectedTileType );
 			controller.Deserialize( rawTileData );
 
-			if ( controller.CanAddToTile( tile ) )
+			var canPlaceTile = isSandbox || (SelectedTileType != TileTypeEnum.Base);
+			var didPlaceTile = false;
+
+
+			if ( controller.CanAddToTile( tile ) && canPlaceTile )
 			{
 				tile.AddController( controller );
+				didPlaceTile = true;
 				PlaySoundClientSide( "physics.wood.impact" );
 			}
 			else
@@ -38,7 +45,7 @@ namespace CitySim
 				PlaySoundClientSide( "ui.navigate.deny" );
 			}
 
-			if ( MyGame.GameObject.CurrentGameOptions.Mode != MyGame.GameModes.Sandbox )
+			if ( !isSandbox )
 			{
 				SelectedTileType = GenericTile.TileTypeEnum.Base;
 			}
@@ -47,20 +54,23 @@ namespace CitySim
 				SelectNextTile( SelectedTileType );
 			}
 
-			var clientScore = Client.GetInt( "score", 0 );
-
-			var score = tile.GetTileScore();
-			if ( score <= 0 )
+			if ( didPlaceTile )
 			{
-				score = 0;
+				var clientScore = Client.GetInt( "score", 0 );
+
+				var score = tile.GetTileScore();
+				if ( score <= 0 )
+				{
+					score = 0;
+				}
+
+				score = score + 1;
+
+				clientScore = clientScore + score;
+
+				Client.SetInt( "score", clientScore );
+				RefreshSelectedTileType();
 			}
-
-			score = score + 1;
-
-			clientScore = clientScore + score;
-
-			Client.SetInt( "score", clientScore );
-			RefreshSelectedTileType();
 		}
 
 		public void ServerSimulate( IClient cl )

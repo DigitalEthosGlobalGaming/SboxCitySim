@@ -7,18 +7,12 @@ namespace CitySim
 {
 	public partial class HouseTileController : BuildingTileController
 	{
-
 		public int BodyGroupIndex { get; set; } = -1;
 		public int MaterialIndex { get; set; } = -1;
 
 		public HouseTileController() : base( "models/buildings/house_01.vmdl" )
 		{
-			Needs = new TileNeeds( 5, 20 )
-			{
-				NeedType = TileNeeds.TileNeedsType.Food,
-				MaxSupply = Game.Random.Int( 18, 30 ),
-				Demand = 2
-			};
+			CreateNeed( "food", 2f, Game.Random.Float( 18, 30 ) );
 
 			BodyGroupIndex = Game.Random.Int( 0, 4 );
 			MaterialIndex = Game.Random.Int( 0, 6 );
@@ -28,16 +22,14 @@ namespace CitySim
 			return TileTypeEnum.House;
 		}
 
-		public override void AddToTile(GenericTile tile)
+		public override void AddToTile( GenericTile tile )
 		{
-			base.AddToTile(tile);
+			base.AddToTile( tile );
 
 			MakeBuildingFaceRoad();
 
 			Building?.SetBodyGroup( "base", BodyGroupIndex );
 			Building?.SetMaterialGroup( MaterialIndex );
-
-
 		}
 
 		public override bool CanAddToTile( GenericTile tile )

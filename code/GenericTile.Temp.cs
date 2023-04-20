@@ -1,7 +1,6 @@
 ﻿using CitySim.Utils;
 using Degg.GridSystem;
 using Sandbox;
-using System;
 using System.Collections.Generic;
 
 namespace CitySim
@@ -17,7 +16,8 @@ namespace CitySim
 			Road = 4,
 		}
 
-		public TileTypeEnum GetTileType() {
+		public TileTypeEnum GetTileType()
+		{
 			return ControllerId;
 		}
 		public static bool IsCombination( GenericTile aTile, GenericTile bTile, TileTypeEnum a, GenericTile.TileTypeEnum b, TileTypeEnum? pretenderForA = null )
@@ -101,13 +101,13 @@ namespace CitySim
 			return GetRoadNeighbour() != null;
 		}
 
-		public bool CanSetType(TileController type)
+		public bool CanSetType( TileController type )
 		{
 			return type?.CanAddToTile( this ) ?? false;
 		}
 
 
-		public List<GridSpace> GetConnectedTiles(TileTypeEnum type)
+		public List<GridSpace> GetConnectedTiles( TileTypeEnum type )
 		{
 			var items = new List<GenericTile>();
 			var gridItems = Map.GetGridAsList();
@@ -129,16 +129,16 @@ namespace CitySim
 			} );
 		}
 
-		public GenericTile GetRandomConnectedTile( TileTypeEnum type)
+		public GenericTile GetRandomConnectedTile( TileTypeEnum type )
 		{
 			var connectedTiles = GetConnectedTiles( type );
-			if ( connectedTiles.Count == 0)
+			if ( connectedTiles.Count == 0 )
 			{
 				return null;
 			}
 
 			var index = Game.Random.Int( 0, connectedTiles.Count - 1 );
-			return (GenericTile) connectedTiles[index];
+			return (GenericTile)connectedTiles[index];
 		}
 	}
 }
